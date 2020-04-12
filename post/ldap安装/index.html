@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.65.3" />
+
+  <title>Ldap安装 &middot; Stay Foolish, Stay Hungry!</title>
+
+    
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://xiaozhujesus.github.io/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://xiaozhujesus.github.io/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="https://xiaozhujesus.github.io/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+ 
+  
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="https://xiaozhujesus.github.io/img/favicon.ico" type="image/x-icon" />
+
+  
+  
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+  <a class="pure-menu-heading brand" href="https://xiaozhujesus.github.io/">Blackburn</a>
+
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://xiaozhujesus.github.io/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://xiaozhujesus.github.io/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://xiaozhujesus.github.io/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://xiaozhujesus.github.io/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/*" rel="me" target="_blank"><i class="fab fa-twitter-square fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/*" rel="me" target="_blank"><i class="fab fa-facebook-square fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/*" rel="me" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/*" rel="me" target="_blank"><i class="fab fa-linkedin"></i></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/yoshiharuyamashita" rel="me" target="_blank"><i class="fab fa-github-square fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://stackoverflow.com/users/*" rel="me" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>Stack Overflow</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+
+  <div>
+  <div class="small-print">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Ldap安装</h1>
+  <h2></h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>12 Mar 2020, 11:02</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  <h2 id="安装前环境准备">安装前环境准备</h2>
+<p>在安装OPENLDAP之前需要关闭防火墙</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl stop firewalld.service</span>
+<span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl disable firewalld.service</span>
+</code></pre></div><h2 id="openldap-servers安装及配置">OPENLDAP-servers安装及配置</h2>
+<h3 id="安装">安装</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># yum install -y openldap-servers</span>
+</code></pre></div><h3 id="配置">配置</h3>
+<ol>
+<li>配置管理员密码</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># slappasswd -s passwd</span>
+<span style="color:#f92672">{</span>SSHA<span style="color:#f92672">}</span>2e1yDU9g9VSc8UArkfpi5KsjT9mSZxCN
+</code></pre></div><ol start="2">
+<li>修改配置文件</li>
+</ol>
+<p>olcDbDirectory：指定ldap数据库的路径；</p>
+<p>olcSuffix：指定管理员管理的目录树根域；</p>
+<p>olcRootDN：指定管理员dn；</p>
+<p>olcRootPW：该字段需要自行添加，用于指定管理员密码，将上一步生成的加密字符串添加在这一行；</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># vim /etc/openldap/slapd.d/cn\=config/olcDatabase\=\{2\}hdb.ldif</span>
+
+<span style="color:#75715e"># AUTO-GENERATED FILE - DO NOT EDIT!! Use ldapmodify.</span>
+<span style="color:#75715e"># CRC32 1763c834</span>
+dn: olcDatabase<span style="color:#f92672">={</span>2<span style="color:#f92672">}</span>hdb
+objectClass: olcDatabaseConfig
+objectClass: olcHdbConfig
+olcDatabase: <span style="color:#f92672">{</span>2<span style="color:#f92672">}</span>hdb
+olcDbDirectory: /var/lib/ldap
+olcSuffix: dc<span style="color:#f92672">=</span>com
+olcRootDN: cn<span style="color:#f92672">=</span>Manager,dc<span style="color:#f92672">=</span>com
+olcRootPW: <span style="color:#f92672">{</span>SSHA<span style="color:#f92672">}</span>2e1yDU9g9VSc8UArkfpi5KsjT9mSZxCN
+olcDbIndex: objectClass eq,pres
+olcDbIndex: ou,cn,mail,surname,givenname eq,pres,sub
+structuralObjectClass: olcHdbConfig
+entryUUID: b5baf318-0bee-1039-9713-29cc6215f8f1
+creatorsName: cn<span style="color:#f92672">=</span>config
+createTimestamp: 20190516062222Z
+entryCSN: 20190516062222.655732Z#000000#000#000000
+modifiersName: cn<span style="color:#f92672">=</span>config
+modifyTimestamp: 20190516062222Z
+</code></pre></div><ol start="3">
+<li>配置监控</li>
+</ol>
+<p>将olcAccess字段中read by dn.base=&quot;cn=xxxxxxxx&quot;修改为read by dn.base=&quot;cn=Manager,dc=com&rdquo;</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># vim /etc/openldap/slapd.d/cn\=config/olcDatabase\=\{1\}monitor.ldif</span>
+ 
+<span style="color:#75715e"># AUTO-GENERATED FILE - DO NOT EDIT!! Use ldapmodify.</span>
+<span style="color:#75715e"># CRC32 36507a81</span>
+dn: olcDatabase<span style="color:#f92672">={</span>1<span style="color:#f92672">}</span>monitor
+objectClass: olcDatabaseConfig
+olcDatabase: <span style="color:#f92672">{</span>1<span style="color:#f92672">}</span>monitor
+olcAccess: <span style="color:#f92672">{</span>0<span style="color:#f92672">}</span>to * by dn.base<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;gidNumber=0+uidNumber=0,cn=peercred,cn=extern
+</span><span style="color:#e6db74"> al,cn=auth&#34;</span> read by dn.base<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;cn=Manager,dc=com&#34;</span> read by * none
+structuralObjectClass: olcDatabaseConfig
+entryUUID: b5bae652-0bee-1039-9712-29cc6215f8f1
+creatorsName: cn<span style="color:#f92672">=</span>config
+createTimestamp: 20190516062222Z
+entryCSN: 20190516062222.655404Z#000000#000#000000
+modifiersName: cn<span style="color:#f92672">=</span>config
+modifyTimestamp: 20190516062222Z
+</code></pre></div><ol start="4">
+<li>配置数据库</li>
+</ol>
+<p>OPENLDAP默认使用Berkeley DB，数据库的路径由配置文件olcDatabase={2}hdb.ldif中olcDbDirectory字段指明</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG</span>
+<span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># chown ldap:ldap -R /var/lib/ldap</span>
+<span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># chmod 700 -R /var/lib/ldap</span>
+</code></pre></div><ol start="5">
+<li>导入schema</li>
+</ol>
+<p>将一些基本的schema导入OPENLDAP服务器</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">ls /etc/openldap/schema/*.ldif | xargs -I <span style="color:#f92672">{}</span> sudo ldapadd -Y EXTERNAL -H ldapi:/// -f <span style="color:#f92672">{}</span>
+</code></pre></div><ol start="6">
+<li>配置日志</li>
+</ol>
+<p>默认情况下，OPENLDAP日志处于停用状态，可通过如下步骤配置并启用日志：</p>
+<p>创建日志配置LDIF文件</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># vim /root/loglevel.ldif</span>
+
+dn: cn<span style="color:#f92672">=</span>config
+changetype: modify
+replace: olcLogLevel
+olcLogLevel: stats
+</code></pre></div><p>将日志配置信息导入OPENLDAP服务器并重启服务</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># ldapmodify -Y EXTERNAL -H ldapi:/// -f /root/loglevel.ldif</span>
+<span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl restart slapd.service</span>
+</code></pre></div><p>修改rsyslog.conf配置文件并重启服务</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># vim /etc/rsyslog.conf</span>
+local4.*                                                /var/log/slapd.log
+<span style="color:#f92672">[</span>wz<span style="color:#f92672">]]</span><span style="color:#75715e"># systemctl restart rsyslog</span>
+</code></pre></div><ol start="7">
+<li>测试配置</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>wz<span style="color:#f92672">]]</span><span style="color:#75715e"># slaptest -u</span>
+5d09ed7b ldif_read_file: checksum error on <span style="color:#e6db74">&#34;/etc/openldap/slapd.d/cn=config/olcDatabase={1}monitor.ldif&#34;</span>
+5d09ed7b ldif_read_file: checksum error on <span style="color:#e6db74">&#34;/etc/openldap/slapd.d/cn=config/olcDatabase={2}hdb.ldif&#34;</span>
+config file testing succeeded
+</code></pre></div><ol start="8">
+<li>启动并设置开机启动</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl start slapd.service</span>
+<span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># systemctl enable slapd.service</span>
+</code></pre></div><h2 id="openldap-clients安装及配置">OPENLDAP-clients安装及配置</h2>
+<h3 id="安装openldap-clients">安装OPENLDAP-clients</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># yum install -y openldap-clients</span>
+</code></pre></div><h3 id="配置openldap-clients标定openldap-servers">配置OPENLDAP-clients标定OPENLDAP-servers</h3>
+<p>BASE：指定OPENLDAP目录树的根域</p>
+<p>URI：指定OPENLDAP服务器地址</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>wz<span style="color:#f92672">]</span><span style="color:#75715e"># vim /etc/openldap/ldap.conf</span>
+BASE    dc<span style="color:#f92672">=</span>mlhadoop,dc<span style="color:#f92672">=</span>com
+URI     ldap://hostname:389
+</code></pre></div>
+  
+  
+<style>
+  ul.share-buttons {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul.share-buttons li {
+    display: inline;
+  }
+
+  ul.share-buttons .sr-only {
+    position: absolute;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0;
+    border: 0;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+  }
+</style>
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1-24" style="text-align: left;">
+    
+    <a href="https://xiaozhujesus.github.io/post/logical-clock-%E5%92%8C-vector-clock/"><i class="fa fa-chevron-left"></i></a>
+    
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="prev">
+      <a href="https://xiaozhujesus.github.io/post/logical-clock-%E5%92%8C-vector-clock/">Logical Clock 和 Vector Clock</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-2-24">
+    &nbsp;
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="next">
+      <a href="https://xiaozhujesus.github.io/post/ldap%E5%9F%BA%E7%A1%80/">Ldap基础</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-1-24" style="text-align: right;">
+    
+    <a href="https://xiaozhujesus.github.io/post/ldap%E5%9F%BA%E7%A1%80/"><i class="fa fa-chevron-right"></i></a>
+    
+  </div>
+</div>
+
+
+
+  
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'Your Disqus shortname';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+</div>
+</div>
+<script src="https://xiaozhujesus.github.io/js/ui.js"></script>
+<script src="https://xiaozhujesus.github.io/js/menus.js"></script>
+
+
+<script>
+  
+  if (window.location.hostname != "localhost") {
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'Your Google Analytics tracking ID', 'auto');
+    ga('send', 'pageview');
+  }
+</script>
+
+
+
+
+
+<script src="https://xiaozhujesus.github.io/js/math-code.js"></script>
+  <script async src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+
+
+</body>
+</html>
+

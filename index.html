@@ -240,29 +240,19 @@
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/logical-clock-%E5%92%8C-vector-clock/">Logical Clock 和 Vector Clock</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/java-volatile/">Java Volatile</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>01 Mar 2020, 19:12</time>
+    <time>12 Apr 2020, 10:25</time>
   </div>
 
   
 
   
 
-  
-  
-  
-  <div>
-    <i class="fa fa-tags fa-fw"></i>
-    
-      <a class="post-taxonomy-tag" href="https://xiaozhujesus.github.io/tags/hugo">Hugo</a>
-    
-  </div>
-  
   
 
 </div>
@@ -270,17 +260,367 @@
   </header>
 
   <p>
-  Logical Clock lamport 逻辑时钟算法：
- 每个事件对应一个 Lamport 时间戳，初始值为 0 如果事件在节点内发生，时间戳加 1 如果事件属于发送事件，时间戳加 1 并在消息中带上该时间戳 如果事件属于接收事件，时间戳 = Max(本地时间戳，消息中的时间戳) + 1  三个机器上各自跑着一个进程，分别为 P1,P2,P3，由于不同的机器上的物理时钟、CPU 负载、或者 CPU 频率不一样，所以不同的机器上的时钟速率可能是不同的，例当 P1 所在的机器 tick 了 6 次，P2 所在的机器 tick 了 8 次，就是异步网络中指的漂移时钟不同。
-完
+  volatile 关键字标记 Java 变量在 main memory 而不是 cache，每次读取从 main memory 读，每次更新写回 main memory，除此之外还有一些其他的保证，下面介绍下
+变量可见性问题 volatile 保证变量更新后的跨线程的可见性，看下面的例子：
+public class SharedObject { public int counter = 0; } 假设两个线程访问该变量，thread1 会更新变量，而 thread2 只读变量，如果变量 counter 不声明为 volatile，那么 thread1 对变量的更新不保证何时写回 main memory，更新可能只是存在 cache 中，所以此时 cache 和 main memory 中 counter 的值是不一致的；另外，即使 thread1 将新的值写回 main memory 了，由于 thread2 的所在 CPU 的 cache 中可能始终是旧值，所以也不一定能看到新的值
+Java volatile 可见性保证 volatile 用于保证变量可见性问题，声明为 volatile 的变量，所有对变量的更新都会写回 main memory，而且对变量的访问也会从 main memory 读取，对于上面的情况，将变量声明为 volatile 足够了，但是如果两个线程都要更新变量，只是将变量声明为 volatile 还不够，还需要同步
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/java-volatile/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/concurrency-model/">Concurrency Model</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>11 Apr 2020, 18:02</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  并发模型指定了系统中的线程如何协作完成给定的任务，不同的并发模型对给定任务的划分方式不同，通信和协作方式也不同；本文将会讨论几种并发模型
+并发模型和分布式系统的相似性 并发系统中，不同线程通信协作，分布式系统中，多个进程通信协作，这些进程可能在不同的计算节点上，所以通常你会看到不同的并发模型与对应的分布式系统架构有相似之处；当然分布式系统还面临其他问题，比如网络不通，节点上的进程挂了
+共享状态 vs 分离状态  并发模型比较重要的方面就是决定线程之间是否共享数据，当共享状态时候，就要考虑竞争和死锁等问题，当然也由线程如何使用共享变量来决定
+分离状态，线程之间不共享任何数据，这种情况线程间需要通信，交换不可变对象或者交换数据的副本，因此当两个线程更新数据，由于数据是副本，每个线程都有各自的，所以可以避免大部分并发问题
+状态分离的并发模型通常来说更容易实现，因为对数据的操作没有竞争，不需要考虑并发访问问题，但是需要从整体仔细考虑应用的设计，但这也是值得的，下面开始介绍几种并发模型
+parallel worker 并发模型 新任务会被分发给不同的 worker，如下图所示
+delegator 会将新的任务分发给不同的 worker，每个 worker 会从头到尾完成完整的任务，并且是并发完成的（包括并行），java.util.concurrent 工具包中的许多并发工具都设计用于这种模型
+parallel worker 模型的优势 好理解，容易扩展，增加并行性只需要增加 worker 即可
+parallel worker 模型的劣势 简单，容易理解的背后也隐藏着一些缺点
+共享状态会让事情变得复杂 大多数情况下，parallel worker 模型要比上面介绍的复杂，worker 间在完成整个任务期间总是会访问或更新共享状态，要么是内存，或者是数据库，如下图所示：
+只要存在多线程共享状态的情况，线程就需要以确保一个线程对共享数据的更新对其他线程可见的方式访问共享数据（将其刷新到主内存中，而不仅仅是缓存在执行该线程的 CPU 的 cache 中），同时线程需要避免竞争条件，死锁和许多其他共享状态并发问题。
+另外，当线程访问共享数据，相互等待时，并行度会降低，许多共享数据结构是阻塞的，导致某一时刻最多只有有限数量的线程可以访问，而且这样会导致多线程激烈的竞争，激烈的竞争会浪费总线资源，而且某种程度上将导致失去并发，而是顺序执行
+非阻塞算法可以降低竞争，提升性能，但是非阻塞算法很难实现
+不可变数据结构是另一种选择，其实是多版本；不可变数据结构在修改后始终保留其自身的先前版本。 因此，如果多个线程持有相同的不可变数据结构的引用，并且一个线程对其进行了修改，则修改线程将获得对新结构的引用。 所有其他线程保留对旧结构的引用，该旧结构仍保持不变，因此是一致的
+这也存在一些问题，例如，一个不可变 list 会将所有新元素添加到 list 的开头，并返回对新添加元素的引用（该引用随后指向列表的其余部分）。 所有其他线程仍保留对 list 中先前第一个元素的引用，并且对这些线程而言，列表保持不变，他们看不到新添加的元素。
+这样的不可变 list 被实现为 linked list。 不幸的是，list 在现代硬件上的表现不佳。 list 中的每个元素都是一个单独的对象，这些对象可以分布在整个计算机的内存中。 现代 CPU 顺序访问数据的速度要快得多，因此在现代硬件上，使用 arraylist 实现的 list 中可以获得更高的性能，因为数组顺序存储数据。 CPU 高速缓存可以一次将更大的 array 加载到高速缓存中，并让 CPU 在加载后直接访问 CPU 高速缓存中的数据。 对于 linked list，其元素是分散在整个 RAM 上的，所以实际不可能完全将 list 的所有元素都加载到 cache 中
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/concurrency-model/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/java-memory-model/">Java Memory Model</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>11 Apr 2020, 10:55</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Jvm 是一个完整的计算机模型，因此自然包括内存模型（类似 Linux 下的虚拟内存模型），而 JMM 说明了 Jvm 如何使用物理机的内存的
+写正确的并发代码需要理解 Java 内存模型，Java 内存模型说明了不同线程如何，何时可以观察到对共享变量的修改，以及如何同步对共享变量的访问，下面介绍的内存模型直到 Java8
+Jvm 使用的 Java 内存模型将内存划分为堆和栈，下图展示了 JMM 的逻辑视图
+每个线程有自己的调用栈，每次调用方法就会产生新的栈帧，每个栈帧中包含方法的局部变量，线程只能访问自己的栈帧，而且局部变量对其他线程不可见，因此即使两个线程执行相同的方法，但由于有各自的栈帧，因此局部变量也是各自版本的，而且无法相互访问；
+所有基本类型的局部变量都存储在栈上（boolean, byte, short, char, int, long, float, double），所有对象都存储在堆上，包括基本类型的包装类，局部变量也可能是对象引用，这种情况引用变量存储在栈上，引用的对象存储在堆上；对象的成员变量存储在堆上，不论成员变量是基本数据类型还是引用数据类型；static 类变量也存储在堆上，
+硬件内存架构 硬件内存架构与 Java 内存模型不同，理解硬件内存架构也很重要，这样可以理解 Java 内存模型是如何与硬件内存架构一起工作的，下面描述一般的硬件内存架构，SMP，如下图：
+现代计算机通常有两个或多个 CPU，每个 CPU 有可能有多个 core，每个 core 可以运行一个线程，这些线程完全是并行运行的（区分并发），距离 CPU 越近的存储，CPU 在上面完成操作的速度越快，cache 通常是多级的，这里我们不关心这个，关键是要理解是存在 cache 层的，而且 cache 和 register 是 CPU 私有的，main memory 是 CPU 共享的，当需要访问数据时候，首先从 register 中找，如果不明中，从 cache 中找，如果不明中，从 memory 中找，之后将结果缓存在 cache 中；当操作完成需要写回结果时，首先将 register 中的结果写到 cache 中，之后在某个时间点例如 cache 中的空间不足时候，将结果刷回 main memory；每次 cache 更新不需要操作全部 cache，而是以 cache line 为单位进行更新
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/java-memory-model/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/java-synchronized/">Java Synchronized</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>11 Apr 2020, 09:50</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Synchronized and Data Visibility 如果不使用 synchronized 或者 volatile 关键字，就无法保证当一个线程更新共享变量时候，其他线程何时能看到该更新结果；主要是两个问题：
+ 更新过的值在寄存器或者 CPU 私有 cache 中，何时刷新到主存 其他线程何时更新自己寄存器或者私有 cache 中过期的旧值  synchronized 关键字可以保证上述两点成立，当线程进入 synchronized 代码块，会从主存同步所有与其他线程共享当值，也就是可以看到最新的值，当线程退出 synchronized 代码块时，所有对线程共享变量的修改都会从寄存器或者私有 cache 中刷新到主存；所以类似 volatile 关键字的作用
+synchronized 还可以防止 Java 编译器和虚拟机乱序执行代码，为了获得更好的性能，通常 Java 编译器和虚拟机会对指令的执行顺序进行调整，如果在 synchronized 代码块内的对变量的修改操作，经过指令重排序后在 synchronized 代码块之前执行，就会发生很奇怪的现象；因此 synchronized 代码块中的代码不会进行指令重排序
+在那些对象上进行同步？ 不要在 String 对象和基本类型包装类对象上进行同步，因为编译器会进行优化，你以为你用的是不同的对象，实际上是相同的对象
+synchronized(&#34;Hey&#34;) { //do something in here. } 如果你在不同的地方使用字符串&quot;Hey&quot;进行同步，那么其实使用的是常亮池中的相同对象，基本类型包装类也一样
+synchronized(Integer.valueOf(1)) { //do something in here. } 所以建议使用 this 或者 new Object()进行同步，jvm 不会缓存和重用这些对象
+synchronized 的限制以及替代  多个线程对变量的访问有 read 也有 write，而且 read 比较多，当多个线程同时 read 时候，synchronized 过于严格，可以使用 read/write Lock 最多同时允许 N 个线程进入同步代码块，使用 Semaphore 实现 synchronized 不提供公平行，进入同步代码块的顺序不是线程请求的顺序 如果只有一个线程写，其他线程读，可以使用 volatile 而不需要 synchronized 只将需要同步的代码放入 synchronized，减小 synchronized 块的大小，可以增加并行性  可重入性 synchronized 在同一个线程上是可重入的
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/java-synchronized/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/virtualization-basic/">Virtualization Basic</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>29 Mar 2020, 10:40</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  Platform Virtualization Alice 的公司有个软件产品运行在 windows 平台上；Bob 的公司也有个一款软件产品需要运行，但是他不关心底层平台的细节，只要这个平台可以提供他的产品运行所需的资源和抽象就可以了，如下图所示
+图中的 blackbox 就是虚拟平台，要解决的问题是如何让 Bob 的软件产品感觉其运行在真实的平台上而不是给他一个真正的平台 虚拟化是要充分利用资源，比如上午时候 Alice 公司的内存需求是 8G，而 Bob 公司的需求是 1G，但是下午 Alice 公司的需求是 2G，而 Bob 需求 5G，如果 Alice 直接购买最大值 8G，Bob 购买 5G，一共 13G，但是从全局看其实一共只需要 9G 就可以满足两个公司的需求；
+其实虚拟化技术是操作系统设计中的 service 扩展部分（例如微内核中，各种 filesystem，netstack 都是运行在非内核态的服务，这样方便扩展），只不过应用的粒度有些大而已，在整个 OS 范围内进行虚拟化，而不是 service 扩展
+Hypervisor 如上图所示，如何保证多个 OS 同时运行在共享的硬件平台上？谁来决定哪个 OS 哪个时刻占有硬件资源？这里需要一个 OS 的 OS，通常叫做 virtual machine manager 或者 hypervisor，运行在共享硬件平台上的多个 OS 称为 virtual machine（VM）或者 guest OS，有两种 hypervisor，下面分别介绍
+Native Hypervisor（bare metal） Hosted Hypervisor hosted hypervisor 包括 VMware，Workstation 和 Virtual Box；后面主要介绍 native hypervisor
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/virtualization-basic/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/virtualization/">Virtualization</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>29 Mar 2020, 10:34</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  分以下 4 个方面介绍虚拟化内容
+ 虚拟化基础 内存虚拟化 CPU 虚拟化 设备虚拟化  
   </p>
 
   
 </article>
 
   
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/lock/">Lock</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>28 Mar 2020, 11:34</time>
+  </div>
 
   
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  P1 P2     modify struct(A); wait for mod;    use struct(A);    假设只有 read/write 原子操作指令，能实现上面的两个进程的需求么？可以的 使用一个共享变量解决，flag = 0;//int
+   P1 P2     mod(A) while (flag == 0 );   flag = 1;//signal P2 use(A)    flag = 0;//re-init    注意上面的所有操作都是 read/write 内存访问，都是原子操作；flag 变量是同步变量，struct A 是普通数据
+原子操作 看一个简单互斥锁的实现
+lock(L): if(L == 0) &lt;--- L = 1; | else | while(L==1); | //wait | go back; ------ unlock(L): L = 0; 只用原子 read/write 操作可以实现上面的互斥锁么？注意，上面的 if(L == 0) L = 1;实际上需要 3 条指令来完成，首先从内存读变量 L，然后检查是否为 0，如果是，向内存位置 L 存入新的值 1；这 3 条指令必须以原子不可分的方式执行才能保证算法的正确性；虽然单个的 read/write 操作是原子的，但是一组 read/write 操作就不是原子的了；所以为了正确实现互斥锁，我们需要新的原子指令，语意为从内存读数据，然后修改，最后写回内存（read,modify,write，简称 rmw）
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/lock/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/shared-memory-machine-model/">Shared Memory Machine Model</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>26 Mar 2020, 11:51</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  介绍 3 种不同结构的共享内存机器模型，共享内存意思是每个 CPU 都可以访问所有内存空间，但缓存是每个 CPU 独有的，无法相互访问
+Dance Hall Architecture SMP Architecture Symmetric Multiprocessor，对称是因为每个 cpu 的访存时间相同，
+Distributor Shared Memory Architecture 每个 CPU 有一个关联的内存，每个 CPU 都可以通过系统总线访问到其他 CPU 关联的内存，但是访问自己的内存比较快
+Shared Memory And Caches 这里以 SMP 架构为例进行讲解。
+单 CPU 架构下，CPU 访问内存时，首先访问 cache，如果 cache 命中，则直接访问，否则访问内存，同时将结果缓存在 cache 中；多 CPU 架构下 cache 的作用与单 CPU 一样，但是有个问题就是 cache 是 CPU 私有的，memory 是 CPU 共享的，假设内存有个热点变量 var 值为 y，缓存在所有 CPU 的 cache 中，当 cpu1 对私有 cache 中的 var 修改时，假设修改后的值为 x，那么所有 CPU 的 cache 中的 var 现在都应该是 x，这点应该由谁来保证呢？
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/shared-memory-machine-model/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/synchronization/">Synchronization</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>24 Mar 2020, 07:59</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  共享内存模型下的同步元语  互斥锁（mutual exclusive lock）：同时最多只能有一个线程使用 共享锁（shared lock）：多个线程可以同时使用，通常是读锁 屏障（barrier）：所有线程都到达，才能继续执行  后面我们每个分别讨论
+  </p>
+
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Sequential Consistency</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>20 Mar 2020, 09:24</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  顺序一致性是并发系统很强的安全属性。 非正式地，顺序一致性意味着操作似乎以某种 total order 进行，并且该顺序与每个单独进程上操作的顺序一致。
+顺序一致性不具有完全可用性或强可以用性（totally or sticky available）。 如果发生网络分区，则某些或所有节点将无法前进。
+顺序一致的系统中的一个进程可能比其他进程领先或落后。 例如，他可以读取任意陈旧状态。 但是，一旦进程 A 观察到了来自进程 B 的某些操作，就永远无法观察到 B 之前的状态。再加上 total order 属性，使得顺序一致性对于程序员来说成为了很强的模型。
+当您需要实时约束时（例如，您想通过 side channel 将事件告知其他进程，并让该进程观察到相应事件），请尝试 linearizability。 如果您需要 total availability，而又不需要 total order，请尝试因果一致性（causal consistency）。
+莱斯利·兰珀特（Leslie Lamport）在 1979 年的论文《如何制造能正确执行多进程程序的多处理器计算机》中定义了顺序一致性。 他使用“顺序一致”：
+the result of any execution is the same as if the operations of all the processors were executed in some sequential order, and the operations of each individual processor appear in this sequence in the order specified by its program
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+
+  
+
+
+<nav class="pagination" role="pagination">
+  
+  <i class="fa fa-chevron-left"></i>
+  
+  <span>&nbsp;1 / 2&nbsp;</span>
+  
+  <a href="https://xiaozhujesus.github.io/page/2/"><i class="fa fa-chevron-right"></i></a>
+  
+</nav>
+
 
 
 </div>

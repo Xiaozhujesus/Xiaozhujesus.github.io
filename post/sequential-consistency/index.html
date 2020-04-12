@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="generator" content="Hugo 0.65.3" />
 
-  <title>Posts &middot; Stay Foolish, Stay Hungry!</title>
+  <title>Sequential Consistency &middot; Stay Foolish, Stay Hungry!</title>
 
     
 
@@ -41,9 +41,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
  
-  
-  <link rel="alternate" type="application/rss+xml" title="Stay Foolish, Stay Hungry!"
-    href='https://xiaozhujesus.github.io/post/index.xml' />
   
 
   
@@ -108,11 +105,6 @@
   <div class="pure-menu social">
   <ul class="pure-menu-list">
 
-    
-    <li class="pure-menu-item">
-      <a class="pure-menu-link" href='https://xiaozhujesus.github.io/post/index.xml'><i
-          class="fas fa-rss"></i>RSS</a>
-    </li>
     
 
     
@@ -232,60 +224,118 @@
 
 
 <div class="header">
-  <h1>Posts</h1>
+  <h1>Sequential Consistency</h1>
+  <h2></h2>
 </div>
 <div class="content">
-  
-  <h2>2020</h2>
-  <ul>
-  
-    <li><time>12 Apr 2020, 10:25</time> - <a href="https://xiaozhujesus.github.io/post/java-volatile/">Java Volatile</a></li>
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>20 Mar 2020, 09:24</time>
+  </div>
 
   
-    <li><time>11 Apr 2020, 18:02</time> - <a href="https://xiaozhujesus.github.io/post/concurrency-model/">Concurrency Model</a></li>
 
   
-    <li><time>11 Apr 2020, 10:55</time> - <a href="https://xiaozhujesus.github.io/post/java-memory-model/">Java Memory Model</a></li>
 
   
-    <li><time>11 Apr 2020, 09:50</time> - <a href="https://xiaozhujesus.github.io/post/java-synchronized/">Java Synchronized</a></li>
+
+</div>
+
+  <p>顺序一致性是并发系统很强的安全属性。 非正式地，顺序一致性意味着操作似乎以某种 total order 进行，并且该顺序与每个单独进程上操作的顺序一致。</p>
+<p>顺序一致性不具有完全可用性或强可以用性（totally or sticky available）。 如果发生网络分区，则某些或所有节点将无法前进。</p>
+<p>顺序一致的系统中的一个进程可能比其他进程领先或落后。 例如，他可以读取任意陈旧状态。 但是，一旦进程 A 观察到了来自进程 B 的某些操作，就永远无法观察到 B 之前的状态。再加上 total order 属性，使得顺序一致性对于程序员来说成为了很强的模型。</p>
+<p>当您需要实时约束时（例如，您想通过 side channel 将事件告知其他进程，并让该进程观察到相应事件），请尝试 linearizability。 如果您需要 total availability，而又不需要 total order，请尝试因果一致性（causal consistency）。</p>
+<p>莱斯利·兰珀特（Leslie Lamport）在 1979 年的论文《如何制造能正确执行多进程程序的多处理器计算机》中定义了顺序一致性。 他使用“顺序一致”：</p>
+<p>the result of any execution is the same as if the operations of all the processors were executed in some sequential order, and the operations of each individual processor appear in this sequence in the order specified by its program</p>
+<p>Viotti and Vukolić 将顺序一致性分解为 3 个属性</p>
+<ul>
+<li>Single Order (there exists some total order of operations)</li>
+<li>PRAM</li>
+<li>RVal (the order must be consistent with the semantics of the datatype)</li>
+</ul>
+<p>参考<a href="https://jepsen.io/consistency/models/sequential">Sequential Consistency</a></p>
 
   
-    <li><time>29 Mar 2020, 10:40</time> - <a href="https://xiaozhujesus.github.io/post/virtualization-basic/">Virtualization Basic</a></li>
+  
+<style>
+  ul.share-buttons {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul.share-buttons li {
+    display: inline;
+  }
+
+  ul.share-buttons .sr-only {
+    position: absolute;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0;
+    border: 0;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+  }
+</style>
+
 
   
-    <li><time>29 Mar 2020, 10:34</time> - <a href="https://xiaozhujesus.github.io/post/virtualization/">Virtualization</a></li>
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1-24" style="text-align: left;">
+    
+    <a href="https://xiaozhujesus.github.io/post/pram/"><i class="fa fa-chevron-left"></i></a>
+    
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="prev">
+      <a href="https://xiaozhujesus.github.io/post/pram/">PRAM</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-2-24">
+    &nbsp;
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="next">
+      <a href="https://xiaozhujesus.github.io/post/synchronization/">Synchronization</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-1-24" style="text-align: right;">
+    
+    <a href="https://xiaozhujesus.github.io/post/synchronization/"><i class="fa fa-chevron-right"></i></a>
+    
+  </div>
+</div>
+
+
 
   
-    <li><time>28 Mar 2020, 11:34</time> - <a href="https://xiaozhujesus.github.io/post/lock/">Lock</a></li>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
 
-  
-    <li><time>26 Mar 2020, 11:51</time> - <a href="https://xiaozhujesus.github.io/post/shared-memory-machine-model/">Shared Memory Machine Model</a></li>
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
 
-  
-    <li><time>24 Mar 2020, 07:59</time> - <a href="https://xiaozhujesus.github.io/post/synchronization/">Synchronization</a></li>
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'Your Disqus shortname';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
-  
-    <li><time>20 Mar 2020, 09:24</time> - <a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Sequential Consistency</a></li>
 
-  
-    <li><time>20 Mar 2020, 09:00</time> - <a href="https://xiaozhujesus.github.io/post/pram/">PRAM</a></li>
-
-  
-    <li><time>12 Mar 2020, 18:20</time> - <a href="https://xiaozhujesus.github.io/post/ssl/">SSL</a></li>
-
-  
-    <li><time>12 Mar 2020, 11:34</time> - <a href="https://xiaozhujesus.github.io/post/ldap%E5%9F%BA%E7%A1%80/">Ldap基础</a></li>
-
-  
-    <li><time>12 Mar 2020, 11:02</time> - <a href="https://xiaozhujesus.github.io/post/ldap%E5%AE%89%E8%A3%85/">Ldap安装</a></li>
-
-  
-    <li><time>01 Mar 2020, 19:12</time> - <a href="https://xiaozhujesus.github.io/post/logical-clock-%E5%92%8C-vector-clock/">Logical Clock 和 Vector Clock</a></li>
-
-  
-  </ul>
-  
 </div>
 
 </div>
