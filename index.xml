@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Stay Foolish, Stay Hungry!</title>
+    <link>https://xiaozhujesus.github.io/</link>
+    <description>Recent content on Stay Foolish, Stay Hungry!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Sun, 01 Mar 2020 19:12:46 +0800</lastBuildDate>
+    
+	<atom:link href="https://xiaozhujesus.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Logical Clock 和 Vector Clock</title>
+      <link>https://xiaozhujesus.github.io/post/logical-clock-%E5%92%8C-vector-clock/</link>
+      <pubDate>Sun, 01 Mar 2020 19:12:46 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/logical-clock-%E5%92%8C-vector-clock/</guid>
+      <description>Logical Clock lamport 逻辑时钟算法：
+ 每个事件对应一个 Lamport 时间戳，初始值为 0 如果事件在节点内发生，时间戳加 1 如果事件属于发送事件，时间戳加 1 并在消息中带上该时间戳 如果事件属于接收事件，时间戳 = Max(本地时间戳，消息中的时间戳) + 1  三个机器上各自跑着一个进程，分别为 P1,P2,P3，由于不同的机器上的物理时钟、CPU 负载、或者 CPU 频率不一样，所以不同的机器上的时钟速率可能是不同的，例当 P1 所在的机器 tick 了 6 次，P2 所在的机器 tick 了 8 次，就是异步网络中指的漂移时钟不同。
+完</description>
+    </item>
+    
+  </channel>
+</rss>
