@@ -240,6 +240,44 @@
   
     <article>
   <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Sequential Consistency</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>20 Mar 2020, 09:24</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  顺序一致性是并发系统很强的安全属性。 非正式地，顺序一致性意味着操作似乎以某种 total order 进行，并且该顺序与每个单独进程上操作的顺序一致。
+顺序一致性不具有完全可用性或强可以用性（totally or sticky available）。 如果发生网络分区，则某些或所有节点将无法前进。
+顺序一致的系统中的一个进程可能比其他进程领先或落后。 例如，他可以读取任意陈旧状态。 但是，一旦进程 A 观察到了来自进程 B 的某些操作，就永远无法观察到 B 之前的状态。再加上 total order 属性，使得顺序一致性对于程序员来说成为了很强的模型。
+当您需要实时约束时（例如，您想通过 side channel 将事件告知其他进程，并让该进程观察到相应事件），请尝试 linearizability。 如果您需要 total availability，而又不需要 total order，请尝试因果一致性（causal consistency）。
+莱斯利·兰珀特（Leslie Lamport）在 1979 年的论文《如何制造能正确执行多进程程序的多处理器计算机》中定义了顺序一致性。 他使用“顺序一致”：
+the result of any execution is the same as if the operations of all the processors were executed in some sequential order, and the operations of each individual processor appear in this sequence in the order specified by its program
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
     <h2><a href="https://xiaozhujesus.github.io/post/pram/">PRAM</a></h2>
 
     <div class="post-meta">

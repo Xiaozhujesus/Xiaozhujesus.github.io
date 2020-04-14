@@ -240,6 +240,40 @@
   
     <article>
   <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/">线程模型</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>14 Apr 2020, 21:48</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  进程是资源管理的最小单位，线程是程序执行的最小单位。在操作系统设计上，从进程演化出线程，最主要的目的就是更好的支持 SMP 以及减小（进程/线程）上下文切换开销
+而线程模型主要有两种，一种是内核线程，一种是用户线程，分类依据是线程调度是在内核还是用户态，前者更利于并发使用多处理器的资源，而后者则更多考虑的是上下文切换开销；主流商用系统中，通常都将两者结合起来使用，既提供内核线程以满足 smp 系统的需要，也支持用线程库的方式在用户态实现另一套线程机制，此时一个内核线程同时成为多个用户态线程的调度者，调度器在用户态实现
+在核外实现的线程又可以分为&quot;一对一&rdquo;、&ldquo;多对一&quot;两种模型，前者用一个核心进程（也许是轻量进程）对应一个线程，将线程调度等同于进程调度，交给内核完成（Java），而后者则完全在核外实现多线程（golang），调度也在用户态完成。后者就是前面提到的单纯的用户级线程模型的实现方式，显然，这种核外的线程调度器实际上只需要完成线程运行栈的切换，调度开销非常小，但同时因为核心信号（无论是同步的还是异步的）都是以进程为单位的，因而无法定位到线程，所以这种实现方式不能用于多处理器系统
+Linux 内核只提供了轻量进程的支持，限制了更高效的线程模型的实现，但 Linux 着重优化了进程的调度开销，一定程度上也弥补了这一缺陷。目前最流行的线程机制 LinuxThreads 所采用的就是线程-进程&quot;一对一&quot;模型，调度交给核心，而在用户级实现一个包括信号处理在内的线程管理机制
+当初 Linux 被开发出来的时候，其内核并不真正地支持多线程。多线程最初是由 LinuxThreads 这个工程带入到 Linux 的,由于 clone 系统调用创建了调用进程的副本，而且可以和父进程共享地址空间；通过 clone，LinuxThreads 完全在用户空间模拟了线程。然而，这种方法有很多的缺陷，并没有符合 POSIX 的要求，特别是在信号处理，调度和进程间同步原语等方面
+为了改进 LinuxThreads，很明显需要内核的支持，而且需要重写线程库，红帽发起了 Native POSIX Thread Library，NPTL 项目，NPTL 采用了一对一的线程模型，即用户态线程与内核线程一一对应
+  </p>
+
+  
+</article>
+
+  
+    <article>
+  <header>
     <h2><a href="https://xiaozhujesus.github.io/post/java-volatile/">Java Volatile</a></h2>
 
     <div class="post-meta">
@@ -565,44 +599,6 @@ Shared Memory And Caches 这里以 SMP 架构为例进行讲解。
   共享内存模型下的同步元语  互斥锁（mutual exclusive lock）：同时最多只能有一个线程使用 共享锁（shared lock）：多个线程可以同时使用，通常是读锁 屏障（barrier）：所有线程都到达，才能继续执行  后面我们每个分别讨论
   </p>
 
-  
-</article>
-
-  
-    <article>
-  <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Sequential Consistency</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>20 Mar 2020, 09:24</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  顺序一致性是并发系统很强的安全属性。 非正式地，顺序一致性意味着操作似乎以某种 total order 进行，并且该顺序与每个单独进程上操作的顺序一致。
-顺序一致性不具有完全可用性或强可以用性（totally or sticky available）。 如果发生网络分区，则某些或所有节点将无法前进。
-顺序一致的系统中的一个进程可能比其他进程领先或落后。 例如，他可以读取任意陈旧状态。 但是，一旦进程 A 观察到了来自进程 B 的某些操作，就永远无法观察到 B 之前的状态。再加上 total order 属性，使得顺序一致性对于程序员来说成为了很强的模型。
-当您需要实时约束时（例如，您想通过 side channel 将事件告知其他进程，并让该进程观察到相应事件），请尝试 linearizability。 如果您需要 total availability，而又不需要 total order，请尝试因果一致性（causal consistency）。
-莱斯利·兰珀特（Leslie Lamport）在 1979 年的论文《如何制造能正确执行多进程程序的多处理器计算机》中定义了顺序一致性。 他使用“顺序一致”：
-the result of any execution is the same as if the operations of all the processors were executed in some sequential order, and the operations of each individual processor appear in this sequence in the order specified by its program
-  </p>
-
-  
-  <footer>
-    <a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
   
 </article>
 
