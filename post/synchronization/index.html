@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="generator" content="Hugo 0.65.3" />
 
-  <title>Synchronization &middot; Stay Foolish, Stay Hungry!</title>
+  <title>OS Synchronization &middot; Stay Foolish, Stay Hungry!</title>
 
     
 
@@ -224,7 +224,7 @@
 
 
 <div class="header">
-  <h1>Synchronization</h1>
+  <h1>OS Synchronization</h1>
   <h2></h2>
 </div>
 <div class="content">
@@ -247,6 +247,8 @@
   <h2 id="共享内存模型下的同步元语">共享内存模型下的同步元语</h2>
 <ul>
 <li>互斥锁（mutual exclusive lock）：同时最多只能有一个线程使用</li>
+<li>条件变量（condition variable）：阻塞等待被条件满足，得到通知</li>
+<li>信号量（semaphores）：</li>
 <li>共享锁（shared lock）：多个线程可以同时使用，通常是读锁</li>
 <li>屏障（barrier）：所有线程都到达，才能继续执行</li>
 </ul>

@@ -250,9 +250,9 @@
 <li>更新过的值在寄存器或者 CPU 私有 cache 中，何时刷新到主存</li>
 <li>其他线程何时更新自己寄存器或者私有 cache 中过期的旧值</li>
 </ul>
-<p>synchronized 关键字可以保证上述两点成立，当线程进入 synchronized 代码块，会从主存同步所有与其他线程共享当值，也就是可以看到最新的值，当线程退出 synchronized 代码块时，所有对线程共享变量的修改都会从寄存器或者私有 cache 中刷新到主存；所以类似 volatile 关键字的作用</p>
-<p>synchronized 还可以防止 Java 编译器和虚拟机乱序执行代码，为了获得更好的性能，通常 Java 编译器和虚拟机会对指令的执行顺序进行调整，如果在 synchronized 代码块内的对变量的修改操作，经过指令重排序后在 synchronized 代码块之前执行，就会发生很奇怪的现象；因此 synchronized 代码块中的代码不会进行指令重排序</p>
-<h2 id="在那些对象上进行同步">在那些对象上进行同步？</h2>
+<p>synchronized 关键字可以保证上述两点成立，当线程进入 synchronized 代码块，会从主存同步所有线程可访问到的值，也就是可以看到最新的值，当线程退出 synchronized 代码块时，所有对线程可访问到的变量的修改都会从寄存器或者私有 cache 中刷新到主存；所以类似 volatile 关键字的作用</p>
+<p>synchronized 还可以防止 Java 编译器和虚拟机乱序执行代码，为了获得更好的性能，通常 Java 编译器和虚拟机会对指令的执行顺序进行调整，如果在 synchronized 代码块内的对变量的修改操作，经过指令重排序后在 synchronized 代码块之前执行，那原来本想同步的代码就没有得到同步；因此 synchronized 代码块中的代码与其之前和之后的代码不会进行指令重排序，但是注意，synchronized 块中的代码还是有可能发生指令重排序的</p>
+<h2 id="在哪些对象上进行同步">在哪些对象上进行同步？</h2>
 <p>不要在 String 对象和基本类型包装类对象上进行同步，因为编译器会进行优化，你以为你用的是不同的对象，实际上是相同的对象</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">synchronized</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hey&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
    <span style="color:#75715e">//do something in here.
@@ -261,12 +261,12 @@
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">synchronized</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span>1<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
    <span style="color:#75715e">//do something in here.
 </span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
-</code></pre></div><p>所以建议使用 this 或者 new Object()进行同步，jvm 不会缓存和重用这些对象</p>
+</code></pre></div><p>所以建议使用 this 或者 new Object()进行同步，java 编译器和 jvm 不会缓存和重用这些对象</p>
 <h2 id="synchronized-的限制以及替代">synchronized 的限制以及替代</h2>
 <ul>
 <li>多个线程对变量的访问有 read 也有 write，而且 read 比较多，当多个线程同时 read 时候，synchronized 过于严格，可以使用 read/write Lock</li>
 <li>最多同时允许 N 个线程进入同步代码块，使用 Semaphore 实现</li>
-<li>synchronized 不提供公平行，进入同步代码块的顺序不是线程请求的顺序</li>
+<li>synchronized 不提供公平性，当多个线程阻塞等待进入同步代码块，其进入的顺序不一定是线程请求的顺序</li>
 <li>如果只有一个线程写，其他线程读，可以使用 volatile 而不需要 synchronized</li>
 <li>只将需要同步的代码放入 synchronized，减小 synchronized 块的大小，可以增加并行性</li>
 </ul>
@@ -286,7 +286,28 @@
     <span style="color:#f92672">}</span>
   <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><h1 id="补充内容">补充内容</h1>
+</code></pre></div><h2 id="synchronized-实现原理">Synchronized 实现原理</h2>
+<p>底层是使用 OS 提供的 mutex 和 condition 实现的，每个对象有个锁，执行 synchronized 代码块执行临界区代码需要先获取该锁，每个对象有两个队列，一个是 entry queue，另一个是 wait queue，进入 synchronized 前竞争对象上的锁，成功才可以进入临界区执行代码，否则进入 entry queue 阻塞等待，这里的阻塞等待是不消耗 CPU 资源的，线程处于 blocked 状态，不会对其进行调度；线程退出 synchronized 代码块时候释放对象锁，此时 OS 会调度 entry queue 中的线程，使其成为运行的状态；这时被所有被调度的线程（不只是刚才被唤醒的 entry queue 的线程，此时可能有新的线程想要执行 synchronized 代码块）可以重新开始竞争对象上的锁，重复上面的过程；</p>
+<p>如果在执行 synchronized 代码块时候发现条件没有满足，可以调用 wait 函数，从而进入对象的 wait queue，此时线程同样处于 blocked 状态，同时释放当前获取到的锁，释放锁会导致唤醒 entry queue 中的 blocked 的线程（OS 的 mutex 提供这种功能）（否则在单个生产者消费者的情况下，如果消费者先执行发现没有可消费的，然后 wait，生产者在消费者执行期间开始竞争锁，而进入 entry queue 阻塞，这种情况下，生产者在 entry queue 中等待被唤醒，而消费者在 wait queue 中等待被唤醒，进程就会失去 liveness 而无法继续向前执行，注意这种情况不是死锁）；当其他线程调用对象上的 notify 或者 notifyAll 方法时候，wait queue 中的线程可以得到调度机会；注意，这两个方法不会释放锁，只是将 wait queue 中的线程放到 entry queue 中而已；notify 方法会将 wait queue 中的一个线程放到 entry queue，而 notifyAll 将所有 wait queue 中的线程放到 entry queue；当调用 notify 的线程退出 synchronized 代码块的时候，才会释放对象锁，而锁的释放会导致唤醒所有 entry queue 中的阻塞线程，开始重新竞争锁</p>
+<h2 id="synchronized-锁的优化">Synchronized 锁的优化</h2>
+<p>由于 synchronized 是使用 OS 提供的 mutex 和 condition 实现的，所以每次获取和释放锁都会在用户和内核态之间进行切换，开销比较大，因此叫重量级锁；为了提升性能，在 jdk1.6 中引入偏向锁，轻量级锁，重量级锁概念，来减少锁竞争导致的用户内核态切换；锁升级是在 java 对象头实现的</p>
+<p>锁升级指，锁刚开始为偏向锁，随着竞争激烈，升级到轻量级锁，最终到重量级锁</p>
+<h3 id="偏向锁">偏向锁</h3>
+<p>偏向锁用来优化相同线程多次申请同一个锁，也就是 synchronized 的可重入性，比如如果程序大部分时间里，相同的线程操作同步容器，那么会反复在用户和内核态切换，有了偏向锁，这种情况线程就可以先到对象头中看一下自己是不是已经持有偏向锁就可以了，不用总陷入内核；一旦发现竞争，在全局安全点（Java 的 stop the world）检查持有锁的线程是否还在执行 synchronized 方法，如果是，则升级为轻量级锁，否则偏向锁被新的线程获得</p>
+<h3 id="轻量级锁">轻量级锁</h3>
+<p>当使用获取偏向锁时候，首先到对象头中看看是不是已经持有，如果不是，则使用 CAS 尝试获取，获取成功则将对象头中的线程 id 改为自己，否则偏向锁升级为轻量级锁；轻量级锁适合线程交替执行的情况，在同步周期内，不会有线程长时间持有锁不放，这样当 CAS 获取锁失败时候，也不会陷入内核，而是在用户态自旋一会，这是假设自旋一会可以获取到锁，避免陷入内核态阻塞，节省开销；如果自旋获取仍然失败就会升级为重量级锁</p>
+<h3 id="重量级锁">重量级锁</h3>
+<p>重量级锁就是之前说的，线程会被挂起阻塞在 entry queue 中，等待被唤醒</p>
+<h3 id="jvm-参数">JVM 参数</h3>
+<p>如果竞争激烈，可以关闭偏向锁，因为偏向锁升级轻量级锁，会发生 stop the world</p>
+<pre><code>// 关闭偏向锁（默认打开）
+-XX:-UseBiasedLocking
+// 开启重量级锁
+-XX:+UseHeavyMonitors
+</code></pre><p>如果线程持有锁的时间长，也可以关闭自旋锁，节省 CPU 资源</p>
+<pre><code>//关闭轻量级锁的自旋
+-XX:-UseSpinning
+</code></pre><h1 id="补充内容">补充内容</h1>
 <h2 id="基本数据类型包装类常量池">基本数据类型包装类常量池</h2>
 <p>Java 基本类型的包装类的大部分都实现了常量池技术，即 Byte,Short,Integer,Long,Character,Boolean；这 5 种包装类默认创建了数值[-128，127] 的相应类型的缓存数据，但是超出此范围仍然会去创建新的对象。 为啥把缓存设置为[-128，127]区间？性能和资源之间的权衡。两种浮点数类型的包装类 Float,Double 并没有实现常量池技术。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">//Java 在编译的时候会直接将代码封装成 Integer i1=Integer.valueOf(33);，从而使用常量池中的对象
@@ -318,7 +339,7 @@ String str2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new
 <ul>
 <li>直接使用双引号声明出来的 String 对象会直接存储在常量池中</li>
 <li>如果不是用双引号声明的 String 对象，可以使用 String 提供的 intern 方法。String.intern() 是一个 Native 方法，它的作用是：如果运行时常量池中已经包含一个等于此 String 对象内容的字符串，则返回常量池中该字符串的引用；如果没有，JDK1.7 之前（不包含 1.7）的处理方式是在常量池中创建与此 String 内容相同的字符串，并返回常量池中创建的字符串的引用，JDK1.7 以及之后的处理方式是在常量池中记录此字符串的引用，并返回该引用</li>
-<li>字符串拼接，尽量避免多个字符串拼接，因为这样会重新创建对象。如果需要改变字符串的话，可以使用 StringBuilder 或者 StringBuffer，String 不可变，每次更新操作会生成新的对象；StringBuilder 可变，更新操作时候在原来的对象上进行更新，而且线程安全；StringBuilder 是 StringBuilder 的非线程安全版本</li>
+<li>字符串拼接，尽量避免多个字符串拼接，因为这样会重新创建对象。如果需要改变字符串的话，可以使用 StringBuilder 或者 StringBuffer，String 不可变，每次更新操作会生成新的对象；StringBuffer 可变，更新操作时候在原来的对象上进行更新，而且线程安全；StringBuilder 是 StringBuffer 的非线程安全版本</li>
 </ul>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">String s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;计算机&#34;</span><span style="color:#f92672">);</span>
 String s2 <span style="color:#f92672">=</span> s1<span style="color:#f92672">.</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">();</span>

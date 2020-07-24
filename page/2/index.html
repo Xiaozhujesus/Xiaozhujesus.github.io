@@ -240,6 +240,72 @@
   
     <article>
   <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/shared-memory-machine-model/">Shared Memory Machine Model</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>26 Mar 2020, 11:51</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  介绍 3 种不同结构的共享内存机器模型，共享内存意思是每个 CPU 都可以访问所有内存空间，但缓存是每个 CPU 独有的，无法相互访问
+Dance Hall Architecture SMP Architecture Symmetric Multiprocessor，对称是因为每个 cpu 的访存时间相同，
+Distributor Shared Memory Architecture 每个 CPU 有一个关联的内存，每个 CPU 都可以通过系统总线访问到其他 CPU 关联的内存，但是访问自己的内存比较快
+Shared Memory And Caches 这里以 SMP 架构为例进行讲解。
+单 CPU 架构下，CPU 访问内存时，首先访问 cache，如果 cache 命中，则直接访问，否则访问内存，同时将结果缓存在 cache 中；多 CPU 架构下 cache 的作用与单 CPU 一样，但是有个问题就是 cache 是 CPU 私有的，memory 是 CPU 共享的，假设内存有个热点变量 var 值为 y，缓存在所有 CPU 的 cache 中，当 cpu1 对私有 cache 中的 var 修改时，假设修改后的值为 x，那么所有 CPU 的 cache 中的 var 现在都应该是 x，这点应该由谁来保证呢？
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/shared-memory-machine-model/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/synchronization/">OS Synchronization</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>24 Mar 2020, 07:59</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  共享内存模型下的同步元语  互斥锁（mutual exclusive lock）：同时最多只能有一个线程使用 条件变量（condition variable）：阻塞等待被条件满足，得到通知 信号量（semaphores）： 共享锁（shared lock）：多个线程可以同时使用，通常是读锁 屏障（barrier）：所有线程都到达，才能继续执行  后面我们每个分别讨论
+  </p>
+
+  
+</article>
+
+  
+    <article>
+  <header>
     <h2><a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Sequential Consistency</a></h2>
 
     <div class="post-meta">
@@ -260,52 +326,18 @@
   </header>
 
   <p>
-  顺序一致性是并发系统很强的安全属性。 非正式地，顺序一致性意味着操作似乎以某种 total order 进行，并且该顺序与每个单独进程上操作的顺序一致。
-顺序一致性不具有完全可用性或强可以用性（totally or sticky available）。 如果发生网络分区，则某些或所有节点将无法前进。
+  顺序一致性不具有完全可用性或强可以用性（totally or sticky available）。 如果发生网络分区，则某些或所有节点将无法前进。
 顺序一致的系统中的一个进程可能比其他进程领先或落后。 例如，他可以读取任意陈旧状态。 但是，一旦进程 A 观察到了来自进程 B 的某些操作，就永远无法观察到 B 之前的状态。再加上 total order 属性，使得顺序一致性对于程序员来说成为了很强的模型。
-当您需要实时约束时（例如，您想通过 side channel 将事件告知其他进程，并让该进程观察到相应事件），请尝试 linearizability。 如果您需要 total availability，而又不需要 total order，请尝试因果一致性（causal consistency）。
+当您需要实时约束时，请使用 linearizability；如果您需要 total availability，而又不需要 total order，请尝试因果一致性（causal consistency）。
 莱斯利·兰珀特（Leslie Lamport）在 1979 年的论文《如何制造能正确执行多进程程序的多处理器计算机》中定义了顺序一致性。 他使用“顺序一致”：
 the result of any execution is the same as if the operations of all the processors were executed in some sequential order, and the operations of each individual processor appear in this sequence in the order specified by its program
+上述定义中隐含了 SMP 系统可能不满足顺序一致性
   </p>
 
   
   <footer>
     <a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
-  
-</article>
-
-  
-    <article>
-  <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/pram/">PRAM</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>20 Mar 2020, 09:00</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  PRAM (Pipeline Random Access Memory)来自于 Lipton 和 Sandberg 于 1988 年发表的论文《 PRAM：一种可扩展的共享存储器 》，它试图放宽现有的一致性存储器模型以获得更好的并发性（从而提高性能）。 它强制在任何地方观察到单个进程执行的任何成对写入的结果与那个进程执行它们的顺序相同。 但是，来自不同进程的写入可能会以不同顺序被观察到。
-PRAM 完全等同于读取写入，单调写入和单调读取
-PRAM 具有高可用性：在存在网络分区的情况下，只要客户端始终坚持使用同一服务器，所有进程都可以前进而不阻塞
-对于更严格的一致性模型（该模型还强制执行写入后读取操作），请尝试因果一致性（causal consistency）：因为它是可用的，并且提供了更直观的语义。 如果需要总体可用性（total availability），请考虑牺牲读取写入的内容，而仅选择单调读取+单调写入。
-PRAM 更抽象的定义： 如果会话顺序（session order，每个进程的操作顺序）是可见性顺序（visibility order，给定操作可见的操作）的子集，则满足 PRAM。
-参考：PRAM
-  </p>
-
   
 </article>
 
@@ -332,13 +364,13 @@ PRAM 更抽象的定义： 如果会话顺序（session order，每个进程的�
   </header>
 
   <p>
-  PKI，CA和数字证书 PKI就是 Public Key Infrastructure的缩写，翻译过来就是公开密钥基础设施。它是利用公开密钥技术所构建的，解决网络安全问题的，普遍适用的一种基础设施;是一种遵循既定标准的密钥管理平台,它能够为所有网络应用提供加密和数字签名等密码服务及所必需的密钥和证书管理体系。
-PKI既不是一个协议，也不是一个软件，它是一个标准，在这个标准之下发展出的为了实现安全基础服务目的的技术统称为PKI。可以说CA(认证中心)是PKI的核心，而数字证书是PKI的最基本元素
+  PKI，CA 和数字证书 PKI 就是 Public Key Infrastructure 的缩写，翻译过来就是公开密钥基础设施。它是利用公开密钥技术所构建的，解决网络安全问题的，普遍适用的一种基础设施;是一种遵循既定标准的密钥管理平台,它能够为所有网络应用提供加密和数字签名等密码服务及所必需的密钥和证书管理体系。
+PKI 既不是一个协议，也不是一个软件，它是一个标准，在这个标准之下发展出的为了实现安全基础服务目的的技术统称为 PKI。可以说 CA(认证中心)是 PKI 的核心，而数字证书是 PKI 的最基本元素
 CA 为保证用户之间在网上传递信息的安全性、真实性、可靠性、完整性和不可抵赖性
-CA 机构，又称为证书认证中心 (Certificate Authority) 中心，是一个负责发放和管理数字证书的第三方权威机构，它负责管理PKI结构下的所有用户(包括各种应用程序)的证书，把用户的公钥和用户的其他信息捆绑在一起，在网上验证用户的身份。CA机构的数字签名使得攻击者不能伪造和篡改证书。
-认证中心主要有以下5个功能：
- 证书的颁发：接收、验证用户(包括下级认证中心和最终用户)的数字证书的申请。可以受理或拒绝 证书的更新：认证中心可以定期更新所有用户的证书，或者根据用户的请求来更新用户的证书 证书的查询：查询当前用户证书申请处理过程；查询用户证书的颁发信息，这类查询由目录服务器ldap来完成 证书的作废：由于用户私钥泄密等原因，需要向认证中心提出证书作废的请求；证书已经过了有效期，认证中心自动将该证书作废。认证中心通过维护证书作废列表 (Certificate Revocation List,CRL) 来完成上述功能。 证书的归档：证书具有一定的有效期，证书过了有效期之后就将作废，但是我们不能将作废的证书简单地丢弃，因为有时我们可能需要验证以前的某个交易过程中产生的数字签名，这时我们就需要查询作废的证书。  X.509标准 &ldquo;SSL证书&quot;这个词是一个相对较大的概念，整个PKI体系中有很多SSL证书格式标准。PKI的标准规定了PKI的设计、实施和运营，规定了PKI各种角色的&quot;游戏规则&rdquo;，提供数据语法和语义的共同约定。x.509是PKI中最重要的标准，它定义了公钥证书的基本结构，可以说PKI是在X.509标准基础上发展起来的
-SSL公钥证书格式 1. 证书版本号(Version) 版本号指明X.509证书的格式版本，现在的值可以为: 1) 0: v1 2) 1: v2 3) 2: v3 也为将来的版本进行了预定义 2. 证书序列号(Serial Number) 序列号指定由CA分配给证书的唯一的&quot;数字型标识符&quot;。当证书被取消时，实际上是将此证书的序列号放入由CA签发的CRL中， 这也是序列号唯一的原因。 3. 签名算法标识符(Signature Algorithm) 签名算法标识用来指定由CA签发证书时所使用的&quot;签名算法&quot;。算法标识符用来指定CA签发证书时所使用的: 1) 公开密钥算法 2) hash算法 example: sha256WithRSAEncryption 须向国际知名标准组织(如ISO)注册 4. 签发机构名(Issuer) 此域用来标识签发证书的CA的X.500 DN(DN-Distinguished Name)名字。包括: 1) 国家(C) 2) 省市(ST) 3) 地区(L) 4) 组织机构(O) 5) 单位部门(OU) 6) 通用名(CN) 7) 邮箱地址 5.
+CA 机构，又称为证书认证中心 (Certificate Authority) 中心，是一个负责发放和管理数字证书的第三方权威机构，它负责管理 PKI 结构下的所有用户(包括各种应用程序)的证书，把用户的公钥和用户的其他信息捆绑在一起，在网上验证用户的身份。CA 机构的数字签名使得攻击者不能伪造和篡改证书。
+认证中心主要有以下 5 个功能：
+ 证书的颁发：接收、验证用户(包括下级认证中心和最终用户)的数字证书的申请。可以受理或拒绝 证书的更新：认证中心可以定期更新所有用户的证书，或者根据用户的请求来更新用户的证书 证书的查询：查询当前用户证书申请处理过程；查询用户证书的颁发信息，这类查询由目录服务器 ldap 来完成 证书的作废：由于用户私钥泄密等原因，需要向认证中心提出证书作废的请求；证书已经过了有效期，认证中心自动将该证书作废。认证中心通过维护证书作废列表 (Certificate Revocation List,CRL) 来完成上述功能。 证书的归档：证书具有一定的有效期，证书过了有效期之后就将作废，但是我们不能将作废的证书简单地丢弃，因为有时我们可能需要验证以前的某个交易过程中产生的数字签名，这时我们就需要查询作废的证书。  X.509 标准 &ldquo;SSL 证书&quot;这个词是一个相对较大的概念，整个 PKI 体系中有很多 SSL 证书格式标准。PKI 的标准规定了 PKI 的设计、实施和运营，规定了 PKI 各种角色的&quot;游戏规则&rdquo;，提供数据语法和语义的共同约定。x.509 是 PKI 中最重要的标准，它定义了公钥证书的基本结构，可以说 PKI 是在 X.509 标准基础上发展起来的
+SSL 公钥证书格式 1. 证书版本号(Version) 版本号指明X.509证书的格式版本，现在的值可以为: 1) 0: v1 2) 1: v2 3) 2: v3 也为将来的版本进行了预定义 2.
   </p>
 
   
@@ -426,7 +458,7 @@ olcRootPW：该字段需要自行添加，用于指定管理员密码，将上�
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/logical-clock-%E5%92%8C-vector-clock/">Logical Clock 和 Vector Clock</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/logical-vector-clock/">Logical-Clock和Vector-Clock</a></h2>
 
     <div class="post-meta">
 
@@ -445,7 +477,7 @@ olcRootPW：该字段需要自行添加，用于指定管理员密码，将上�
   <div>
     <i class="fa fa-tags fa-fw"></i>
     
-      <a class="post-taxonomy-tag" href="https://xiaozhujesus.github.io/tags/hugo">Hugo</a>
+      <a class="post-taxonomy-tag" href="https://xiaozhujesus.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
     
   </div>
   
@@ -456,11 +488,17 @@ olcRootPW：该字段需要自行添加，用于指定管理员密码，将上�
   </header>
 
   <p>
-  Logical Clock lamport 逻辑时钟算法：
+  早在在 1978 年，Leslie Lamport 就提出逻辑时钟的概念。在分布式环境中，通过一系列规则来定义逻辑时钟的变化。从而能通过逻辑时钟来对分布式系统中的事件的先后顺序进行判断。
+逻辑时钟本质上定义了一种 happen before 关系，记作-&gt;，a-&gt;b 意味着所有的进程都“认可”事件 a 发生在事件 b 之前。happen before 关系满足传递性：即(a-&gt;b &amp;&amp; b-&gt;c)可以推导出(a-&gt;c)。
+Logical Clock lamport 逻辑时钟算法：
  每个事件对应一个 Lamport 时间戳，初始值为 0 如果事件在节点内发生，时间戳加 1 如果事件属于发送事件，时间戳加 1 并在消息中带上该时间戳 如果事件属于接收事件，时间戳 = Max(本地时间戳，消息中的时间戳) + 1  三个机器上各自跑着一个进程，分别为 P1,P2,P3，由于不同的机器上的物理时钟、CPU 负载、或者 CPU 频率不一样，所以不同的机器上的时钟速率可能是不同的，例当 P1 所在的机器 tick 了 6 次，P2 所在的机器 tick 了 8 次，就是异步网络中指的漂移时钟不同。
-完
+图中，P1 给 P2 发送了消息 m1，m1 上附带了发送 m1 时的时钟 6，随后 P2 收到了 m1，根据 P2 接收到 m1 时的时钟，认为传输消息花了 16-6=10 个 tick，随后，P3 给 P2 发送消息 m3，m3 附带的发送时钟是 60。由于 P2 的时钟走的比 P3 的慢，所以接收到 m3 时，本机的时钟 56 比发送时钟 60 小，这是不合理的，需要调整时钟，如图中，将 P2 的 56 调整为 61，即 m3 的发送时钟加 1。
   </p>
 
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/logical-vector-clock/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
   
 </article>
 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>分布式 on Stay Foolish, Stay Hungry!</title>
+    <link>https://xiaozhujesus.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F/</link>
+    <description>Recent content in 分布式 on Stay Foolish, Stay Hungry!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; 2016. All rights reserved.</copyright>
+    <lastBuildDate>Sun, 01 Mar 2020 19:12:46 +0800</lastBuildDate>
+    
+	<atom:link href="https://xiaozhujesus.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Logical-Clock和Vector-Clock</title>
+      <link>https://xiaozhujesus.github.io/post/logical-vector-clock/</link>
+      <pubDate>Sun, 01 Mar 2020 19:12:46 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/logical-vector-clock/</guid>
+      <description>早在在 1978 年，Leslie Lamport 就提出逻辑时钟的概念。在分布式环境中，通过一系列规则来定义逻辑时钟的变化。从而能通过逻辑时钟来对分布式系统中的事件的先后顺序进行判断。
+逻辑时钟本质上定义了一种 happen before 关系，记作-&amp;gt;，a-&amp;gt;b 意味着所有的进程都“认可”事件 a 发生在事件 b 之前。happen before 关系满足传递性：即(a-&amp;gt;b &amp;amp;&amp;amp; b-&amp;gt;c)可以推导出(a-&amp;gt;c)。
+Logical Clock lamport 逻辑时钟算法：
+ 每个事件对应一个 Lamport 时间戳，初始值为 0 如果事件在节点内发生，时间戳加 1 如果事件属于发送事件，时间戳加 1 并在消息中带上该时间戳 如果事件属于接收事件，时间戳 = Max(本地时间戳，消息中的时间戳) + 1  三个机器上各自跑着一个进程，分别为 P1,P2,P3，由于不同的机器上的物理时钟、CPU 负载、或者 CPU 频率不一样，所以不同的机器上的时钟速率可能是不同的，例当 P1 所在的机器 tick 了 6 次，P2 所在的机器 tick 了 8 次，就是异步网络中指的漂移时钟不同。
+图中，P1 给 P2 发送了消息 m1，m1 上附带了发送 m1 时的时钟 6，随后 P2 收到了 m1，根据 P2 接收到 m1 时的时钟，认为传输消息花了 16-6=10 个 tick，随后，P3 给 P2 发送消息 m3，m3 附带的发送时钟是 60。由于 P2 的时钟走的比 P3 的慢，所以接收到 m3 时，本机的时钟 56 比发送时钟 60 小，这是不合理的，需要调整时钟，如图中，将 P2 的 56 调整为 61，即 m3 的发送时钟加 1。</description>
+    </item>
+    
+  </channel>
+</rss>

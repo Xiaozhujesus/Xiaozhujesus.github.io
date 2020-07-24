@@ -320,9 +320,9 @@ b<span style="color:#f92672">++;</span>
 </ul>
 <h2 id="需要同步的情况">需要同步的情况</h2>
 <p>当多线程同时对 volatile 进行更新，但是更新的值不依赖于该变量之前的值的情况下，volatile 是够用的；但是如果更新操作依赖于该变量之前的值，换句话说，新的值需要基于旧值计算得到，则对该共享 volatile 变量的并发更新操作，volatile 不足以保证正确性；多个线程可能读到相同值，基于该值进行一些计算，然后写回 main memory，但是写回会发生覆盖现象；比如原来变量在 main memory 中是 0，两个线程同时读取该变量的值，然后进行加 1 操作，然后写回 main memory，此时变量值应该为 2，实际却为 1</p>
-<p>上面这种情况需要使用 synchronized 或者 java.util.concurrent 中的原子类型变量</p>
+<p>上面这种情况需要使用 synchronized 或者 java.util.concurrent 中的原子类型变量或者锁一样的同步机制</p>
 <h2 id="性能问题">性能问题</h2>
-<p>volatile 变量会影响指令重排序，而指令重排序是性能提升技术；另外，volatile 是操作 main memory，相比于操作 cache 来说，开销更大，性能更低；所以只有确定需要多线程环境下并发更新操作，需要保证变量可见性时候，才使用 volatile</p>
+<p>volatile 变量会影响指令重排序，而指令重排序是性能提升技术；另外，volatile 是操作 main memory，相比于操作 cache 来说，开销更大，性能更低；所以只有确定需要多线程环境下的更新操作，需要保证变量可见性时候，才使用 volatile</p>
 
   
   

@@ -240,6 +240,83 @@
   
     <article>
   <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/">TCP常见异常与原因</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>01 May 2020, 09:08</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  TCP 特点  可靠性，通过 ack 实现，如果没有收到 ack，tcp 自动重传数据并等待更长时间，数次重传失败后，才会放弃然后会向应用层返回一个错误 含有持续估算 RTT 的算法，以便知道等待一个 ack 需要多久 有序和幂等，数据流中每个字节都关联一个序号，接收端会根据序号对数据包重排序，将有序数据传递给应用层；收到来自对端的重复数据（根据序号判断），直接丢弃重复数据 流量控制，告知对端自己的接收窗口大小，即接收缓冲区当前可用容量 全双工，因此 tcp 必须为每个方向上跟踪数据流序号和窗口大小等状态信息  3 次握手，4 次挥手
+状态转换图
+3 次握手建立连接 client 需要告知对方在即将要建立的连接上，发送数据的初始序列号，通过 syn 包完成，而可靠性需要对该包进行 ack；由于是双工，server 也一样需要这两个包，server 对 client 的 ack 和其对 client 的 syn 可以合并在一起，因此三次握手；
+另外，需要 ack 的包都是消耗序列号的，不论是 syn 还是 fin，还是有效数据，ack 本身不消耗序列号，因为 ack 本身不需要 ack
+4 次挥手断开连接 主动结束端发送 fin 包，被动结束端对其进行 ack；双工各自结束不影响，因此每个方向的结束都需要这两个包，因此通常需要 4 个包；使用通常是因为，第一个 fin 包可能随数据包一起发送；另外，被动关闭一方的 ack 可能和其 fin 一起发送
+发送 fin 包是应用进程调用 close 函数导致的，不过当一个 unix 进程不论自愿（调用 exit 或者 main 结束了）还是非自愿（被信号 kill 了），所有打开的描述符都被关闭，这也会导致任何打开的 tcp 连接上发送一个 fin
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/paxos/">Paxos</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>24 Apr 2020, 19:16</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  共识问题的要求  safety   只能选择已经被提出的值 最终只有一个提案值被选定，但是节点可以选择临时的提案值   liveness   所有正常节点可以在有限时间内对单个提案达成共识，并且系统可以持续对外提供服务  FLP 定理 异步系统中的一组进程无法对一个布尔类型的值达成共识，即使只有单个进程出现未知的故障，核心问题是异步
+定理指出：在异步系统中，不可能保证 safety 和 liveness 两个性质同时满足，即使出现一点未知的故障；但是定理没有说明，我们可以有多接近同时满足这两个性质
+备份状态机 通常使用日志备份实现，所有 server 以相同的顺序执行相同的命令，这样如果每个 server 的初始状态相同，那么最终状态也相同；日志备份是关键，需要保证每个 server 上的日志内容一致，使用共识算法对日志的第 i 条记录应该是什么命令达成共识
+Paxos completely-safe 并且 largely-live 的共识协议
+Basic Paxos  提案：例如，日志的第 i 条记录是什么命令 提案值：例如，日志的第 i 条记录是 x=1，即将 x 的值赋值为 1  基本 paxos 是指对单提案达成共识，例如，日志第 10 条记录应该是 x=1
+ 一个或者多个节点可以针对相同的提案提出自己的提案值 只有一个提案值可以被最终选定  Multi Paxos 对日志文件的不同记录，使用不同的 Basic Paxos 来确定相应记录的值
+系统角色：  Proposers：处理 client 请求，提出提案，并根据 acceptor 的响应最终决定 commit 还是开启新一轮提案 Acceptors：响应 Proposers 提出的提案，accept/reject；本地记录决策过程；主动学习被选择的提案值  每个节点可以实现超过一种角色，实际实现中，某个节点通常同时实现 2 种角色
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/paxos/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
     <h2><a href="https://xiaozhujesus.github.io/post/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/">线程模型</a></h2>
 
     <div class="post-meta">
@@ -418,12 +495,12 @@ Jvm 使用的 Java 内存模型将内存划分为堆和栈，下图展示了 JMM
 
   <p>
   Synchronized and Data Visibility 如果不使用 synchronized 或者 volatile 关键字，就无法保证当一个线程更新共享变量时候，其他线程何时能看到该更新结果；主要是两个问题：
- 更新过的值在寄存器或者 CPU 私有 cache 中，何时刷新到主存 其他线程何时更新自己寄存器或者私有 cache 中过期的旧值  synchronized 关键字可以保证上述两点成立，当线程进入 synchronized 代码块，会从主存同步所有与其他线程共享当值，也就是可以看到最新的值，当线程退出 synchronized 代码块时，所有对线程共享变量的修改都会从寄存器或者私有 cache 中刷新到主存；所以类似 volatile 关键字的作用
-synchronized 还可以防止 Java 编译器和虚拟机乱序执行代码，为了获得更好的性能，通常 Java 编译器和虚拟机会对指令的执行顺序进行调整，如果在 synchronized 代码块内的对变量的修改操作，经过指令重排序后在 synchronized 代码块之前执行，就会发生很奇怪的现象；因此 synchronized 代码块中的代码不会进行指令重排序
-在那些对象上进行同步？ 不要在 String 对象和基本类型包装类对象上进行同步，因为编译器会进行优化，你以为你用的是不同的对象，实际上是相同的对象
+ 更新过的值在寄存器或者 CPU 私有 cache 中，何时刷新到主存 其他线程何时更新自己寄存器或者私有 cache 中过期的旧值  synchronized 关键字可以保证上述两点成立，当线程进入 synchronized 代码块，会从主存同步所有线程可访问到的值，也就是可以看到最新的值，当线程退出 synchronized 代码块时，所有对线程可访问到的变量的修改都会从寄存器或者私有 cache 中刷新到主存；所以类似 volatile 关键字的作用
+synchronized 还可以防止 Java 编译器和虚拟机乱序执行代码，为了获得更好的性能，通常 Java 编译器和虚拟机会对指令的执行顺序进行调整，如果在 synchronized 代码块内的对变量的修改操作，经过指令重排序后在 synchronized 代码块之前执行，那原来本想同步的代码就没有得到同步；因此 synchronized 代码块中的代码与其之前和之后的代码不会进行指令重排序，但是注意，synchronized 块中的代码还是有可能发生指令重排序的
+在哪些对象上进行同步？ 不要在 String 对象和基本类型包装类对象上进行同步，因为编译器会进行优化，你以为你用的是不同的对象，实际上是相同的对象
 synchronized(&#34;Hey&#34;) { //do something in here. } 如果你在不同的地方使用字符串&quot;Hey&quot;进行同步，那么其实使用的是常亮池中的相同对象，基本类型包装类也一样
-synchronized(Integer.valueOf(1)) { //do something in here. } 所以建议使用 this 或者 new Object()进行同步，jvm 不会缓存和重用这些对象
-synchronized 的限制以及替代  多个线程对变量的访问有 read 也有 write，而且 read 比较多，当多个线程同时 read 时候，synchronized 过于严格，可以使用 read/write Lock 最多同时允许 N 个线程进入同步代码块，使用 Semaphore 实现 synchronized 不提供公平行，进入同步代码块的顺序不是线程请求的顺序 如果只有一个线程写，其他线程读，可以使用 volatile 而不需要 synchronized 只将需要同步的代码放入 synchronized，减小 synchronized 块的大小，可以增加并行性  可重入性 synchronized 在同一个线程上是可重入的
+synchronized(Integer.valueOf(1)) { //do something in here. } 所以建议使用 this 或者 new Object()进行同步，java 编译器和 jvm 不会缓存和重用这些对象
+synchronized 的限制以及替代  多个线程对变量的访问有 read 也有 write，而且 read 比较多，当多个线程同时 read 时候，synchronized 过于严格，可以使用 read/write Lock 最多同时允许 N 个线程进入同步代码块，使用 Semaphore 实现 synchronized 不提供公平性，当多个线程阻塞等待进入同步代码块，其进入的顺序不一定是线程请求的顺序 如果只有一个线程写，其他线程读，可以使用 volatile 而不需要 synchronized 只将需要同步的代码放入 synchronized，减小 synchronized 块的大小，可以增加并行性  可重入性 synchronized 在同一个线程上是可重入的
   </p>
 
   
@@ -533,72 +610,6 @@ lock(L): if(L == 0) &lt;--- L = 1; | else | while(L==1); | //wait | go back; ---
   <footer>
     <a href="https://xiaozhujesus.github.io/post/lock/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
-  
-</article>
-
-  
-    <article>
-  <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/shared-memory-machine-model/">Shared Memory Machine Model</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>26 Mar 2020, 11:51</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  介绍 3 种不同结构的共享内存机器模型，共享内存意思是每个 CPU 都可以访问所有内存空间，但缓存是每个 CPU 独有的，无法相互访问
-Dance Hall Architecture SMP Architecture Symmetric Multiprocessor，对称是因为每个 cpu 的访存时间相同，
-Distributor Shared Memory Architecture 每个 CPU 有一个关联的内存，每个 CPU 都可以通过系统总线访问到其他 CPU 关联的内存，但是访问自己的内存比较快
-Shared Memory And Caches 这里以 SMP 架构为例进行讲解。
-单 CPU 架构下，CPU 访问内存时，首先访问 cache，如果 cache 命中，则直接访问，否则访问内存，同时将结果缓存在 cache 中；多 CPU 架构下 cache 的作用与单 CPU 一样，但是有个问题就是 cache 是 CPU 私有的，memory 是 CPU 共享的，假设内存有个热点变量 var 值为 y，缓存在所有 CPU 的 cache 中，当 cpu1 对私有 cache 中的 var 修改时，假设修改后的值为 x，那么所有 CPU 的 cache 中的 var 现在都应该是 x，这点应该由谁来保证呢？
-  </p>
-
-  
-  <footer>
-    <a href="https://xiaozhujesus.github.io/post/shared-memory-machine-model/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-  
-    <article>
-  <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/synchronization/">Synchronization</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>24 Mar 2020, 07:59</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  共享内存模型下的同步元语  互斥锁（mutual exclusive lock）：同时最多只能有一个线程使用 共享锁（shared lock）：多个线程可以同时使用，通常是读锁 屏障（barrier）：所有线程都到达，才能继续执行  后面我们每个分别讨论
-  </p>
-
   
 </article>
 
