@@ -240,6 +240,44 @@
   
     <article>
   <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/zab/">Zab</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>19 Jul 2020, 20:41</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  outstanding transaction:被提出但是为提交
+zab 使用 FIFO channal 通信，可以同时处理多个 outstanding transaction；但是 Paxos 并不要求使用 FIFO channel 进行通信，所以消息有可能丢失或者乱序，因此不可以有多个 outstanding transaction，每次只能处理一个 transaction，吞吐量比较低；可以将多个有顺序要求的更新请求封装到一个请求中来解决，但是效率还是很低
+3 个阶段 Zab 协议有 3 个阶段，discovery, synchronization 和 broadcast，每个进程按 3 个阶段的顺序执行该协议，进程可以中途放弃本轮协议的执行，开始新一轮协议的执行，例如执行到第二阶段后放弃执行，从第一阶段开始重新执行
+2 种角色 Zab 协议中有两种角色，leader 和 follower，论文中引入了 leader oracle 这样一个逻辑组件，原文如下：
+Each process implements a leader oracle, and the leader oracle provides the identifier of the prospective leader l.
+也就是说，每个进程实现了一个 leader oracle，是用来在选举开始时候，提供潜在 leader 节点标识符的；在第一阶段，进程咨询其 leader oracle ，应该 follow 哪个节点，被 leader oracle 选为 leader 还无法成为真正的 leader，还需要经过第二阶段才可以
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/zab/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
     <h2><a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/">TCP常见异常与原因</a></h2>
 
     <div class="post-meta">
@@ -574,42 +612,6 @@ Native Hypervisor（bare metal） Hosted Hypervisor hosted hypervisor 包括 VMw
  虚拟化基础 内存虚拟化 CPU 虚拟化 设备虚拟化  
   </p>
 
-  
-</article>
-
-  
-    <article>
-  <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/lock/">Lock</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>28 Mar 2020, 11:34</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  P1 P2     modify struct(A); wait for mod;    use struct(A);    假设只有 read/write 原子操作指令，能实现上面的两个进程的需求么？可以的 使用一个共享变量解决，flag = 0;//int
-   P1 P2     mod(A) while (flag == 0 );   flag = 1;//signal P2 use(A)    flag = 0;//re-init    注意上面的所有操作都是 read/write 内存访问，都是原子操作；flag 变量是同步变量，struct A 是普通数据
-原子操作 看一个简单互斥锁的实现
-lock(L): if(L == 0) &lt;--- L = 1; | else | while(L==1); | //wait | go back; ------ unlock(L): L = 0; 只用原子 read/write 操作可以实现上面的互斥锁么？注意，上面的 if(L == 0) L = 1;实际上需要 3 条指令来完成，首先从内存读变量 L，然后检查是否为 0，如果是，向内存位置 L 存入新的值 1；这 3 条指令必须以原子不可分的方式执行才能保证算法的正确性；虽然单个的 read/write 操作是原子的，但是一组 read/write 操作就不是原子的了；所以为了正确实现互斥锁，我们需要新的原子指令，语意为从内存读数据，然后修改，最后写回内存（read,modify,write，简称 rmw）
-  </p>
-
-  
-  <footer>
-    <a href="https://xiaozhujesus.github.io/post/lock/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
   
 </article>
 

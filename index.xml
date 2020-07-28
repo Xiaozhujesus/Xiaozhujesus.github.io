@@ -7,10 +7,24 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>&amp;copy; 2016. All rights reserved.</copyright>
-    <lastBuildDate>Fri, 01 May 2020 09:08:19 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 19 Jul 2020 20:41:20 +0800</lastBuildDate>
     
 	<atom:link href="https://xiaozhujesus.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Zab</title>
+      <link>https://xiaozhujesus.github.io/post/zab/</link>
+      <pubDate>Sun, 19 Jul 2020 20:41:20 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/zab/</guid>
+      <description>outstanding transaction:被提出但是为提交
+zab 使用 FIFO channal 通信，可以同时处理多个 outstanding transaction；但是 Paxos 并不要求使用 FIFO channel 进行通信，所以消息有可能丢失或者乱序，因此不可以有多个 outstanding transaction，每次只能处理一个 transaction，吞吐量比较低；可以将多个有顺序要求的更新请求封装到一个请求中来解决，但是效率还是很低
+3 个阶段 Zab 协议有 3 个阶段，discovery, synchronization 和 broadcast，每个进程按 3 个阶段的顺序执行该协议，进程可以中途放弃本轮协议的执行，开始新一轮协议的执行，例如执行到第二阶段后放弃执行，从第一阶段开始重新执行
+2 种角色 Zab 协议中有两种角色，leader 和 follower，论文中引入了 leader oracle 这样一个逻辑组件，原文如下：
+Each process implements a leader oracle, and the leader oracle provides the identifier of the prospective leader l.
+也就是说，每个进程实现了一个 leader oracle，是用来在选举开始时候，提供潜在 leader 节点标识符的；在第一阶段，进程咨询其 leader oracle ，应该 follow 哪个节点，被 leader oracle 选为 leader 还无法成为真正的 leader，还需要经过第二阶段才可以</description>
+    </item>
     
     <item>
       <title>TCP常见异常与原因</title>
