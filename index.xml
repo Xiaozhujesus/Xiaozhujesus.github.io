@@ -20,10 +20,11 @@
       <guid>https://xiaozhujesus.github.io/post/zab/</guid>
       <description>outstanding transaction:被提出但是为提交
 zab 使用 FIFO channal 通信，可以同时处理多个 outstanding transaction；但是 Paxos 并不要求使用 FIFO channel 进行通信，所以消息有可能丢失或者乱序，因此不可以有多个 outstanding transaction，每次只能处理一个 transaction，吞吐量比较低；可以将多个有顺序要求的更新请求封装到一个请求中来解决，但是效率还是很低
-3 个阶段 Zab 协议有 3 个阶段，discovery, synchronization 和 broadcast，每个进程按 3 个阶段的顺序执行该协议，进程可以中途放弃本轮协议的执行，开始新一轮协议的执行，例如执行到第二阶段后放弃执行，从第一阶段开始重新执行
+3 个阶段 Zab 协议有 3 个阶段
+ discovery synchronization broadcast  每个进程按 3 个阶段的顺序执行该协议，进程可以中途放弃本轮协议的执行，开始新一轮协议的执行，例如执行到第二阶段后放弃执行，从第一阶段开始重新执行
 2 种角色 Zab 协议中有两种角色，leader 和 follower，论文中引入了 leader oracle 这样一个逻辑组件，原文如下：
 Each process implements a leader oracle, and the leader oracle provides the identifier of the prospective leader l.
-也就是说，每个进程实现了一个 leader oracle，是用来在选举开始时候，提供潜在 leader 节点标识符的；在第一阶段，进程咨询其 leader oracle ，应该 follow 哪个节点，被 leader oracle 选为 leader 还无法成为真正的 leader，还需要经过第二阶段才可以</description>
+也就是说，每个进程实现了一个 leader oracle，是用来在选举开始时候，协商选举出 prospective leader 节点的；在第一阶段，进程咨询其 leader oracle ，应该 follow 哪个节点，即哪个节点为 prospective leader，被 leader oracle 选为 prospective leader 还无法成为真正的 leader，还需要经过第二阶段才可以</description>
     </item>
     
     <item>
@@ -32,12 +33,12 @@ Each process implements a leader oracle, and the leader oracle provides the iden
       <pubDate>Fri, 01 May 2020 09:08:19 +0800</pubDate>
       
       <guid>https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/</guid>
-      <description>TCP 特点  可靠性，通过 ack 实现，如果没有收到 ack，tcp 自动重传数据并等待更长时间，数次重传失败后，才会放弃然后会向应用层返回一个错误 含有持续估算 RTT 的算法，以便知道等待一个 ack 需要多久 有序和幂等，数据流中每个字节都关联一个序号，接收端会根据序号对数据包重排序，将有序数据传递给应用层；收到来自对端的重复数据（根据序号判断），直接丢弃重复数据 流量控制，告知对端自己的接收窗口大小，即接收缓冲区当前可用容量 全双工，因此 tcp 必须为每个方向上跟踪数据流序号和窗口大小等状态信息  3 次握手，4 次挥手
+      <description>TCP 特点  可靠性，通过 ack 实现，如果没有收到 ack，tcp 自动重传数据并等待更长时间，数次重传失败后，才会放弃然后会向应用层返回一个错误 含有持续估算 RTT 的算法，以便知道等待一个 ack 需要多久 有序和幂等，数据流中每个字节都关联一个序号，接收端会根据序号对数据包重排序，将有序数据传递给应用层；收到来自对端的重复数据（根据序号判断），直接丢弃重复数据 流量控制，告知对端自己的接收窗口大小，即接收缓冲区当前可用容量 拥塞控制，防止网络中流量过大导致路由器丢包 全双工，因此 tcp 必须为每个方向上跟踪数据流序号和窗口大小等状态信息  3 次握手，4 次挥手
 状态转换图
 3 次握手建立连接 client 需要告知对方在即将要建立的连接上，发送数据的初始序列号，通过 syn 包完成，而可靠性需要对该包进行 ack；由于是双工，server 也一样需要这两个包，server 对 client 的 ack 和其对 client 的 syn 可以合并在一起，因此三次握手；
 另外，需要 ack 的包都是消耗序列号的，不论是 syn 还是 fin，还是有效数据，ack 本身不消耗序列号，因为 ack 本身不需要 ack
 4 次挥手断开连接 主动结束端发送 fin 包，被动结束端对其进行 ack；双工各自结束不影响，因此每个方向的结束都需要这两个包，因此通常需要 4 个包；使用通常是因为，第一个 fin 包可能随数据包一起发送；另外，被动关闭一方的 ack 可能和其 fin 一起发送
-发送 fin 包是应用进程调用 close 函数导致的，不过当一个 unix 进程不论自愿（调用 exit 或者 main 结束了）还是非自愿（被信号 kill 了），所有打开的描述符都被关闭，这也会导致任何打开的 tcp 连接上发送一个 fin</description>
+发送 fin 包是应用进程调用 shutdown 或者 close 函数导致的，不过当一个 unix 进程不论自愿（调用 exit 或者 main 结束了）还是非自愿（被信号 kill 了），所有打开的描述符都被关闭，这也会导致任何打开的 tcp 连接上发送一个 fin</description>
     </item>
     
     <item>
