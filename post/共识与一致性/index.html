@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="generator" content="Hugo 0.65.3" />
 
-  <title>Posts &middot; Stay Foolish, Stay Hungry!</title>
+  <title>共识与一致性 &middot; Stay Foolish, Stay Hungry!</title>
 
     
 
@@ -41,9 +41,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
  
-  
-  <link rel="alternate" type="application/rss+xml" title="Stay Foolish, Stay Hungry!"
-    href='https://xiaozhujesus.github.io/post/index.xml' />
   
 
   
@@ -108,11 +105,6 @@
   <div class="pure-menu social">
   <ul class="pure-menu-list">
 
-    
-    <li class="pure-menu-item">
-      <a class="pure-menu-link" href='https://xiaozhujesus.github.io/post/index.xml'><i
-          class="fas fa-rss"></i>RSS</a>
-    </li>
     
 
     
@@ -232,111 +224,126 @@
 
 
 <div class="header">
-  <h1>Posts</h1>
+  <h1>共识与一致性</h1>
+  <h2></h2>
 </div>
 <div class="content">
-  
-  <h2>2020</h2>
-  <ul>
-  
-    <li><time>19 Jul 2020, 20:41</time> - <a href="https://xiaozhujesus.github.io/post/zab/">Zab</a></li>
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>24 Apr 2020, 19:24</time>
+  </div>
 
   
-    <li><time>14 Jul 2020, 17:07</time> - <a href="https://xiaozhujesus.github.io/post/raft/">Raft</a></li>
 
   
-    <li><time>08 Jul 2020, 20:03</time> - <a href="https://xiaozhujesus.github.io/post/cap/">CAP</a></li>
 
   
-    <li><time>02 Jul 2020, 09:37</time> - <a href="https://xiaozhujesus.github.io/post/java-interrupt/">Java Interrupt</a></li>
+
+</div>
+
+  <p>本文介绍二者的区别与联系</p>
+<h2 id="一致性">一致性</h2>
+<p>分布式系统中的多个节点，针对其维护的数据，在约定协议的保证下，使其对外界呈现的值是一致的；一致性大致分为：</p>
+<ul>
+<li>严格一致性</li>
+<li>强一致性</li>
+<li>弱一致性</li>
+<li>最终一致性</li>
+</ul>
+<p>其中强一致性又分为顺序一致性和线性一致性</p>
+<h2 id="共识">共识</h2>
+<p>共识是分布式系统中多个节点之间，彼此对某个变量达成一致值的过程；实践中，要保障系统满足不同程度的一致性，往往需要通过共识算法来完成</p>
+<h3 id="共识算法">共识算法</h3>
+<p>共识算法主要解决分布式系统中，对于某个提案，多个节点达成一致意见的过程；而提案的含义在分布式系统中非常广泛，例如多个事件发生的顺序，某个键对应的值，哪个节点是 leader 等；可以粗略认为任何可以达成一致的信息都可以是提案；对于分布式系统而言，每个节点都是确定性状态机模型（亦称为状态机复制问题，state-machine-replication），从相同的初始状态开始，接受相同顺序的指令，则可以保证相同的结果状态；因此系统中最关键的是，对发生的多个事件的顺序达成共识，即排序；</p>
+<p>根据解决的是拜占庭错误还是非拜占庭错误情况，共识算法可以分为 Crash Fault Tolerance(CFT)和 Byzantine Fault Tolerance(BFT)类算法</p>
+<h3 id="cft-算法">CFT 算法</h3>
+<p>包括 Paxos，Raft，及其变种，这类容错算法性能比较好，处理较快，容忍不超过一半的故障节点</p>
+<h3 id="bft-算法">BFT 算法</h3>
+<p>对于要容忍拜占庭错误的情况</p>
+<h2 id="共识与一致性的区别">共识与一致性的区别</h2>
+<p>一致性指分布式系统多个副本对外呈现的数据状态，描述了多个节点对数据状态的维护能力；共识则表示分布式系统中多个节点间，彼此对某个提案达成一致意见的过程；因此一致性描述的是状态，共识是过程手段；达成共识并不意味着保证了一致性（强一致），只能说共识机制实现了某种程度上的一致性</p>
 
   
-    <li><time>01 Jul 2020, 09:15</time> - <a href="https://xiaozhujesus.github.io/post/java-futuretask/">Java FutureTask</a></li>
+  
+<style>
+  ul.share-buttons {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul.share-buttons li {
+    display: inline;
+  }
+
+  ul.share-buttons .sr-only {
+    position: absolute;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0;
+    border: 0;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+  }
+</style>
+
 
   
-    <li><time>27 Jun 2020, 07:31</time> - <a href="https://xiaozhujesus.github.io/post/sequentially-consistent-paper/">Sequentially Consistent Paper</a></li>
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1-24" style="text-align: left;">
+    
+    <a href="https://xiaozhujesus.github.io/post/paxos/"><i class="fa fa-chevron-left"></i></a>
+    
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="prev">
+      <a href="https://xiaozhujesus.github.io/post/paxos/">Paxos</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-2-24">
+    &nbsp;
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="next">
+      <a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/">TCP常见异常与原因</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-1-24" style="text-align: right;">
+    
+    <a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/"><i class="fa fa-chevron-right"></i></a>
+    
+  </div>
+</div>
+
+
 
   
-    <li><time>24 May 2020, 08:54</time> - <a href="https://xiaozhujesus.github.io/post/disk/">Disk</a></li>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
 
-  
-    <li><time>22 May 2020, 08:31</time> - <a href="https://xiaozhujesus.github.io/post/aqs/">AQS</a></li>
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
 
-  
-    <li><time>22 May 2020, 08:26</time> - <a href="https://xiaozhujesus.github.io/post/jni/">JNI</a></li>
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'Your Disqus shortname';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
-  
-    <li><time>21 May 2020, 08:00</time> - <a href="https://xiaozhujesus.github.io/post/linux-file/">Linux File</a></li>
 
-  
-    <li><time>01 May 2020, 09:08</time> - <a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/">TCP常见异常与原因</a></li>
-
-  
-    <li><time>24 Apr 2020, 19:24</time> - <a href="https://xiaozhujesus.github.io/post/%E5%85%B1%E8%AF%86%E4%B8%8E%E4%B8%80%E8%87%B4%E6%80%A7/">共识与一致性</a></li>
-
-  
-    <li><time>24 Apr 2020, 19:16</time> - <a href="https://xiaozhujesus.github.io/post/paxos/">Paxos</a></li>
-
-  
-    <li><time>24 Apr 2020, 18:43</time> - <a href="https://xiaozhujesus.github.io/post/3-pc/">3-PC</a></li>
-
-  
-    <li><time>24 Apr 2020, 16:09</time> - <a href="https://xiaozhujesus.github.io/post/2-pc/">2-PC</a></li>
-
-  
-    <li><time>14 Apr 2020, 22:19</time> - <a href="https://xiaozhujesus.github.io/post/java-wait-notify/">Java Wait Notify</a></li>
-
-  
-    <li><time>14 Apr 2020, 21:48</time> - <a href="https://xiaozhujesus.github.io/post/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/">线程模型</a></li>
-
-  
-    <li><time>12 Apr 2020, 10:25</time> - <a href="https://xiaozhujesus.github.io/post/java-volatile/">Java Volatile</a></li>
-
-  
-    <li><time>11 Apr 2020, 18:02</time> - <a href="https://xiaozhujesus.github.io/post/concurrency-model/">Concurrency Model</a></li>
-
-  
-    <li><time>11 Apr 2020, 10:55</time> - <a href="https://xiaozhujesus.github.io/post/java-memory-model/">Java Memory Model</a></li>
-
-  
-    <li><time>11 Apr 2020, 09:50</time> - <a href="https://xiaozhujesus.github.io/post/java-synchronized/">Java Synchronized</a></li>
-
-  
-    <li><time>29 Mar 2020, 10:40</time> - <a href="https://xiaozhujesus.github.io/post/virtualization-basic/">Virtualization Basic</a></li>
-
-  
-    <li><time>29 Mar 2020, 10:34</time> - <a href="https://xiaozhujesus.github.io/post/virtualization/">Virtualization</a></li>
-
-  
-    <li><time>28 Mar 2020, 11:34</time> - <a href="https://xiaozhujesus.github.io/post/lock/">Lock</a></li>
-
-  
-    <li><time>26 Mar 2020, 11:51</time> - <a href="https://xiaozhujesus.github.io/post/shared-memory-machine-model/">Shared Memory Machine Model</a></li>
-
-  
-    <li><time>24 Mar 2020, 07:59</time> - <a href="https://xiaozhujesus.github.io/post/synchronization/">OS Synchronization</a></li>
-
-  
-    <li><time>20 Mar 2020, 09:24</time> - <a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Sequential Consistency</a></li>
-
-  
-    <li><time>14 Mar 2020, 07:56</time> - <a href="https://xiaozhujesus.github.io/post/linearizability/">Linearizability</a></li>
-
-  
-    <li><time>12 Mar 2020, 18:20</time> - <a href="https://xiaozhujesus.github.io/post/ssl/">SSL</a></li>
-
-  
-    <li><time>12 Mar 2020, 11:34</time> - <a href="https://xiaozhujesus.github.io/post/ldap%E5%9F%BA%E7%A1%80/">Ldap基础</a></li>
-
-  
-    <li><time>12 Mar 2020, 11:02</time> - <a href="https://xiaozhujesus.github.io/post/ldap%E5%AE%89%E8%A3%85/">Ldap安装</a></li>
-
-  
-    <li><time>01 Mar 2020, 19:12</time> - <a href="https://xiaozhujesus.github.io/post/logical-vector-clock/">Logical-Clock和Vector-Clock</a></li>
-
-  
-  </ul>
-  
 </div>
 
 </div>

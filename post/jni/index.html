@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.65.3" />
+
+  <title>JNI &middot; Stay Foolish, Stay Hungry!</title>
+
+    
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://xiaozhujesus.github.io/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://xiaozhujesus.github.io/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="https://xiaozhujesus.github.io/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+ 
+  
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="https://xiaozhujesus.github.io/img/favicon.ico" type="image/x-icon" />
+
+  
+  
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+  <a class="pure-menu-heading brand" href="https://xiaozhujesus.github.io/">Blackburn</a>
+
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://xiaozhujesus.github.io/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://xiaozhujesus.github.io/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://xiaozhujesus.github.io/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://xiaozhujesus.github.io/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/*" rel="me" target="_blank"><i class="fab fa-twitter-square fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/*" rel="me" target="_blank"><i class="fab fa-facebook-square fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/*" rel="me" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/*" rel="me" target="_blank"><i class="fab fa-linkedin"></i></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/yoshiharuyamashita" rel="me" target="_blank"><i class="fab fa-github-square fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://stackoverflow.com/users/*" rel="me" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>Stack Overflow</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+
+  <div>
+  <div class="small-print">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>JNI</h1>
+  <h2></h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>22 May 2020, 08:26</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  <h1 id="jni">JNI</h1>
+<p>Java native interface，jvm 用来调用具体平台上的 native 代码（通常是 C 和 C++）的方法</p>
+<h2 id="1原理">1.原理</h2>
+<p>native executable 程序通常可以使用 static 或 shared 的 lib</p>
+<ol>
+<li>static lib 通常在链接阶段会被链接到最终的可执行程序中</li>
+<li>shared lib，最终的可执行文件只包含共享库的引用而不是代码</li>
+</ol>
+<p>JNI 使用的就是 shared lib 技术实现的，我理解应该是 jvm（C++写的）调用 shared lib，这些文件以 <em>.so/.dll/.dylib</em>结尾，既不在 class 文件里，也不在 jvm 里；jvm 构造一个指针表，表中的指针指向 native method 的内存地址，这样就可以调用 native method 了</p>
+<h3 id="11-需要的组件">1.1 需要的组件</h3>
+<ol>
+<li>Java code，class 中至少包含一个 native method</li>
+<li>native code，通常使用 C/C++编写</li>
+<li>JNI header file，是个 C/C++头文件，包含所有 JNI 元素的定义（jni.h）</li>
+<li>C/C++ Compiler，编译出 native shared library</li>
+</ol>
+<h3 id="12-代码中的-jni-元素">1.2 代码中的 JNI 元素</h3>
+<h3 id="java-部分">Java 部分</h3>
+<ol>
+<li>任何声明为 native 的 method 都必须在 native shared library 中实现</li>
+<li>System.loadLibrary(String libname)，一个 static 方法，用来从本地文件系统加载 shared lib 文件到内存中，使其中的函数可用</li>
+</ol>
+<h3 id="cc部分大部分定义在-jnih-中">C/C++部分（大部分定义在 jni.h 中）</h3>
+<ol>
+<li>JNIEXPORT，标记 shared lib 中的函数是可导出，会被包含在 jvm 的指针表中，JNI 就能找到这个 method</li>
+<li>JNICALL，与 JNIEXPORT 配合使用，确保 method 对 JNI 框架可用</li>
+<li>JNIEnv，一个 structure，包含一些方法，可以用来使 native code 可以访问 Java 元素</li>
+<li>JavaVM，一个 structure，可以让我们对正在运行的 jvm 进行操作（甚至重新启动一个 jvm），向其中加入线程，销毁 jvm 中的线程等</li>
+</ol>
+<h2 id="2hello-world-jni">2.Hello World JNI</h2>
+<p>这里使用 C++作为 native language，G++作为编译器和链接器</p>
+<h3 id="21-新建一个-java-类">2.1 新建一个 java 类</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">package</span> com.miaozhen.sre.jni<span style="color:#f92672">;</span>
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloWorld</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">loadLibrary</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+		<span style="color:#66d9ef">new</span> HelloWorld<span style="color:#f92672">().</span><span style="color:#a6e22e">sayHello</span><span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+	<span style="color:#75715e">// Declare a native method sayHello() that receives no arguments and returns void
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">native</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sayHello</span><span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>这里在 static 块中加载 shared lib，这保证不论在程序的哪个地方使用 shared lib，它都已经 ready；但是在这个 demo 中，也可以在调用 native method 之前加载它，因为这个程序中没有其他地方使用 shared lib 了</p>
+<h3 id="22-用-c实现-native-方法">2.2 用 C++实现 native 方法</h3>
+<p>首先创建方法定义，使用 javac 的-h 选项</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">javac -h . HelloWorld.java
+</code></pre></div><p>这会生成 com_baeldung_jni_HelloWorldJNI.h 头文件，包含所有 native method 的声明；</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">/* DO NOT EDIT THIS FILE - it is machine generated */</span>
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;jni.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">/* Header for class com_miaozhen_sre_jni_HelloWorld */</span>
+
+<span style="color:#75715e">#ifndef _Included_com_miaozhen_sre_jni_HelloWorld
+</span><span style="color:#75715e">#define _Included_com_miaozhen_sre_jni_HelloWorld
+</span><span style="color:#75715e">#ifdef __cplusplus
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span> {
+<span style="color:#75715e">#endif
+</span><span style="color:#75715e"></span><span style="color:#75715e">/*
+</span><span style="color:#75715e"> * Class:     com_miaozhen_sre_jni_HelloWorld
+</span><span style="color:#75715e"> * Method:    sayHello
+</span><span style="color:#75715e"> * Signature: ()V
+</span><span style="color:#75715e"> */</span>
+JNIEXPORT <span style="color:#66d9ef">void</span> JNICALL <span style="color:#a6e22e">Java_com_miaozhen_sre_jni_HelloWorld_sayHello</span>(JNIEnv <span style="color:#f92672">*</span>, jobject);
+
+<span style="color:#75715e">#ifdef __cplusplus
+</span><span style="color:#75715e"></span>}
+<span style="color:#75715e">#endif
+</span><span style="color:#75715e">#endif
+</span></code></pre></div><p>可以看到生成的方法名称由包，类和方法名称组成；另外函数参数有两个，一个是 JNIEnv 指针，另一个是调用这个方法的 Java 对象，也就是 HelloWorld 类的实例</p>
+<p>接下来用 C++实现我们的 native method，文件名称是把上面的头文件后缀改为.cpp</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;jni.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;com_miaozhen_sre_jni_HelloWorld.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+JNIEXPORT <span style="color:#66d9ef">void</span> JNICALL <span style="color:#a6e22e">Java_com_miaozhen_sre_jni_HelloWorld_sayHello</span>(JNIEnv <span style="color:#f92672">*</span>, jobject) {
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;Hello from C++ !!&#34;</span> <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+}
+</code></pre></div><h3 id="23-编译链接">2.3 编译链接</h3>
+<p>编译时候不要忘了包含 jdk 安装的 jni.h 头文件的路径</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">g++ -c -fPIC -I. -I<span style="color:#e6db74">${</span>JAVA_HOME<span style="color:#e6db74">}</span>/include -I<span style="color:#e6db74">${</span>JAVA_HOME<span style="color:#e6db74">}</span>/include/linux com_miaozhen_sre_jni_HelloWorld.cpp -o com_miaozhen_sre_jni_HelloWorld.o
+</code></pre></div><p>现在需要把对象文件（.o 文件）包含到 shared lib 中</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">g++ -shared -fPIC -o libhello.so com_miaozhen_sre_jni_HelloWorld.o -lc
+</code></pre></div><p>这里在 Java 程序中引用我们的 shared lib 时候，名称是 lib${name}.so 中的 name</p>
+<p>然后使用 Java 程序调用 shared lib，启动 jvm 时候传递包含 shared lib 的绝对路径作为参数</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">java -cp . -Djava.library.path<span style="color:#f92672">=</span>/NATIVE_SHARED_LIB_FOLDER com.miaozhen.sre.jni.HelloWorld
+</code></pre></div><p>应该可以看到输出</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">Hello from C++ !!
+</code></pre></div><h2 id="3高级特性">3.高级特性</h2>
+<p>Hello world 只是个 demo，用处不大，通常我们需要在 native 和 jvm 之间交换数据然后在 Java 程序中使用这些数据</p>
+<h3 id="31native-method-添加参数">3.1native method 添加参数</h3>
+<p>在 HelloWorldJNI.java 文件中添加下面两个方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">package</span> com.miaozhen.sre.jni<span style="color:#f92672">;</span>
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloWorldJNI</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">loadLibrary</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;native&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+		HelloWorldJNI hw <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HelloWorldJNI<span style="color:#f92672">();</span>
+		System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>hw<span style="color:#f92672">.</span><span style="color:#a6e22e">sum</span><span style="color:#f92672">(</span>1<span style="color:#f92672">,</span> 2<span style="color:#f92672">));</span>
+		System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>hw<span style="color:#f92672">.</span><span style="color:#a6e22e">sayHelloToMe</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;wangzhu&#34;</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">native</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">sum</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> first<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> second<span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">native</span> String <span style="color:#a6e22e">sayHelloToMe</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">boolean</span> isFemale<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>编译 Java 生成的 com_miaozhen_sre_jni_HelloWorldJNI.h 头文件如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">/* DO NOT EDIT THIS FILE - it is machine generated */</span>
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;jni.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">/* Header for class com_miaozhen_sre_jni_HelloWorldJNI */</span>
+
+<span style="color:#75715e">#ifndef _Included_com_miaozhen_sre_jni_HelloWorldJNI
+</span><span style="color:#75715e">#define _Included_com_miaozhen_sre_jni_HelloWorldJNI
+</span><span style="color:#75715e">#ifdef __cplusplus
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span> {
+<span style="color:#75715e">#endif
+</span><span style="color:#75715e"></span><span style="color:#75715e">/*
+</span><span style="color:#75715e"> * Class:     com_miaozhen_sre_jni_HelloWorldJNI
+</span><span style="color:#75715e"> * Method:    sum
+</span><span style="color:#75715e"> * Signature: (II)J
+</span><span style="color:#75715e"> */</span>
+JNIEXPORT jlong JNICALL <span style="color:#a6e22e">Java_com_miaozhen_sre_jni_HelloWorldJNI_sum</span>(JNIEnv <span style="color:#f92672">*</span>, jobject, jint, jint);
+
+<span style="color:#75715e">/*
+</span><span style="color:#75715e"> * Class:     com_miaozhen_sre_jni_HelloWorldJNI
+</span><span style="color:#75715e"> * Method:    sayHelloToMe
+</span><span style="color:#75715e"> * Signature: (Ljava/lang/String;Z)Ljava/lang/String;
+</span><span style="color:#75715e"> */</span>
+JNIEXPORT jstring JNICALL <span style="color:#a6e22e">Java_com_miaozhen_sre_jni_HelloWorldJNI_sayHelloToMe</span>(JNIEnv <span style="color:#f92672">*</span>, jobject, jstring, jboolean);
+
+<span style="color:#75715e">#ifdef __cplusplus
+</span><span style="color:#75715e"></span>}
+<span style="color:#75715e">#endif
+</span><span style="color:#75715e">#endif
+</span></code></pre></div><p>com_miaozhen_sre_jni_HelloWorldJNI.cpp 文件内容如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;iostream&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;jni.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;com_miaozhen_sre_jni_HelloWorldJNI.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+JNIEXPORT jlong JNICALL <span style="color:#a6e22e">Java_com_miaozhen_sre_jni_HelloWorldJNI_sum</span>(JNIEnv<span style="color:#f92672">*</span> env, jobject thisObject, jint first, jint second) {
+    std<span style="color:#f92672">::</span>cout <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34;C++: The numbers received are : &#34;</span> <span style="color:#f92672">&lt;&lt;</span> first <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34; and &#34;</span> <span style="color:#f92672">&lt;&lt;</span> second <span style="color:#f92672">&lt;&lt;</span> std<span style="color:#f92672">::</span>endl;
+    <span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">long</span>)first <span style="color:#f92672">+</span> (<span style="color:#66d9ef">long</span>)second;
+}
+
+JNIEXPORT jstring JNICALL <span style="color:#a6e22e">Java_com_miaozhen_sre_jni_HelloWorldJNI_sayHelloToMe</span>(JNIEnv<span style="color:#f92672">*</span> env, jobject thisObject, jstring name, jboolean isFemale) {
+    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> nameCharPointer <span style="color:#f92672">=</span> env<span style="color:#f92672">-&gt;</span>GetStringUTFChars(name, NULL);
+    std<span style="color:#f92672">::</span>string title;
+    <span style="color:#66d9ef">if</span>(isFemale) {
+        title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Ms. &#34;</span>;
+    }
+    <span style="color:#66d9ef">else</span> {
+        title <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Mr. &#34;</span>;
+    }
+
+    std<span style="color:#f92672">::</span>string fullName <span style="color:#f92672">=</span> title <span style="color:#f92672">+</span> nameCharPointer;
+    <span style="color:#66d9ef">return</span> env<span style="color:#f92672">-&gt;</span>NewStringUTF(fullName.c_str());
+}
+</code></pre></div><p>这里使用 JNIEnv 指针 env 访问 JNI 实例的方法，JNIEnv 允许我们在 Java 和 C++代码中互相传递 string；在<a href="https://docs.oracle.com/javase/9/docs/specs/jni/types.html">Oracle official documentation</a>有 Java types 和 C JNI types 的对照</p>
+<p>编译</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">g++ -c -fPIC -I. -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-1.el7_6.x86_64/include -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-1.el7_6.x86_64/include/linux com_miaozhen_sre_jni_HelloWorldJNI.cpp -o com_miaozhen_sre_jni_HelloWorldJNI.o
+</code></pre></div><p>生成 shared lib</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">g++ -shared -fPIC -o libnative.so com_miaozhen_sre_jni_HelloWorldJNI.o -lc
+</code></pre></div><p>运行</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">java -cp . -Djava.library.path<span style="color:#f92672">=</span>/home/wangzhu/jni com.miaozhen.sre.jni.HelloWorldJNI
+</code></pre></div><p>输出</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">C++: The numbers received are : <span style="color:#ae81ff">1</span> and <span style="color:#ae81ff">2</span>
+<span style="color:#ae81ff">3</span>
+Mr. wangzhu
+</code></pre></div><h3 id="32native-调用-java-代码">3.2native 调用 Java 代码</h3>
+<p>首先写个 User.java 存储一些用户信息</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">package</span> com.mlt.sre.jni<span style="color:#f92672">;</span>
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">User</span><span style="color:#f92672">{</span>
+
+    <span style="color:#66d9ef">public</span> String name<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> balance<span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getUserInfo</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;[name]=&#34;</span> <span style="color:#f92672">+</span> name <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;, [balance]=&#34;</span> <span style="color:#f92672">+</span> balance<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>然后创建另一个 UserManipulate.java，这个 class 里有一些 native 方法可以操作上面那个 class</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">package</span> com.mlt.sre.jni<span style="color:#f92672">;</span>
+
+<span style="color:#f92672">import</span> com.mlt.sre.jni.User<span style="color:#f92672">;</span>
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UserManipulate</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">loadLibrary</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;user&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">native</span> User <span style="color:#a6e22e">createUser</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">double</span> balance<span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">native</span> String <span style="color:#a6e22e">printUser</span><span style="color:#f92672">(</span>User user<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>编译</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">javac -h . User.java UserManipulate.java
+</code></pre></div><p>生成的 com_mlt_sre_jni_UserManipulate.h 头文件内容如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">/* DO NOT EDIT THIS FILE - it is machine generated */</span>
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;jni.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">/* Header for class com_mlt_sre_jni_UserManipulate */</span>
+
+<span style="color:#75715e">#ifndef _Included_com_mlt_sre_jni_UserManipulate
+</span><span style="color:#75715e">#define _Included_com_mlt_sre_jni_UserManipulate
+</span><span style="color:#75715e">#ifdef __cplusplus
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">extern</span> <span style="color:#e6db74">&#34;C&#34;</span> {
+<span style="color:#75715e">#endif
+</span><span style="color:#75715e"></span><span style="color:#75715e">/*
+</span><span style="color:#75715e"> * Class:     com_mlt_sre_jni_UserManipulate
+</span><span style="color:#75715e"> * Method:    createUser
+</span><span style="color:#75715e"> * Signature: (Ljava/lang/String;D)Lcom/mlt/sre/jni/User;
+</span><span style="color:#75715e"> */</span>
+JNIEXPORT jobject JNICALL <span style="color:#a6e22e">Java_com_mlt_sre_jni_UserManipulate_createUser</span>(JNIEnv <span style="color:#f92672">*</span>, jobject, jstring, jdouble);
+
+<span style="color:#75715e">/*
+</span><span style="color:#75715e"> * Class:     com_mlt_sre_jni_UserManipulate
+</span><span style="color:#75715e"> * Method:    printUser
+</span><span style="color:#75715e"> * Signature: (Lcom/mlt/sre/jni/User;)Ljava/lang/String;
+</span><span style="color:#75715e"> */</span>
+JNIEXPORT jstring JNICALL <span style="color:#a6e22e">Java_com_mlt_sre_jni_UserManipulate_printUser</span>(JNIEnv <span style="color:#f92672">*</span>, jobject, jobject);
+
+<span style="color:#75715e">#ifdef __cplusplus
+</span><span style="color:#75715e"></span>}
+<span style="color:#75715e">#endif
+</span><span style="color:#75715e">#endif
+</span></code></pre></div><p>com_mlt_sre_jni_UserManipulate.cpp 内容如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;jni.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;com_mlt_sre_jni_UserManipulate.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+JNIEXPORT jobject JNICALL <span style="color:#a6e22e">Java_com_mlt_sre_jni_UserManipulate_createUser</span>(JNIEnv <span style="color:#f92672">*</span>env, jobject thisObject, jstring name, jdouble balance)
+{
+
+    <span style="color:#75715e">// Create the object of the class User
+</span><span style="color:#75715e"></span>    jclass userClass <span style="color:#f92672">=</span> env<span style="color:#f92672">-&gt;</span>FindClass(<span style="color:#e6db74">&#34;com/mlt/sre/jni/User&#34;</span>);
+    jobject newUser <span style="color:#f92672">=</span> env<span style="color:#f92672">-&gt;</span>AllocObject(userClass);
+
+    <span style="color:#75715e">// Get the User fields to be set
+</span><span style="color:#75715e"></span>    jfieldID nameField <span style="color:#f92672">=</span> env<span style="color:#f92672">-&gt;</span>GetFieldID(userClass, <span style="color:#e6db74">&#34;name&#34;</span>, <span style="color:#e6db74">&#34;Ljava/lang/String;&#34;</span>);
+    jfieldID balanceField <span style="color:#f92672">=</span> env<span style="color:#f92672">-&gt;</span>GetFieldID(userClass, <span style="color:#e6db74">&#34;balance&#34;</span>, <span style="color:#e6db74">&#34;D&#34;</span>);
+
+    env<span style="color:#f92672">-&gt;</span>SetObjectField(newUser, nameField, name);
+    env<span style="color:#f92672">-&gt;</span>SetDoubleField(newUser, balanceField, balance);
+
+    <span style="color:#66d9ef">return</span> newUser;
+}
+
+JNIEXPORT jstring JNICALL <span style="color:#a6e22e">Java_com_mlt_sre_jni_UserManipulate_printUser</span>(JNIEnv <span style="color:#f92672">*</span>env, jobject thisObject, jobject user)
+{
+
+    <span style="color:#75715e">// Find the id of the Java method to be called
+</span><span style="color:#75715e"></span>    jclass userClass <span style="color:#f92672">=</span> env<span style="color:#f92672">-&gt;</span>GetObjectClass(user);
+    jmethodID methodId <span style="color:#f92672">=</span> env<span style="color:#f92672">-&gt;</span>GetMethodID(userClass, <span style="color:#e6db74">&#34;getUserInfo&#34;</span>, <span style="color:#e6db74">&#34;()Ljava/lang/String;&#34;</span>);
+
+    jstring result <span style="color:#f92672">=</span> (jstring)env<span style="color:#f92672">-&gt;</span>CallObjectMethod(user, methodId);
+    <span style="color:#66d9ef">return</span> result;
+}
+</code></pre></div><p>这里使用 JNIEnv *env 从运行的 jvm 中访问需要的 class，object，field，method；甚至创建了类对象，只要有了类对象我们可以像 Java 反射一样操作对象的 field 和 method；在<a href="https://docs.oracle.com/javase/9/docs/specs/jni/functions.html">Oracle official documentation</a>可以找到 JNIEnv 的所有方法</p>
+<p>编译链接</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">g++ -c -fPIC -I. -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-1.el7_6.x86_64/include -I/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-1.el7_6.x86_64/include/linux com_mlt_sre_jni_UserManipulate.cpp -o com_mlt_sre_jni_UserManipulate.o
+
+g++ -shared -fPIC -o libuser.so com_mlt_sre_jni_UserManipulate.o -lc
+</code></pre></div><p>Main.java 调用 native 代码</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">package</span> com.mlt.sre.jni<span style="color:#f92672">;</span>
+
+<span style="color:#f92672">import</span> com.mlt.sre.jni.User<span style="color:#f92672">;</span>
+<span style="color:#f92672">import</span> com.mlt.sre.jni.UserManipulate<span style="color:#f92672">;</span>
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Main</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        UserManipulate um <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> UserManipulate<span style="color:#f92672">();</span>
+        User user <span style="color:#f92672">=</span> um<span style="color:#f92672">.</span><span style="color:#a6e22e">createUser</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;wangzhu&#34;</span><span style="color:#f92672">,</span> 23<span style="color:#f92672">.</span><span style="color:#a6e22e">0</span><span style="color:#f92672">);</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>um<span style="color:#f92672">.</span><span style="color:#a6e22e">printUser</span><span style="color:#f92672">(</span>user<span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>编译并执行</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">javac User.java UserManipulate.java Main.java
+cp User.class UserManipulate.class Main.class com/mlt/sre/jni
+java -cp . -Djava.library.path<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>dir include shared lib<span style="color:#e6db74">}</span> com.mlt.sre.jni.Main
+</code></pre></div><p>输出如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>name<span style="color:#f92672">]=</span>wangzhu, <span style="color:#f92672">[</span>balance<span style="color:#f92672">]=</span>23.0
+</code></pre></div><h2 id="结论">结论</h2>
+<p>JNI 在 JVM 和 native lib 之间引入了通信开销，二者之间的数据交换类似于编解码的过程，而且有时甚至在 Java 类型和本地类型之间没有直接的对应关系；但是通常 native 代码的效率要高于字节码，或者有些情况我们没有其他选择，例如 jvm 需要调用管理物理设备的驱动</p>
+
+  
+  
+<style>
+  ul.share-buttons {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul.share-buttons li {
+    display: inline;
+  }
+
+  ul.share-buttons .sr-only {
+    position: absolute;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0;
+    border: 0;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+  }
+</style>
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1-24" style="text-align: left;">
+    
+    <a href="https://xiaozhujesus.github.io/post/linux-file/"><i class="fa fa-chevron-left"></i></a>
+    
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="prev">
+      <a href="https://xiaozhujesus.github.io/post/linux-file/">Linux File</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-2-24">
+    &nbsp;
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="next">
+      <a href="https://xiaozhujesus.github.io/post/aqs/">AQS</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-1-24" style="text-align: right;">
+    
+    <a href="https://xiaozhujesus.github.io/post/aqs/"><i class="fa fa-chevron-right"></i></a>
+    
+  </div>
+</div>
+
+
+
+  
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'Your Disqus shortname';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+</div>
+</div>
+<script src="https://xiaozhujesus.github.io/js/ui.js"></script>
+<script src="https://xiaozhujesus.github.io/js/menus.js"></script>
+
+
+<script>
+  
+  if (window.location.hostname != "localhost") {
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'Your Google Analytics tracking ID', 'auto');
+    ga('send', 'pageview');
+  }
+</script>
+
+
+
+
+
+<script src="https://xiaozhujesus.github.io/js/math-code.js"></script>
+  <script async src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
+
+
+</body>
+</html>
+

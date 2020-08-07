@@ -42,6 +42,113 @@ leader 选举 leader 周期发送心跳给 follower，当 follower 在 election 
     </item>
     
     <item>
+      <title>CAP</title>
+      <link>https://xiaozhujesus.github.io/post/cap/</link>
+      <pubDate>Wed, 08 Jul 2020 20:03:51 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/cap/</guid>
+      <description>分布式系统有 3 个指标：
+ Consistency Availability Partition tolerance  加州大学的计算机科学家 Eric Brewer 指出，这三个指标不可能同时满足
+Consistency 一致性分为很多种：
+ 弱一致性（Weak）：写入一个数据 a 成功后，在数据副本上可能读出来，也可能读不出来，不能保证多长时间之后每个副本的数据一定是一致的。 最终一致性（Eventually）：写入一个数据 a 成功后，在其他副本有可能读不到 a 的最新值，但在某个时间窗口之后保证最终能读到，可以看做弱一致性的一个特例，这里面的重点是这个时间窗口。 强一致性（Strong）：数据 a 一旦写入成功，在任意副本任意时刻都能读到 a 的最新值。  最终一致性还可以继续细分，大家更喜欢把除了弱一致性和强一致性的其他一致性全部归为最终一致性。
+弱一致性和最终一致性的副本同步是采用异步的方式，而强一致性一般要求同步更新副本，然后才能返回成功，否则很难满足任意副本任意时刻都能读到最新值，异步的通常意味着更好的吞吐量，但也意味着更复杂的架构，更复杂的开发、调试。同步意味着简单，但也意味着响应时间更长，吞吐量的更低。
+ Backups，通常不会用在生产环境； M/S，master/slave,可以异步，也可以同步，写是瓶颈点； MM，multi-master，可以解决写的问题，复杂度在于如何解决冲突； 2PC，2 Phase Commit，强一致，性能低，不高可用； Paxos，它是完全分布的。没有单一的主协调员  从图中可以看出，如果要满足强一致性，有两种方案：
+ 2PC，吞吐量低，响应时间高，随着节点数增加，性能指数级下降 Paxos，实现成本较高，不过现在有 raft 了，容易实现，容易理解  CAP 定理中的一致性是指强一致性，也就是所有 client 节点访问同一份最新的数据副本
+Availability 每次请求都能获取到非错的响应——但是不保证获取的数据为最新数据
+Partition tolerance 以实际效果而言，分区容错相当于对通信的时限要求。系统如果不能在时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在 C 和 A 之间做出选择，很明显，如果在发生分区时，选择了 C，意味着所有节点都需要同步更新数据后才能给 client 返回结果，而由于网络分区，系统会卡在这里导致不可用，也就是失去了 A；如果发生分区时候选择了 A，意味着需要给 client 返回请求结果，那么就会在无法更新所有节点的情况下给 client 返回响应，同时访问到分区内节点的 client 得到的就是旧的数据，导致失去了 C；如果没有发生分区，那么 C 和 A 是可以同时满足的</description>
+    </item>
+    
+    <item>
+      <title>Java Interrupt</title>
+      <link>https://xiaozhujesus.github.io/post/java-interrupt/</link>
+      <pubDate>Thu, 02 Jul 2020 09:37:05 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/java-interrupt/</guid>
+      <description>Java 中停止一个线程不能用 stop，因为 stop 会瞬间强行停止一个线程，且该线程持有的锁并不能释放。大家多习惯于用 interrupt，那么使用它又有什么需要注意的呢？
+interrupt 相关的方法 public boolean isInterrupted() public void interrupt() public static boolean interrupted() boolean isInterrupted() 每个线程都一个状态位用于标识当前线程对象是否是中断状态。isInterrupted 主要用于判断当前线程对象的中断标志位是否被标记了，如果被标记了则返回 true，表示当前已经被中断，否则返回 false。我们也可以看看它的实现源码：
+public boolean isInterrupted() { return isInterrupted(false); } private native boolean isInterrupted(boolean ClearInterrupted); 底层调用的 native 方法 isInterrupted，传入一个 boolean 类型的参数，用于指定调用该方法之后是否需要清除该线程的中断标识位。从这里我们也可以看出来，调用 isInterrupted()并不会清除线程的中断标识位。
+void interrupt() interrupt()用于设置当前线程对象的中断标识位，其源码为：
+public void interrupt() { // 检查当前线程是否有权限修改目标线程，如果没有，则会抛出异常SecurityException  if (this != Thread.currentThread()) checkAccess(); synchronized (blockerLock) { Interruptible b = blocker; if (b != null) { interrupt0(); // Just to set the interrupt flag  b.</description>
+    </item>
+    
+    <item>
+      <title>Java FutureTask</title>
+      <link>https://xiaozhujesus.github.io/post/java-futuretask/</link>
+      <pubDate>Wed, 01 Jul 2020 09:15:00 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/java-futuretask/</guid>
+      <description>package java.util.concurrent; import java.util.concurrent.locks.LockSupport; /** * A cancellable asynchronous computation. This class provides a base * implementation of {@link Future}, with methods to start and cancel a * computation, query to see if the computation is complete, and retrieve the * result of the computation. The result can only be retrieved when the * computation has completed; the {@code get} methods will block if the * computation has not yet completed.</description>
+    </item>
+    
+    <item>
+      <title>Sequentially Consistent Paper</title>
+      <link>https://xiaozhujesus.github.io/post/sequentially-consistent-paper/</link>
+      <pubDate>Sat, 27 Jun 2020 07:31:52 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/sequentially-consistent-paper/</guid>
+      <description>处理器也许不会按照程序顺序执行指令，执行的正确性得以保证如果满足如下条件：
+执行结果与顺序执行程序的结果一样，感觉是废话。。。满足这个条件的处理器是 sequential 的
+现在考虑这样的计算机，由许多个这样的处理器组成，这些处理器访问共享内存，要想保证多处理器程序执行的正确性，需要满足下面的条件：
+所有处理器指令的执行总的看是按照某种 sequential order，而在这个总的执行序列中，每个单独的处理器所执行的指令是按照程序指定的顺序，满足这个条件的多处理器是 sequentially consistent 的
+注意，每个单独处理器的 sequentiality 并不能保证多处理器计算是 sequentially consistent 的，从上面的定义也可以看出，因为单独处理器的 sequentiality，表示处理器执行指令可以不按照程序指定的顺序，只要保证结果是对的，即与按照程序指定顺序执行结果是一样的；但是多处理器的 sequentially consistent 要求在总的执行序列中，每个单独处理器执行的指令，一定与程序指定的顺序一致，不可进行指令重排序；原因是这些指令有可能是用来在多个处理器直接同步数据访问的指令，如果重新排序，就无法保证数据同步了（下面的例子可以看出来）
+文中描述了在多处理器，共享内存模型下，处理器和内存需要满足什么要求，才能保证程序正确性，在这种模型下，处理器之间只能通过共享内存通信，处理器操作我们只关心两种：从内存读数据的 fetch，和向内存写数据的 store，每个处理器的执行序列由这两种操作组成
+文中说的并发程序使用的还是 two-process，即两个进程组成的程序，因为写论文时候还没有线程，所以是多进程程序；lamport 老哥举了个例子来演示问题；例子是一个互斥协议，两个进程每个都包含 critical section，协议的目的就是保证任何时刻最多只有一个进程可以执行 critical section 的代码
+process 1 a := 1; if b = 0 then critical section; a = 0; else ... fi process 2 b := 1; if a = 0 then critical section; b = 0; else ... fi 说明下上面伪代码的符号，:= 是赋值，= 是比较，变量 a 和 b 初始为 0</description>
+    </item>
+    
+    <item>
+      <title>Disk</title>
+      <link>https://xiaozhujesus.github.io/post/disk/</link>
+      <pubDate>Sun, 24 May 2020 08:54:30 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/disk/</guid>
+      <description>磁盘结构 扇区 512 字节，是磁盘读写单位，block 由多个扇区组成，是软件创建的逻辑组，用来提高读写效率，通常 4 或 8K 字节 注意，OS 每次磁盘读写操作，总是访问至少一个 block
+磁盘如何连接到计算机系统
+磁盘控制器作用：
+ Control movement of disk heads Select a sector on a track Transfers data between disk surface and main memory Disk controller has an internal buffer to store read/write data to/from disk 1 disk controller can control n disks  硬盘结构
+从上面看
+ Platters are 2-sided and magnetic Platters rotates (about 10000 RPM) All disk heads move at the same time (in or out) Platter has circular tracks Tracks are divided into sectors Sector = the unit of write operation for a disk  However:Sector is too small to be efficient</description>
+    </item>
+    
+    <item>
+      <title>AQS</title>
+      <link>https://xiaozhujesus.github.io/post/aqs/</link>
+      <pubDate>Fri, 22 May 2020 08:31:39 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/aqs/</guid>
+      <description>package java.util.concurrent.locks; import java.util.concurrent.TimeUnit; import java.util.ArrayList; import java.util.Collection; import java.util.Date; import sun.misc.Unsafe; public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchronizer implements java.io.Serializable { private static final long serialVersionUID = 7373984972572414691L; protected AbstractQueuedSynchronizer() { } static final class Node { /** Marker to indicate a node is waiting in shared mode */ static final Node SHARED = new Node(); /** Marker to indicate a node is waiting in exclusive mode */ static final Node EXCLUSIVE = null; /** waitStatus value to indicate thread has cancelled */ static final int CANCELLED = 1; /** waitStatus value to indicate successor&amp;#39;s thread needs unparking */ static final int SIGNAL = -1; /** waitStatus value to indicate thread is waiting on condition */ static final int CONDITION = -2; /** * waitStatus value to indicate the next acquireShared should * unconditionally propagate */ static final int PROPAGATE = -3; volatile int waitStatus; volatile Node prev; volatile Node next; volatile Thread thread; Node nextWaiter; final boolean isShared() { return nextWaiter == SHARED; } final Node predecessor() throws NullPointerException { Node p = prev; if (p == null) throw new NullPointerException(); else return p; } Node() { // Used to establish initial head or SHARED marker  } Node(Thread thread, Node mode) { // Used by addWaiter  this.</description>
+    </item>
+    
+    <item>
+      <title>JNI</title>
+      <link>https://xiaozhujesus.github.io/post/jni/</link>
+      <pubDate>Fri, 22 May 2020 08:26:29 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/jni/</guid>
+      <description>JNI Java native interface，jvm 用来调用具体平台上的 native 代码（通常是 C 和 C++）的方法
+1.原理 native executable 程序通常可以使用 static 或 shared 的 lib
+ static lib 通常在链接阶段会被链接到最终的可执行程序中 shared lib，最终的可执行文件只包含共享库的引用而不是代码  JNI 使用的就是 shared lib 技术实现的，我理解应该是 jvm（C++写的）调用 shared lib，这些文件以 .so/.dll/.dylib结尾，既不在 class 文件里，也不在 jvm 里；jvm 构造一个指针表，表中的指针指向 native method 的内存地址，这样就可以调用 native method 了
+1.1 需要的组件  Java code，class 中至少包含一个 native method native code，通常使用 C/C++编写 JNI header file，是个 C/C++头文件，包含所有 JNI 元素的定义（jni.h） C/C++ Compiler，编译出 native shared library  1.2 代码中的 JNI 元素 Java 部分  任何声明为 native 的 method 都必须在 native shared library 中实现 System.</description>
+    </item>
+    
+    <item>
+      <title>Linux File</title>
+      <link>https://xiaozhujesus.github.io/post/linux-file/</link>
+      <pubDate>Thu, 21 May 2020 08:00:00 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/linux-file/</guid>
+      <description>大多数文件 IO 用到 5 个函数，这些函数是系统调用而不是库函数，会陷入内核
+ open read write lseek close  open 必选项如下：
+ O_RDONLY O_WRONLY O_RDWR O_EXEC O_SEARCH  可选项如下：
+ O_APPEND O_CLOEXEC O_CREAT O_DIRECTORY O_EXCL O_NOFOLLOW O_NOBLOCK O_TRUNC O_SYNC O_DSYNC O_RSYNC  这里主要说下可选项的后三个
+O_SYNC 每次 write 等待物理 IO 操作完成，包括由该 write 引起的文件属性更新所需要的 IO
+O_DSYNC 每次 write 要等待物理 IO 操作完成，但是如果该写操作并不影响读取刚写入的数据，则不需要等待文件属性被更新
+O_DSYNC 与 O_SYNC 有微妙的区别，仅当文件属性需要更新以反映文件数据变化时候，例如更新文件大小以反应文件中有更多数据，就可以看出二者的区别；设置 O_SYNC 后文件数据和属性总是同步更新，而 O_DSYNC 选项，当使用 write 重写文件现有部分内容时候，文件时间属性不会同步更新，但是会更新，只是 write 返回时候只是保证数据被更新了，而文件元数据则会在稍后某个时间更新
+O_RSYNC 使得每个以文件描述符为参数的 read 操作等待，直至所有对文件同一部分挂起的写操作都完成
+Solaris 支持所有这 3 个选项，而 Linux 处理 O_RSYNC 与处理 O_SYNC 相同</description>
+    </item>
+    
+    <item>
       <title>TCP常见异常与原因</title>
       <link>https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/</link>
       <pubDate>Fri, 01 May 2020 09:08:19 +0800</pubDate>
@@ -53,6 +160,23 @@ leader 选举 leader 周期发送心跳给 follower，当 follower 在 election 
 另外，需要 ack 的包都是消耗序列号的，不论是 syn 还是 fin，还是有效数据，ack 本身不消耗序列号，因为 ack 本身不需要 ack
 4 次挥手断开连接 主动结束端发送 fin 包，被动结束端对其进行 ack；双工各自结束不影响，因此每个方向的结束都需要这两个包，因此通常需要 4 个包；使用通常是因为，第一个 fin 包可能随数据包一起发送；另外，被动关闭一方的 ack 可能和其 fin 一起发送
 发送 fin 包是应用进程调用 shutdown 或者 close 函数导致的，不过当一个 unix 进程不论自愿（调用 exit 或者 main 结束了）还是非自愿（被信号 kill 了），所有打开的描述符都被关闭，这也会导致任何打开的 tcp 连接上发送一个 fin</description>
+    </item>
+    
+    <item>
+      <title>共识与一致性</title>
+      <link>https://xiaozhujesus.github.io/post/%E5%85%B1%E8%AF%86%E4%B8%8E%E4%B8%80%E8%87%B4%E6%80%A7/</link>
+      <pubDate>Fri, 24 Apr 2020 19:24:04 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/%E5%85%B1%E8%AF%86%E4%B8%8E%E4%B8%80%E8%87%B4%E6%80%A7/</guid>
+      <description>本文介绍二者的区别与联系
+一致性 分布式系统中的多个节点，针对其维护的数据，在约定协议的保证下，使其对外界呈现的值是一致的；一致性大致分为：
+ 严格一致性 强一致性 弱一致性 最终一致性  其中强一致性又分为顺序一致性和线性一致性
+共识 共识是分布式系统中多个节点之间，彼此对某个变量达成一致值的过程；实践中，要保障系统满足不同程度的一致性，往往需要通过共识算法来完成
+共识算法 共识算法主要解决分布式系统中，对于某个提案，多个节点达成一致意见的过程；而提案的含义在分布式系统中非常广泛，例如多个事件发生的顺序，某个键对应的值，哪个节点是 leader 等；可以粗略认为任何可以达成一致的信息都可以是提案；对于分布式系统而言，每个节点都是确定性状态机模型（亦称为状态机复制问题，state-machine-replication），从相同的初始状态开始，接受相同顺序的指令，则可以保证相同的结果状态；因此系统中最关键的是，对发生的多个事件的顺序达成共识，即排序；
+根据解决的是拜占庭错误还是非拜占庭错误情况，共识算法可以分为 Crash Fault Tolerance(CFT)和 Byzantine Fault Tolerance(BFT)类算法
+CFT 算法 包括 Paxos，Raft，及其变种，这类容错算法性能比较好，处理较快，容忍不超过一半的故障节点
+BFT 算法 对于要容忍拜占庭错误的情况
+共识与一致性的区别 一致性指分布式系统多个副本对外呈现的数据状态，描述了多个节点对数据状态的维护能力；共识则表示分布式系统中多个节点间，彼此对某个提案达成一致意见的过程；因此一致性描述的是状态，共识是过程手段；达成共识并不意味着保证了一致性（强一致），只能说共识机制实现了某种程度上的一致性</description>
     </item>
     
     <item>
@@ -68,6 +192,46 @@ Paxos completely-safe 并且 largely-live 的共识协议
 Basic Paxos  提案：例如，日志的第 i 条记录是什么命令 提案值：例如，日志的第 i 条记录是 x=1，即将 x 的值赋值为 1  基本 paxos 是指对单提案达成共识，例如，日志第 10 条记录应该是 x=1
  一个或者多个节点可以针对相同的提案提出自己的提案值 只有一个提案值可以被最终选定  Multi Paxos 对日志文件的不同记录，使用不同的 Basic Paxos 来确定相应记录的值
 系统角色：  Proposers：处理 client 请求，提出提案，并根据 acceptor 的响应最终决定 commit 还是开启新一轮提案 Acceptors：响应 Proposers 提出的提案，accept/reject；本地记录决策过程；主动学习被选择的提案值  每个节点可以实现超过一种角色，实际实现中，某个节点通常同时实现 2 种角色</description>
+    </item>
+    
+    <item>
+      <title>3-PC</title>
+      <link>https://xiaozhujesus.github.io/post/3-pc/</link>
+      <pubDate>Fri, 24 Apr 2020 18:43:58 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/3-pc/</guid>
+      <description>3-PC 是对 2-PC 的改进，将 2-PC 中的第一阶段拆分为两个阶段，CanCommit 和 PreCommit 如下：
+CanCommit 阶段  协调者向所有参与者发送一个包含事务的 CanCommit 请求，并等待 ack； 参与者收到该请求后，会尝试锁定执行事务所需相关资源，如果锁定成功，则返回 yes；否则返回 no  PreCommit 阶段 协调者根据响应决定是否进行 preCommit 操作，分为两种情况：
+ 收到的都是 yes   协调者向所有参与者发送 preCommit 请求 参与者接收到 preCommit 请求后，执行事务，记录 undo 和 redo 日志 执行成功，返回 yes 给协调者  收到有 no 的响应或者等待超时   协调者向所有参与者发送 abort 请求 参与者无论是收到协调者的 abort 请求，还是等待协调者的请求超时，都会 abort 事务 向协调者发送 no 响应  DoCommit 阶段 协调者根据上一阶段的响应决定是否 doCommit
+ 收到了所有参与者的 yes   向所有参与者发送 doCommit 请求 所有参与者收到 doCommit 后，commit 事务，返回 ack 给协调者  收到了 no 或者等待某些参与者的上一阶段响应超时了   向所有参与者发送 abort 请求 所有参与者收到 abort 后，abort 事务，返回 ack 给协调者  注意，协议规定当进入第 3 阶段时候，参与者只要没有收到 abort，就会对事务进行 commit，不论是等待协调者超时，还是收到 commit 指令</description>
+    </item>
+    
+    <item>
+      <title>2-PC</title>
+      <link>https://xiaozhujesus.github.io/post/2-pc/</link>
+      <pubDate>Fri, 24 Apr 2020 16:09:42 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/2-pc/</guid>
+      <description>2PC，即 Two-Phrase Commit 的缩写，是一种一致性协议，首先在数据库领域解决备份一致性问题，有两类角色，协调者和参与者，协议内容如下
+prepare 阶段  协调者向所有参与者发送事务内容，等待响应； 协调者收到事务内容，执行事务，并记录 redo 和 undo 日志 协调者将事务执行结果反馈给协调者，如果事务执行成功，返回 yes 响应；否则返回 no 响应  commit 阶段 协调者根据所有参与者的响应来决定是否执行提交操作
+ 如果所有参与者反馈的都是 yes 响应，则通知所有参与者 commit 如果有参与者返回 no 响应，则通知所有参与者 rollback 如果有参与者在上一阶段没有响应，超时了，则通知所有参与者 rollback 等待参与者的 ack  所有节点都会记录操作日志
+两阶段提交的问题 单点问题 只有一个协调者，如果协调者挂了，整个系统不可用；协调者恢复后可以根据本地日志进行恢复，使系统达到一致的状态
+参与者挂了，系统也不可用 因为协调者等不到响应，超时会 rollback，无论提交什么事务，都无法完成执行；
+如果参与者在第一阶段挂了，分为两种情况：
+ 参与者在收到事务之前挂了 参与者在收到事务并且执行之后挂了 不论是哪种情况，协调者都收不到 ack，timeout 会 rollback，等故障节点恢复后，如果没有未完成事务，即第 1 中情况，整个系统是一致的，直接对外提供服务；如果发现有未完成事务，说明是第 2 种情况，向协调者询问事务结果，得到 rollback 的消息后，会 rollback 从而整个系统数据一致，然后对外提供服务  如果参与者在第二阶段挂了，也分两种情况：
+ 参与者在收到 commit 或者 rollback 之前挂了，没有收到消息，第二阶段没有 ack；而其他参与者收到消息执行了 commit 或者 rollback，并返回 ack； 参与者在收到消息并执行 commit 或者 rollback 后挂了，没有 ack；而其他参与者收到消息执行了 commit 或者 rollback，并返回 ack  不论是上述哪种情况，协调者发现有参与者没有 ack 后，都不会接受新的事务了，否则系统不一致；需要等到故障节点恢复，并且整个系统恢复到数据一致性后才对外提供服务；故障节点恢复时，发现没有未完成事务，说明是第 2 种情况，整个系统是数据一致的，系统直接对外提供服务；如果有未完成事务，会向协调者询问事务结果，并进行响应操作（commit 或者 rollback，第一阶段只可能是 rollback），从而使整个系统数据保持一致，然后提供服务</description>
+    </item>
+    
+    <item>
+      <title>Java Wait Notify</title>
+      <link>https://xiaozhujesus.github.io/post/java-wait-notify/</link>
+      <pubDate>Tue, 14 Apr 2020 22:19:59 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/java-wait-notify/</guid>
+      <description>线程之间通过共享对象进行同步 public class Flag{ private volatile boolean hasDataToProcess = false; public boolean hasDataToProcess(){ return this.hasDataToProcess; } public void setHasDataToProcess(boolean hasData){ this.hasDataToProcess = hasData; } } 两个线程可以通过同一个 Flag 类的实例进行通信，线程 A 通过 setHasDataToProcess(true)方法通知线程 B 可以开始处理数据了，线程 B 通过 hasDataToProcess()方法知道可以开始处理数据了
+Busy Wait 上面的方法中，线程 B 会不断的调用 hasDataToProcess()方法查询是否可以开始处理数据，对于 CPU 资源而言是一种浪费
+while(!flag.hasDataToProcess()){ //do nothing... busy waiting } wait,notify,notifyAll 如果等待的时间很短，可以使用 busy wait 的方式，也叫自旋锁，这样可以避免由用户太陷入内核的开销（注意，由用户态陷入内核态，只是由用户态线程切换到对应的内核态线程，但还是这个执行流，注意是线程的切换，开销相对还能小一点；还有一种线程的切换是在进程内，一条执行流的内核线程阻塞了，所以调度同一进程内的另一个执行流执行，过程是由内核线程切换到另一个内核线程，然后由另一个内核线程切换到对应的用户态线程；通常说的上下文切换应该是进程的切换，开销最大，比切换线程开销大很多）；否则，让忙等线程让出 CPU 资源，等条件为真时候再次调度等待的线程运行，这样是比较合理的；Java 中的 wait，notify，notifyAll 提供了这样的功能
+wait(), notify(), and notifyAll()是 Object 对象提供的 native 方法，调用上面 3 个函数的时候需要首先获取同步对象的监视器锁，即必须在 synchronized 块中调用，调用 wait 函数，从而进入对象的 wait queue，此时线程处于 waiting 状态，同时释放当前获取到的锁，释放锁会导致唤醒 entry queue 中的 blocked 状态的线程（OS 的 mutex 提供这种功能）；wait queue 中的线程可以得到调度机会当其他线程调用对象上的 notify 或者 notifyAll 方法，注意，这两个方法不会释放锁，只是将 wait queue 中的线程放到 entry queue 中而已；notify 方法会将 wait queue 中的一个线程放到 entry queue，而 notifyAll 将所有 wait queue 中的线程放到 entry queue；当调用 notify 的线程退出 synchronized 代码块的时候，才会释放对象锁，而锁的释放会导致唤醒所有 entry queue 中的阻塞线程；这些线程开始竞争锁，竞争不到的重新阻塞</description>
     </item>
     
     <item>
@@ -219,6 +383,24 @@ Shared Memory And Caches 这里以 SMP 架构为例进行讲解。
 莱斯利·兰珀特（Leslie Lamport）在 1979 年的论文《如何制造能正确执行多进程程序的多处理器计算机》中定义了顺序一致性。 他使用“顺序一致”：
 the result of any execution is the same as if the operations of all the processors were executed in some sequential order, and the operations of each individual processor appear in this sequence in the order specified by its program
 上述定义中隐含了 SMP 系统可能不满足顺序一致性</description>
+    </item>
+    
+    <item>
+      <title>Linearizability</title>
+      <link>https://xiaozhujesus.github.io/post/linearizability/</link>
+      <pubDate>Sat, 14 Mar 2020 07:56:08 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/linearizability/</guid>
+      <description>动机 java 和 C++中的对象其实是数据容器，每个对象都定义了一组方法对对象的状态进行操作，对象的类描述了方法的行为，描述对象的行为有很多方法：例如 API；在 sequential model 中，单线程对一组对象操作，不会有什么问题，当多线程共享相同的对象时候，原来的模型失效了，所以需要新的模型来描述对象，这就是 Linearizability;
+Linearizability 是并发对象（concurrent object）的正确性条件（correctness condition），也是 execution history 的一个属性，允许程序员使用 sequential model 中的已经存在的技术来说明（specify）和推理（reason about）并发对象；当多个进程并发调用并发对象的方法时候，Linearizability 假设，单个调用在 invocation 和对应的 response 之间的某个点瞬时生效，这个生效的瞬间叫 linearizatioon point；
+考虑一个 FIFO 队列，
+pic 1
+pic 2
+pic 3
+pic 4
+pic 5
+下面是并发 FIFO 队列的实现：
+class LockBasedQueue&amp;lt;T&amp;gt; { int head, tail; T[] items; Lock lock; public LockBasedQueue(int capacity) { head = 0; tail = 0; ock = new ReentrantLock(); items = (T[]) new Object[capacity]; } public T deq() throws EmptyException { lock.</description>
     </item>
     
     <item>

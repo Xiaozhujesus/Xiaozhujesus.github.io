@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.65.3" />
+
+  <title>Java Interrupt &middot; Stay Foolish, Stay Hungry!</title>
+
+    
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://xiaozhujesus.github.io/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://xiaozhujesus.github.io/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="https://xiaozhujesus.github.io/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+ 
+  
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/androidstudio.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+
+  <link rel="shortcut icon" href="https://xiaozhujesus.github.io/img/favicon.ico" type="image/x-icon" />
+
+  
+  
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+  <a class="pure-menu-heading brand" href="https://xiaozhujesus.github.io/">Blackburn</a>
+
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://xiaozhujesus.github.io/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://xiaozhujesus.github.io/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://xiaozhujesus.github.io/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://xiaozhujesus.github.io/contact/"><i class='fa fa-phone fa-fw'></i>Contact</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://twitter.com/*" rel="me" target="_blank"><i class="fab fa-twitter-square fa-fw"></i>Twitter</a>
+    </li>
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://facebook.com/*" rel="me" target="_blank"><i class="fab fa-facebook-square fa-fw"></i>Facebook</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://instagram.com/*" rel="me" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://linkedin.com/in/*" rel="me" target="_blank"><i class="fab fa-linkedin"></i></i>LinkedIn</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://github.com/yoshiharuyamashita" rel="me" target="_blank"><i class="fab fa-github-square fa-fw"></i>GitHub</a>
+    </li>
+    
+
+    
+
+    
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://stackoverflow.com/users/*" rel="me" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i>Stack Overflow</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+
+  <div>
+  <div class="small-print">
+    <small>&copy; 2016. All rights reserved.</small>
+  </div>
+  <div class="small-print">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Java Interrupt</h1>
+  <h2></h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>02 Jul 2020, 09:37</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  <p>Java 中停止一个线程不能用 stop，因为 stop 会瞬间强行停止一个线程，且该线程持有的锁并不能释放。大家多习惯于用 interrupt，那么使用它又有什么需要注意的呢？</p>
+<h2 id="interrupt-相关的方法">interrupt 相关的方法</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">()</span>
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">interrupt</span><span style="color:#f92672">()</span>
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">interrupted</span><span style="color:#f92672">()</span>
+</code></pre></div><h2 id="boolean-isinterrupted">boolean isInterrupted()</h2>
+<p>每个线程都一个状态位用于标识当前线程对象是否是中断状态。isInterrupted 主要用于判断当前线程对象的中断标志位是否被标记了，如果被标记了则返回 true，表示当前已经被中断，否则返回 false。我们也可以看看它的实现源码：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> isInterrupted<span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">native</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> ClearInterrupted<span style="color:#f92672">);</span>
+</code></pre></div><p>底层调用的 native 方法 isInterrupted，传入一个 boolean 类型的参数，用于指定调用该方法之后是否需要清除该线程的中断标识位。从这里我们也可以看出来，调用 isInterrupted()并不会清除线程的中断标识位。</p>
+<h2 id="void-interrupt">void interrupt()</h2>
+<p>interrupt()用于设置当前线程对象的中断标识位，其源码为：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">interrupt</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 检查当前线程是否有权限修改目标线程，如果没有，则会抛出异常SecurityException
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span> <span style="color:#f92672">!=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">())</span>
+        checkAccess<span style="color:#f92672">();</span>
+
+    <span style="color:#66d9ef">synchronized</span> <span style="color:#f92672">(</span>blockerLock<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        Interruptible b <span style="color:#f92672">=</span> blocker<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>b <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            interrupt0<span style="color:#f92672">();</span>           <span style="color:#75715e">// Just to set the interrupt flag
+</span><span style="color:#75715e"></span>            b<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupt</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">return</span><span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+    interrupt0<span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>如果线程阻塞在以下方法时候调用 interrupt()，那么线程的中断标志位会被清理，然后线程会收到 InterruptedException；</p>
+<ol>
+<li>Object 类的 wait()</li>
+<li>Thread 类的 join()</li>
+<li>Thread 类的 sleep()</li>
+</ol>
+<p>如果线程阻塞在 java.nio.channels.InterruptibleChannel 的 IO 操作上，调用 interrupt()会导致 channel 关闭，线程的中断标志位被设置，线程会收到 java.nio.channels.ClosedByInterruptException</p>
+<p>如果线程阻塞在 java.nio.channels.Selector，此时调用线程的 interrupt()会导致 线程的中断标志位被设置，select()立即返回，有可能返回非 0 值，类似 selector.wakeup()被调用了</p>
+<p>如果不是在之前的情况调用 interrupt 函数，那么线程的中断标志位被设置</p>
+<p>interrupt 一个非 alive 的线程没有任何影响</p>
+<h2 id="boolean-interrupted">boolean interrupted()</h2>
+<p>该方法是一个静态的方法，用于返回当前线程是否被中断，其源码是：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">interrupted</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> currentThread<span style="color:#f92672">().</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>需要注意的是：该方法调用结束的时候会清空中断标识位。</p>
+<h2 id="java-线程状态">java 线程状态</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">A thread state<span style="color:#f92672">.</span>  A thread can be in one of the following states<span style="color:#f92672">:</span>
+NEW
+A thread that has not yet started is in <span style="color:#66d9ef">this</span> state<span style="color:#f92672">.</span>
+RUNNABLE
+A thread executing in the Java virtual machine is in <span style="color:#66d9ef">this</span> state<span style="color:#f92672">.</span>
+BLOCKED
+A thread that is blocked waiting <span style="color:#66d9ef">for</span> a monitor lock
+is in <span style="color:#66d9ef">this</span> state<span style="color:#f92672">.</span>
+WAITING
+A thread that is waiting indefinitely <span style="color:#66d9ef">for</span> another thread to
+perform a particular action is in <span style="color:#66d9ef">this</span> state<span style="color:#f92672">.</span>
+TIMED_WAITING
+A thread that is waiting <span style="color:#66d9ef">for</span> another thread to perform an action
+<span style="color:#66d9ef">for</span> up to a specified waiting time is in <span style="color:#66d9ef">this</span> state<span style="color:#f92672">.</span>
+TERMINATED
+A thread that has exited is in <span style="color:#66d9ef">this</span> state<span style="color:#f92672">.</span>
+
+A thread can be in only one state at a given point in time<span style="color:#f92672">.</span>
+These states are virtual machine states which <span style="color:#66d9ef">do</span> not reflect
+any operating system thread states
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> State <span style="color:#f92672">{</span>
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Thread state for a thread which has not yet started.
+</span><span style="color:#75715e">     */</span>
+    NEW<span style="color:#f92672">,</span>
+
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Thread state for a runnable thread.  A thread in the runnable
+</span><span style="color:#75715e">     * state is executing in the Java virtual machine but it may
+</span><span style="color:#75715e">     * be waiting for other resources from the operating system
+</span><span style="color:#75715e">     * such as processor.
+</span><span style="color:#75715e">     */</span>
+    RUNNABLE<span style="color:#f92672">,</span>
+
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Thread state for a thread blocked waiting for a monitor lock.
+</span><span style="color:#75715e">     * A thread in the blocked state is waiting for a monitor lock
+</span><span style="color:#75715e">     * to enter a synchronized block/method or
+</span><span style="color:#75715e">     * reenter a synchronized block/method after calling
+</span><span style="color:#75715e">     * {@link Object#wait() Object.wait}.
+</span><span style="color:#75715e">     * 该状态和下面的状态的区别是，下面的状态已经释放监视器锁了，调用了wait()了
+</span><span style="color:#75715e">     * 而该状态是线程还没有进入同步代码，还在等待获取monitor lock
+</span><span style="color:#75715e">     */</span>
+    BLOCKED<span style="color:#f92672">,</span>
+
+
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Thread state for a waiting thread.
+</span><span style="color:#75715e">     * A thread is in the waiting state due to calling one of the
+</span><span style="color:#75715e">     * following methods:
+</span><span style="color:#75715e">     * &lt;ul&gt;
+</span><span style="color:#75715e">     *   &lt;li&gt;{@link Object#wait() Object.wait} with no timeout&lt;/li&gt;
+</span><span style="color:#75715e">     *   &lt;li&gt;{@link #join() Thread.join} with no timeout&lt;/li&gt;
+</span><span style="color:#75715e">     *   &lt;li&gt;{@link LockSupport#park() LockSupport.park}&lt;/li&gt;
+</span><span style="color:#75715e">     * &lt;/ul&gt;
+</span><span style="color:#75715e">     *
+</span><span style="color:#75715e">     * &lt;p&gt;A thread in the waiting state is waiting for another thread to
+</span><span style="color:#75715e">     * perform a particular action.
+</span><span style="color:#75715e">     *
+</span><span style="color:#75715e">     * For example, a thread that has called &lt;tt&gt;Object.wait()&lt;/tt&gt;
+</span><span style="color:#75715e">     * on an object is waiting for another thread to call
+</span><span style="color:#75715e">     * &lt;tt&gt;Object.notify()&lt;/tt&gt; or &lt;tt&gt;Object.notifyAll()&lt;/tt&gt; on
+</span><span style="color:#75715e">     * that object. A thread that has called &lt;tt&gt;Thread.join()&lt;/tt&gt;
+</span><span style="color:#75715e">     * is waiting for a specified thread to terminate.
+</span><span style="color:#75715e">     */</span>
+    WAITING<span style="color:#f92672">,</span>
+
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Thread state for a waiting thread with a specified waiting time.
+</span><span style="color:#75715e">     * A thread is in the timed waiting state due to calling one of
+</span><span style="color:#75715e">     * the following methods with a specified positive waiting time:
+</span><span style="color:#75715e">     * &lt;ul&gt;
+</span><span style="color:#75715e">     *   &lt;li&gt;{@link #sleep Thread.sleep}&lt;/li&gt;
+</span><span style="color:#75715e">     *   &lt;li&gt;{@link Object#wait(long) Object.wait} with timeout&lt;/li&gt;
+</span><span style="color:#75715e">     *   &lt;li&gt;{@link #join(long) Thread.join} with timeout&lt;/li&gt;
+</span><span style="color:#75715e">     *   &lt;li&gt;{@link LockSupport#parkNanos LockSupport.parkNanos}&lt;/li&gt;
+</span><span style="color:#75715e">     *   &lt;li&gt;{@link LockSupport#parkUntil LockSupport.parkUntil}&lt;/li&gt;
+</span><span style="color:#75715e">     * &lt;/ul&gt;
+</span><span style="color:#75715e">     */</span>
+    TIMED_WAITING<span style="color:#f92672">,</span>
+
+    <span style="color:#75715e">/**
+</span><span style="color:#75715e">     * Thread state for a terminated thread.
+</span><span style="color:#75715e">     * The thread has completed execution.
+</span><span style="color:#75715e">     */</span>
+    TERMINATED<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+
+</code></pre></div><h2 id="线程的状态与中断的关系">线程的状态与中断的关系</h2>
+<h3 id="new-和-terminated">NEW 和 TERMINATED</h3>
+<p>NEW 状态表示线程还未调用 start()方法，TERMINATED 状态表示线程已经运行终止。</p>
+<p>这两个状态下调用中断方法来中断线程的时候，Java 认为毫无意义，所以并不会设置线程的中断标识位。例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * 下面代码输出
+</span><span style="color:#75715e"> * NEW
+</span><span style="color:#75715e"> * false
+</span><span style="color:#75715e"> * false
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    Thread thread <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">();</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">getState</span><span style="color:#f92672">());</span>
+
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">());</span>
+    thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupt</span><span style="color:#f92672">();</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#75715e">/**
+</span><span style="color:#75715e"> * 下面代码输出
+</span><span style="color:#75715e"> * TERMINATED
+</span><span style="color:#75715e"> * false
+</span><span style="color:#75715e"> * false
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+    Thread thread <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">();</span>
+    <span style="color:#75715e">// 开始线程
+</span><span style="color:#75715e"></span>    thread<span style="color:#f92672">.</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+    <span style="color:#75715e">// 等待线程结束
+</span><span style="color:#75715e"></span>    thread<span style="color:#f92672">.</span><span style="color:#a6e22e">join</span><span style="color:#f92672">();</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">getState</span><span style="color:#f92672">());</span>
+
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">());</span>
+    thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupt</span><span style="color:#f92672">();</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="runnable">RUNNABLE</h3>
+<p>处于 RUNNABLE 状态的线程，当中断线程后，会修改其中断标志位，但并不会影响线程本身。例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * 下面代码输出
+</span><span style="color:#75715e"> * RUNNABLE
+</span><span style="color:#75715e"> * false
+</span><span style="color:#75715e"> * true
+</span><span style="color:#75715e"> * RUNNABLE
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyThread</span> <span style="color:#66d9ef">extends</span> Thread<span style="color:#f92672">{</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">(){</span>
+        <span style="color:#66d9ef">while</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">){</span>
+            <span style="color:#75715e">// 什么都不做，就是空转
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        Thread thread <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MyThread<span style="color:#f92672">();</span>
+        thread<span style="color:#f92672">.</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">getState</span><span style="color:#f92672">());</span>
+
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">());</span>
+        thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupt</span><span style="color:#f92672">();</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">());</span>
+
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">getState</span><span style="color:#f92672">());</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>中断标志位确实被改变了，但线程依旧继续运行。那我们调用 interrupt()方法的意义在哪儿？</p>
+<p>其实 Java 是将中断线程的权利交给了用户的程序，通过中断标志位，我们的程序可以通过 boolean isInterrupted()方法来判断当前线程是否中断，从而决定之后的操作。</p>
+<p>我们可以在此基础上，保证执行任务的原子性。例如修改 MyThread 类的方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyThread</span> <span style="color:#66d9ef">extends</span> Thread<span style="color:#f92672">{</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">(){</span>
+        <span style="color:#66d9ef">while</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">){</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">()){</span>
+                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;exit MyThread&#34;</span><span style="color:#f92672">);</span>
+                <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+        Thread thread <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MyThread<span style="color:#f92672">();</span>
+        thread<span style="color:#f92672">.</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">getState</span><span style="color:#f92672">());</span>
+
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">());</span>
+        thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupt</span><span style="color:#f92672">();</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">());</span>
+
+        thread<span style="color:#f92672">.</span><span style="color:#a6e22e">join</span><span style="color:#f92672">();</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">getState</span><span style="color:#f92672">());</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="blocked">BLOCKED</h3>
+<p>当线程处于 BLOCKED 状态，说明该线程由于竞争某个对象的锁失败而被挂在了该对象的阻塞队列上了。</p>
+<p>那么此时发起中断操作不会对该线程产生任何影响，依然只是设置中断标志位。例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * 下面代码输出
+</span><span style="color:#75715e"> * RUNNABLE
+</span><span style="color:#75715e"> * BLOCKED
+</span><span style="color:#75715e"> * false
+</span><span style="color:#75715e"> * true
+</span><span style="color:#75715e"> * BLOCKED
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyThread</span> <span style="color:#66d9ef">extends</span> Thread<span style="color:#f92672">{</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">synchronized</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doSomething</span><span style="color:#f92672">(){</span>
+        <span style="color:#66d9ef">while</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">){</span>
+            <span style="color:#75715e">// 空转
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">(){</span>
+        doSomething<span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 启动两个线程
+</span><span style="color:#75715e"></span>        Thread thread1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MyThread<span style="color:#f92672">();</span>
+        thread1<span style="color:#f92672">.</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+        Thread thread2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MyThread<span style="color:#f92672">();</span>
+        thread2<span style="color:#f92672">.</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+
+        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>1000<span style="color:#f92672">);</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread1<span style="color:#f92672">.</span><span style="color:#a6e22e">getState</span><span style="color:#f92672">());</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread2<span style="color:#f92672">.</span><span style="color:#a6e22e">getState</span><span style="color:#f92672">());</span>
+
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread2<span style="color:#f92672">.</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">());</span>
+        thread2<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupt</span><span style="color:#f92672">();</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread2<span style="color:#f92672">.</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">());</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread2<span style="color:#f92672">.</span><span style="color:#a6e22e">getState</span><span style="color:#f92672">());</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>thread2 处于 BLOCKED 状态，执行中断操作之后，该线程仍然处于 BLOCKED 状态，但是中断标志位却已被修改。</p>
+<p>这种状态下的线程和处于 RUNNABLE 状态下的线程是类似的，给了我们程序更大的灵活性去判断和处理中断。</p>
+<h3 id="waitingtimed_waiting">WAITING/TIMED_WAITING</h3>
+<p>这两种状态本质上是同一种状态，只不过 TIMED_WAITING 在等待一段时间后会自动释放自己，而 WAITING 则是无限期等待，需要其他线程调用类似 notify 方法释放自己。但是他们都是线程在运行的过程中由于缺少某些条件而被挂起在某个对象的等待队列上。</p>
+<p>当这些线程遇到中断操作的时候，会抛出一个 InterruptedException 异常，并清空中断标志位。例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * 下面代码输出
+</span><span style="color:#75715e"> * WAITING
+</span><span style="color:#75715e"> * false
+</span><span style="color:#75715e"> * catch InterruptedException
+</span><span style="color:#75715e"> * false
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyThread</span> <span style="color:#66d9ef">extends</span> Thread<span style="color:#f92672">{</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">(){</span>
+        <span style="color:#66d9ef">synchronized</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">){</span>
+            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+                wait<span style="color:#f92672">();</span>
+            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;catch InterruptedException&#34;</span><span style="color:#f92672">);</span>
+
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+        Thread thread <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MyThread<span style="color:#f92672">();</span>
+        thread<span style="color:#f92672">.</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+
+        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>1000<span style="color:#f92672">);</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">getState</span><span style="color:#f92672">());</span>
+
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">());</span>
+        thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupt</span><span style="color:#f92672">();</span>
+        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>1000<span style="color:#f92672">);</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>thread<span style="color:#f92672">.</span><span style="color:#a6e22e">isInterrupted</span><span style="color:#f92672">());</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>从运行结果看，当线程启动之后就被挂起到该线程对象的等待队列上，然后我们调用 interrupt()方法对该线程进行中断，输出了我们在 catch 中的输出语句，显然是捕获了 InterruptedException 异常，接着就看到该线程的中断标志位被清空。</p>
+<p>因此我们要么就在 catch 语句中结束线程，否则就在 catch 语句中加上 this.interrupt();，再次设置标志位，这样也方便在之后的逻辑或者其他地方继续判断。</p>
+<h2 id="总结">总结</h2>
+<p>我们介绍了线程在不同状态下对于中断请求的反应：</p>
+<ol>
+<li>NEW 和 TERMINATED 对于中断操作几乎是屏蔽的。</li>
+<li>RUNNABLE 和 BLOCKED 类似，对于中断操作只是设置中断标志位并没有强制终止线程，对于线程的终止权利依然在程序手中。</li>
+<li>WAITING 和 TIMED_WAITING 状态下的线程对于中断操作是敏感的，他们会抛出异常并清空中断标志位。</li>
+</ol>
+<p>因为中断是通过抛出 InterruptedException 的形式完成的，所以 RUNNABLE 和 BLOCKED 状态的线程，在调用 Thread.interrupt()时候不会抛出异常，例如 RUNNABLE 状态的线程可能只在执行 i++，这条语句如何抛出异常？而 BLOCKED 的线程正阻塞在 synchronized(this)，该语句也无法抛出异常？但是 WAITING 状态的线程是调用了 wait()，而该函数的签名抛出了 InterruptedException，而该异常是 Exception 的子类，是受检异常</p>
+
+  
+  
+<style>
+  ul.share-buttons {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul.share-buttons li {
+    display: inline;
+  }
+
+  ul.share-buttons .sr-only {
+    position: absolute;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0;
+    border: 0;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+  }
+</style>
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1-24" style="text-align: left;">
+    
+    <a href="https://xiaozhujesus.github.io/post/java-futuretask/"><i class="fa fa-chevron-left"></i></a>
+    
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="prev">
+      <a href="https://xiaozhujesus.github.io/post/java-futuretask/">Java FutureTask</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-2-24">
+    &nbsp;
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="next">
+      <a href="https://xiaozhujesus.github.io/post/cap/">CAP</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-1-24" style="text-align: right;">
+    
+    <a href="https://xiaozhujesus.github.io/post/cap/"><i class="fa fa-chevron-right"></i></a>
+    
+  </div>
+</div>
+
+
+
+  
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
+
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'Your Disqus shortname';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+</div>
+
+</div>
+</div>
+<script src="https://xiaozhujesus.github.io/js/ui.js"></script>
+<script src="https://xiaozhujesus.github.io/js/menus.js"></script>
+
+
+<script>
+  
+  if (window.location.hostname != "localhost") {
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'Your Google Analytics tracking ID', 'auto');
+    ga('send', 'pageview');
+  }
+</script>
+
+
+
+
+
+
+
+</body>
+</html>
+

@@ -240,13 +240,13 @@
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/virtualization/">Virtualization</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/">TCP常见异常与原因</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>29 Mar 2020, 10:34</time>
+    <time>01 May 2020, 09:08</time>
   </div>
 
   
@@ -260,45 +260,17 @@
   </header>
 
   <p>
-  分以下 4 个方面介绍虚拟化内容
- 虚拟化基础 内存虚拟化 CPU 虚拟化 设备虚拟化  
-  </p>
-
-  
-</article>
-
-  
-    <article>
-  <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/lock/">Lock</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>28 Mar 2020, 11:34</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  P1 P2     modify struct(A); wait for mod;    use struct(A);    假设只有 read/write 原子操作指令，能实现上面的两个进程的需求么？可以的 使用一个共享变量解决，flag = 0;//int
-   P1 P2     mod(A) while (flag == 0 );   flag = 1;//signal P2 use(A)    flag = 0;//re-init    注意上面的所有操作都是 read/write 内存访问，都是原子操作；flag 变量是同步变量，struct A 是普通数据
-原子操作 看一个简单互斥锁的实现
-lock(L): if(L == 0) &lt;--- L = 1; | else | while(L==1); | //wait | go back; ------ unlock(L): L = 0; 只用原子 read/write 操作可以实现上面的互斥锁么？注意，上面的 if(L == 0) L = 1;实际上需要 3 条指令来完成，首先从内存读变量 L，然后检查是否为 0，如果是，向内存位置 L 存入新的值 1；这 3 条指令必须以原子不可分的方式执行才能保证算法的正确性；虽然单个的 read/write 操作是原子的，但是一组 read/write 操作就不是原子的了；所以为了正确实现互斥锁，我们需要新的原子指令，语意为从内存读数据，然后修改，最后写回内存（read,modify,write，简称 rmw）
+  TCP 特点  可靠性，通过 ack 实现，如果没有收到 ack，tcp 自动重传数据并等待更长时间，数次重传失败后，才会放弃然后会向应用层返回一个错误 含有持续估算 RTT 的算法，以便知道等待一个 ack 需要多久 有序和幂等，数据流中每个字节都关联一个序号，接收端会根据序号对数据包重排序，将有序数据传递给应用层；收到来自对端的重复数据（根据序号判断），直接丢弃重复数据 流量控制，告知对端自己的接收窗口大小，即接收缓冲区当前可用容量 拥塞控制，防止网络中流量过大导致路由器丢包 全双工，因此 tcp 必须为每个方向上跟踪数据流序号和窗口大小等状态信息  3 次握手，4 次挥手
+状态转换图
+3 次握手建立连接 client 需要告知对方在即将要建立的连接上，发送数据的初始序列号，通过 syn 包完成，而可靠性需要对该包进行 ack；由于是双工，server 也一样需要这两个包，server 对 client 的 ack 和其对 client 的 syn 可以合并在一起，因此三次握手；
+另外，需要 ack 的包都是消耗序列号的，不论是 syn 还是 fin，还是有效数据，ack 本身不消耗序列号，因为 ack 本身不需要 ack
+4 次挥手断开连接 主动结束端发送 fin 包，被动结束端对其进行 ack；双工各自结束不影响，因此每个方向的结束都需要这两个包，因此通常需要 4 个包；使用通常是因为，第一个 fin 包可能随数据包一起发送；另外，被动关闭一方的 ack 可能和其 fin 一起发送
+发送 fin 包是应用进程调用 shutdown 或者 close 函数导致的，不过当一个 unix 进程不论自愿（调用 exit 或者 main 结束了）还是非自愿（被信号 kill 了），所有打开的描述符都被关闭，这也会导致任何打开的 tcp 连接上发送一个 fin
   </p>
 
   
   <footer>
-    <a href="https://xiaozhujesus.github.io/post/lock/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
@@ -306,13 +278,13 @@ lock(L): if(L == 0) &lt;--- L = 1; | else | while(L==1); | //wait | go back; ---
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/shared-memory-machine-model/">Shared Memory Machine Model</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/%E5%85%B1%E8%AF%86%E4%B8%8E%E4%B8%80%E8%87%B4%E6%80%A7/">共识与一致性</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>26 Mar 2020, 11:51</time>
+    <time>24 Apr 2020, 19:24</time>
   </div>
 
   
@@ -326,16 +298,55 @@ lock(L): if(L == 0) &lt;--- L = 1; | else | while(L==1); | //wait | go back; ---
   </header>
 
   <p>
-  介绍 3 种不同结构的共享内存机器模型，共享内存意思是每个 CPU 都可以访问所有内存空间，但缓存是每个 CPU 独有的，无法相互访问
-Dance Hall Architecture SMP Architecture Symmetric Multiprocessor，对称是因为每个 cpu 的访存时间相同，
-Distributor Shared Memory Architecture 每个 CPU 有一个关联的内存，每个 CPU 都可以通过系统总线访问到其他 CPU 关联的内存，但是访问自己的内存比较快
-Shared Memory And Caches 这里以 SMP 架构为例进行讲解。
-单 CPU 架构下，CPU 访问内存时，首先访问 cache，如果 cache 命中，则直接访问，否则访问内存，同时将结果缓存在 cache 中；多 CPU 架构下 cache 的作用与单 CPU 一样，但是有个问题就是 cache 是 CPU 私有的，memory 是 CPU 共享的，假设内存有个热点变量 var 值为 y，缓存在所有 CPU 的 cache 中，当 cpu1 对私有 cache 中的 var 修改时，假设修改后的值为 x，那么所有 CPU 的 cache 中的 var 现在都应该是 x，这点应该由谁来保证呢？
+  本文介绍二者的区别与联系
+一致性 分布式系统中的多个节点，针对其维护的数据，在约定协议的保证下，使其对外界呈现的值是一致的；一致性大致分为：
+ 严格一致性 强一致性 弱一致性 最终一致性  其中强一致性又分为顺序一致性和线性一致性
+共识 共识是分布式系统中多个节点之间，彼此对某个变量达成一致值的过程；实践中，要保障系统满足不同程度的一致性，往往需要通过共识算法来完成
+共识算法 共识算法主要解决分布式系统中，对于某个提案，多个节点达成一致意见的过程；而提案的含义在分布式系统中非常广泛，例如多个事件发生的顺序，某个键对应的值，哪个节点是 leader 等；可以粗略认为任何可以达成一致的信息都可以是提案；对于分布式系统而言，每个节点都是确定性状态机模型（亦称为状态机复制问题，state-machine-replication），从相同的初始状态开始，接受相同顺序的指令，则可以保证相同的结果状态；因此系统中最关键的是，对发生的多个事件的顺序达成共识，即排序；
+根据解决的是拜占庭错误还是非拜占庭错误情况，共识算法可以分为 Crash Fault Tolerance(CFT)和 Byzantine Fault Tolerance(BFT)类算法
+CFT 算法 包括 Paxos，Raft，及其变种，这类容错算法性能比较好，处理较快，容忍不超过一半的故障节点
+BFT 算法 对于要容忍拜占庭错误的情况
+共识与一致性的区别 一致性指分布式系统多个副本对外呈现的数据状态，描述了多个节点对数据状态的维护能力；共识则表示分布式系统中多个节点间，彼此对某个提案达成一致意见的过程；因此一致性描述的是状态，共识是过程手段；达成共识并不意味着保证了一致性（强一致），只能说共识机制实现了某种程度上的一致性
+  </p>
+
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/paxos/">Paxos</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>24 Apr 2020, 19:16</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  共识问题的要求  safety   只能选择已经被提出的值 最终只有一个提案值被选定，但是节点可以选择临时的提案值   liveness   所有正常节点可以在有限时间内对单个提案达成共识，并且系统可以持续对外提供服务  FLP 定理 异步系统中的一组进程无法对一个布尔类型的值达成共识，即使只有单个进程出现未知的故障，核心问题是异步
+定理指出：在异步系统中，不可能保证 safety 和 liveness 两个性质同时满足，即使出现一点未知的故障；但是定理没有说明，我们可以有多接近同时满足这两个性质
+备份状态机 通常使用日志备份实现，所有 server 以相同的顺序执行相同的命令，这样如果每个 server 的初始状态相同，那么最终状态也相同；日志备份是关键，需要保证每个 server 上的日志内容一致，使用共识算法对日志的第 i 条记录应该是什么命令达成共识
+Paxos completely-safe 并且 largely-live 的共识协议
+Basic Paxos  提案：例如，日志的第 i 条记录是什么命令 提案值：例如，日志的第 i 条记录是 x=1，即将 x 的值赋值为 1  基本 paxos 是指对单提案达成共识，例如，日志第 10 条记录应该是 x=1
+ 一个或者多个节点可以针对相同的提案提出自己的提案值 只有一个提案值可以被最终选定  Multi Paxos 对日志文件的不同记录，使用不同的 Basic Paxos 来确定相应记录的值
+系统角色：  Proposers：处理 client 请求，提出提案，并根据 acceptor 的响应最终决定 commit 还是开启新一轮提案 Acceptors：响应 Proposers 提出的提案，accept/reject；本地记录决策过程；主动学习被选择的提案值  每个节点可以实现超过一种角色，实际实现中，某个节点通常同时实现 2 种角色
   </p>
 
   
   <footer>
-    <a href="https://xiaozhujesus.github.io/post/shared-memory-machine-model/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/paxos/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
@@ -343,13 +354,13 @@ Shared Memory And Caches 这里以 SMP 架构为例进行讲解。
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/synchronization/">OS Synchronization</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/3-pc/">3-PC</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>24 Mar 2020, 07:59</time>
+    <time>24 Apr 2020, 18:43</time>
   </div>
 
   
@@ -363,7 +374,10 @@ Shared Memory And Caches 这里以 SMP 架构为例进行讲解。
   </header>
 
   <p>
-  共享内存模型下的同步元语  互斥锁（mutual exclusive lock）：同时最多只能有一个线程使用 条件变量（condition variable）：阻塞等待被条件满足，得到通知 信号量（semaphores）： 共享锁（shared lock）：多个线程可以同时使用，通常是读锁 屏障（barrier）：所有线程都到达，才能继续执行  后面我们每个分别讨论
+  3-PC 是对 2-PC 的改进，将 2-PC 中的第一阶段拆分为两个阶段，CanCommit 和 PreCommit 如下：
+CanCommit 阶段  协调者向所有参与者发送一个包含事务的 CanCommit 请求，并等待 ack； 参与者收到该请求后，会尝试锁定执行事务所需相关资源，如果锁定成功，则返回 yes；否则返回 no  PreCommit 阶段 协调者根据响应决定是否进行 preCommit 操作，分为两种情况：
+ 收到的都是 yes   协调者向所有参与者发送 preCommit 请求 参与者接收到 preCommit 请求后，执行事务，记录 undo 和 redo 日志 执行成功，返回 yes 给协调者  收到有 no 的响应或者等待超时   协调者向所有参与者发送 abort 请求 参与者无论是收到协调者的 abort 请求，还是等待协调者的请求超时，都会 abort 事务 向协调者发送 no 响应  DoCommit 阶段 协调者根据上一阶段的响应决定是否 doCommit
+ 收到了所有参与者的 yes   向所有参与者发送 doCommit 请求 所有参与者收到 doCommit 后，commit 事务，返回 ack 给协调者  收到了 no 或者等待某些参与者的上一阶段响应超时了   向所有参与者发送 abort 请求 所有参与者收到 abort 后，abort 事务，返回 ack 给协调者  注意，协议规定当进入第 3 阶段时候，参与者只要没有收到 abort，就会对事务进行 commit，不论是等待协调者超时，还是收到 commit 指令
   </p>
 
   
@@ -372,13 +386,13 @@ Shared Memory And Caches 这里以 SMP 架构为例进行讲解。
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Sequential Consistency</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/2-pc/">2-PC</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>20 Mar 2020, 09:24</time>
+    <time>24 Apr 2020, 16:09</time>
   </div>
 
   
@@ -392,17 +406,51 @@ Shared Memory And Caches 这里以 SMP 架构为例进行讲解。
   </header>
 
   <p>
-  顺序一致性不具有完全可用性或强可以用性（totally or sticky available）。 如果发生网络分区，则某些或所有节点将无法前进。
-顺序一致的系统中的一个进程可能比其他进程领先或落后。 例如，他可以读取任意陈旧状态。 但是，一旦进程 A 观察到了来自进程 B 的某些操作，就永远无法观察到 B 之前的状态。再加上 total order 属性，使得顺序一致性对于程序员来说成为了很强的模型。
-当您需要实时约束时，请使用 linearizability；如果您需要 total availability，而又不需要 total order，请尝试因果一致性（causal consistency）。
-莱斯利·兰珀特（Leslie Lamport）在 1979 年的论文《如何制造能正确执行多进程程序的多处理器计算机》中定义了顺序一致性。 他使用“顺序一致”：
-the result of any execution is the same as if the operations of all the processors were executed in some sequential order, and the operations of each individual processor appear in this sequence in the order specified by its program
-上述定义中隐含了 SMP 系统可能不满足顺序一致性
+  2PC，即 Two-Phrase Commit 的缩写，是一种一致性协议，首先在数据库领域解决备份一致性问题，有两类角色，协调者和参与者，协议内容如下
+prepare 阶段  协调者向所有参与者发送事务内容，等待响应； 协调者收到事务内容，执行事务，并记录 redo 和 undo 日志 协调者将事务执行结果反馈给协调者，如果事务执行成功，返回 yes 响应；否则返回 no 响应  commit 阶段 协调者根据所有参与者的响应来决定是否执行提交操作
+ 如果所有参与者反馈的都是 yes 响应，则通知所有参与者 commit 如果有参与者返回 no 响应，则通知所有参与者 rollback 如果有参与者在上一阶段没有响应，超时了，则通知所有参与者 rollback 等待参与者的 ack  所有节点都会记录操作日志
+两阶段提交的问题 单点问题 只有一个协调者，如果协调者挂了，整个系统不可用；协调者恢复后可以根据本地日志进行恢复，使系统达到一致的状态
+参与者挂了，系统也不可用 因为协调者等不到响应，超时会 rollback，无论提交什么事务，都无法完成执行；
+如果参与者在第一阶段挂了，分为两种情况：
+ 参与者在收到事务之前挂了 参与者在收到事务并且执行之后挂了 不论是哪种情况，协调者都收不到 ack，timeout 会 rollback，等故障节点恢复后，如果没有未完成事务，即第 1 中情况，整个系统是一致的，直接对外提供服务；如果发现有未完成事务，说明是第 2 种情况，向协调者询问事务结果，得到 rollback 的消息后，会 rollback 从而整个系统数据一致，然后对外提供服务  如果参与者在第二阶段挂了，也分两种情况：
+ 参与者在收到 commit 或者 rollback 之前挂了，没有收到消息，第二阶段没有 ack；而其他参与者收到消息执行了 commit 或者 rollback，并返回 ack； 参与者在收到消息并执行 commit 或者 rollback 后挂了，没有 ack；而其他参与者收到消息执行了 commit 或者 rollback，并返回 ack  不论是上述哪种情况，协调者发现有参与者没有 ack 后，都不会接受新的事务了，否则系统不一致；需要等到故障节点恢复，并且整个系统恢复到数据一致性后才对外提供服务；故障节点恢复时，发现没有未完成事务，说明是第 2 种情况，整个系统是数据一致的，系统直接对外提供服务；如果有未完成事务，会向协调者询问事务结果，并进行响应操作（commit 或者 rollback，第一阶段只可能是 rollback），从而使整个系统数据保持一致，然后提供服务
+  </p>
+
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/java-wait-notify/">Java Wait Notify</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>14 Apr 2020, 22:19</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  线程之间通过共享对象进行同步 public class Flag{ private volatile boolean hasDataToProcess = false; public boolean hasDataToProcess(){ return this.hasDataToProcess; } public void setHasDataToProcess(boolean hasData){ this.hasDataToProcess = hasData; } } 两个线程可以通过同一个 Flag 类的实例进行通信，线程 A 通过 setHasDataToProcess(true)方法通知线程 B 可以开始处理数据了，线程 B 通过 hasDataToProcess()方法知道可以开始处理数据了
+Busy Wait 上面的方法中，线程 B 会不断的调用 hasDataToProcess()方法查询是否可以开始处理数据，对于 CPU 资源而言是一种浪费
+while(!flag.hasDataToProcess()){ //do nothing... busy waiting } wait,notify,notifyAll 如果等待的时间很短，可以使用 busy wait 的方式，也叫自旋锁，这样可以避免由用户太陷入内核的开销（注意，由用户态陷入内核态，只是由用户态线程切换到对应的内核态线程，但还是这个执行流，注意是线程的切换，开销相对还能小一点；还有一种线程的切换是在进程内，一条执行流的内核线程阻塞了，所以调度同一进程内的另一个执行流执行，过程是由内核线程切换到另一个内核线程，然后由另一个内核线程切换到对应的用户态线程；通常说的上下文切换应该是进程的切换，开销最大，比切换线程开销大很多）；否则，让忙等线程让出 CPU 资源，等条件为真时候再次调度等待的线程运行，这样是比较合理的；Java 中的 wait，notify，notifyAll 提供了这样的功能
+wait(), notify(), and notifyAll()是 Object 对象提供的 native 方法，调用上面 3 个函数的时候需要首先获取同步对象的监视器锁，即必须在 synchronized 块中调用，调用 wait 函数，从而进入对象的 wait queue，此时线程处于 waiting 状态，同时释放当前获取到的锁，释放锁会导致唤醒 entry queue 中的 blocked 状态的线程（OS 的 mutex 提供这种功能）；wait queue 中的线程可以得到调度机会当其他线程调用对象上的 notify 或者 notifyAll 方法，注意，这两个方法不会释放锁，只是将 wait queue 中的线程放到 entry queue 中而已；notify 方法会将 wait queue 中的一个线程放到 entry queue，而 notifyAll 将所有 wait queue 中的线程放到 entry queue；当调用 notify 的线程退出 synchronized 代码块的时候，才会释放对象锁，而锁的释放会导致唤醒所有 entry queue 中的阻塞线程；这些线程开始竞争锁，竞争不到的重新阻塞
   </p>
 
   
   <footer>
-    <a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/java-wait-notify/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
@@ -410,13 +458,13 @@ the result of any execution is the same as if the operations of all the processo
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/ssl/">SSL</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/">线程模型</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>12 Mar 2020, 18:20</time>
+    <time>14 Apr 2020, 21:48</time>
   </div>
 
   
@@ -430,18 +478,49 @@ the result of any execution is the same as if the operations of all the processo
   </header>
 
   <p>
-  PKI，CA 和数字证书 PKI 就是 Public Key Infrastructure 的缩写，翻译过来就是公开密钥基础设施。它是利用公开密钥技术所构建的，解决网络安全问题的，普遍适用的一种基础设施;是一种遵循既定标准的密钥管理平台,它能够为所有网络应用提供加密和数字签名等密码服务及所必需的密钥和证书管理体系。
-PKI 既不是一个协议，也不是一个软件，它是一个标准，在这个标准之下发展出的为了实现安全基础服务目的的技术统称为 PKI。可以说 CA(认证中心)是 PKI 的核心，而数字证书是 PKI 的最基本元素
-CA 为保证用户之间在网上传递信息的安全性、真实性、可靠性、完整性和不可抵赖性
-CA 机构，又称为证书认证中心 (Certificate Authority) 中心，是一个负责发放和管理数字证书的第三方权威机构，它负责管理 PKI 结构下的所有用户(包括各种应用程序)的证书，把用户的公钥和用户的其他信息捆绑在一起，在网上验证用户的身份。CA 机构的数字签名使得攻击者不能伪造和篡改证书。
-认证中心主要有以下 5 个功能：
- 证书的颁发：接收、验证用户(包括下级认证中心和最终用户)的数字证书的申请。可以受理或拒绝 证书的更新：认证中心可以定期更新所有用户的证书，或者根据用户的请求来更新用户的证书 证书的查询：查询当前用户证书申请处理过程；查询用户证书的颁发信息，这类查询由目录服务器 ldap 来完成 证书的作废：由于用户私钥泄密等原因，需要向认证中心提出证书作废的请求；证书已经过了有效期，认证中心自动将该证书作废。认证中心通过维护证书作废列表 (Certificate Revocation List,CRL) 来完成上述功能。 证书的归档：证书具有一定的有效期，证书过了有效期之后就将作废，但是我们不能将作废的证书简单地丢弃，因为有时我们可能需要验证以前的某个交易过程中产生的数字签名，这时我们就需要查询作废的证书。  X.509 标准 &ldquo;SSL 证书&quot;这个词是一个相对较大的概念，整个 PKI 体系中有很多 SSL 证书格式标准。PKI 的标准规定了 PKI 的设计、实施和运营，规定了 PKI 各种角色的&quot;游戏规则&rdquo;，提供数据语法和语义的共同约定。x.509 是 PKI 中最重要的标准，它定义了公钥证书的基本结构，可以说 PKI 是在 X.509 标准基础上发展起来的
-SSL 公钥证书格式 1. 证书版本号(Version) 版本号指明X.509证书的格式版本，现在的值可以为: 1) 0: v1 2) 1: v2 3) 2: v3 也为将来的版本进行了预定义 2.
+  进程是资源管理的最小单位，线程是程序执行的最小单位。在操作系统设计上，从进程演化出线程，最主要的目的就是更好的支持 SMP 以及减小（进程/线程）上下文切换开销
+而线程模型主要有两种，一种是内核线程，一种是用户线程，分类依据是线程调度是在内核还是用户态，前者更利于并发使用多处理器的资源，而后者则更多考虑的是上下文切换开销；主流商用系统中，通常都将两者结合起来使用，既提供内核线程以满足 smp 系统的需要，也支持用线程库的方式在用户态实现另一套线程机制，此时一个内核线程同时成为多个用户态线程的调度者，调度器在用户态实现
+在核外实现的线程又可以分为&quot;一对一&rdquo;、&ldquo;多对一&quot;两种模型，前者用一个核心进程（也许是轻量进程）对应一个线程，将线程调度等同于进程调度，交给内核完成（Java），而后者则完全在核外实现多线程（golang），调度也在用户态完成。后者就是前面提到的单纯的用户级线程模型的实现方式，显然，这种核外的线程调度器实际上只需要完成线程运行栈的切换，调度开销非常小，但同时因为核心信号（无论是同步的还是异步的）都是以进程为单位的，因而无法定位到线程，所以这种实现方式不能用于多处理器系统
+Linux 内核只提供了轻量进程的支持，限制了更高效的线程模型的实现，但 Linux 着重优化了进程的调度开销，一定程度上也弥补了这一缺陷。目前最流行的线程机制 LinuxThreads 所采用的就是线程-进程&quot;一对一&quot;模型，调度交给核心，而在用户级实现一个包括信号处理在内的线程管理机制
+当初 Linux 被开发出来的时候，其内核并不真正地支持多线程。多线程最初是由 LinuxThreads 这个工程带入到 Linux 的,由于 clone 系统调用创建了调用进程的副本，而且可以和父进程共享地址空间；通过 clone，LinuxThreads 完全在用户空间模拟了线程。然而，这种方法有很多的缺陷，并没有符合 POSIX 的要求，特别是在信号处理，调度和进程间同步原语等方面
+为了改进 LinuxThreads，很明显需要内核的支持，而且需要重写线程库，红帽发起了 Native POSIX Thread Library，NPTL 项目，NPTL 采用了一对一的线程模型，即用户态线程与内核线程一一对应
+  </p>
+
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/java-volatile/">Java Volatile</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>12 Apr 2020, 10:25</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  volatile 关键字标记 Java 变量在 main memory 而不是 cache，每次读取从 main memory 读，每次更新写回 main memory，除此之外还有一些其他的保证，下面介绍下
+变量可见性问题 volatile 保证变量更新后的跨线程的可见性，看下面的例子：
+public class SharedObject { public int counter = 0; } 假设两个线程访问该变量，thread1 会更新变量，而 thread2 只读变量，如果变量 counter 不声明为 volatile，那么 thread1 对变量的更新不保证何时写回 main memory，更新可能只是存在 cache 中，所以此时 cache 和 main memory 中 counter 的值是不一致的；另外，即使 thread1 将新的值写回 main memory 了，由于 thread2 的所在 CPU 的 cache 中可能始终是旧值，所以也不一定能看到新的值
+Java volatile 可见性保证 volatile 用于保证变量可见性问题，声明为 volatile 的变量，所有对变量的更新都会写回 main memory，而且对变量的访问也会从 main memory 读取，对于上面的情况，将变量声明为 volatile 足够了，但是如果两个线程都要更新变量，只是将变量声明为 volatile 还不够，还需要同步
   </p>
 
   
   <footer>
-    <a href="https://xiaozhujesus.github.io/post/ssl/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/java-volatile/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
@@ -449,13 +528,13 @@ SSL 公钥证书格式 1. 证书版本号(Version) 版本号指明X.509证书的
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/ldap%E5%9F%BA%E7%A1%80/">Ldap基础</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/concurrency-model/">Concurrency Model</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>12 Mar 2020, 11:34</time>
+    <time>11 Apr 2020, 18:02</time>
   </div>
 
   
@@ -469,16 +548,27 @@ SSL 公钥证书格式 1. 证书版本号(Version) 版本号指明X.509证书的
   </header>
 
   <p>
-  LDAP是一款轻量级目录访问协议（Lightweight Directory Access Protocol,LDAP），基于X.500标准，且支持TCP/IP协议；默认以Berkeley DB作为后端数据库，对于一次写入、多次查询和搜索的操作能够提供较好的支持；基于C/S架构，非常适合用于实现账号的集中管理和维护。本文将对LDAP的基本概念、常用命令以及基本操作进行简要介绍
-基本概念 LDAP数据组织方式 LDAP默认使用Berkeley DB作为后端数据库，主要以散列的数据类型（如键值对）来组织数据。对于LDAP中的数据记录，Berkeley从中提取指定属性组来作为该记录的标识名（可定位到该记录的目录），并将这些属性按树状结构来组织，与关系型数据库相比，可显著提高查询性能。典型的LDAP的目录组织结构如下图所示：
-entry 条目，也称记录项，是LDAP中存储和组织数据的基本单元，对LDAP相关的增、删、改、查等操作都是以条目为基本单元的。例如，每一个用户的相关信息在LDAP中都是以条目的形式存储和使用的，包括该用户的标识名以及其他属性。每一个条目都有一个标识名（distinguished name,dn），用于在LDAP中唯一地标识该条目；LDAP中条目的标识名即是该条目的目录，例如，对于用户userA，其标识名为&quot;dn:uid=userA,ou=People,dc=zenandidi,dc=com&rdquo;。
-attribute 属性，用于描述条目包含的相关信息。LDAP中的属性可分为必要属性(MUST)和可选属性(MAY)两种，新建条目时，必须为必要属性赋值；除定义中指明&quot;SINGLE-VALUE&quot;外，默认情况下，属性可具有多个值。人员组织机构中有如下常见属性：
-   属性 描述 举例     uid (user id) 指用户的登录名称 uid=userA   cn (common name) 指用户的全名 cn=userA   sn (sur name) 指用户的姓氏 sn=wang   mail 指用户的邮箱地址 mail: userA@gmail.com   telephoneNumber 指用户的联系方式 telephoneNumber: 123456   ou (organizationalUnit) 指一个组织单位的名称 ou=people   dc (domain component) 指一个域名 dc=baidu,dc=com   c (country name) 指一个国家的名称 c: CN   rdn (relative dn) 指用户的相对标识名 uid=userA   objectClass 内置属性，该对象中包含的属性可供条目使用 objectClass: inetOrgPerson    objectClass LDAP中，一个条目(Entry)必须包含一个对象类(objectClass)属性，且需要赋予至少一个值。每一个值将用作一条LDAP条目进行数据存储的模板；模板中包含了一个条目必须被赋值的属性和可选的属性。通过组合不同的对象类，可方便的定义条目。
+  并发模型指定了系统中的线程如何协作完成给定的任务，不同的并发模型对给定任务的划分方式不同，通信和协作方式也不同；本文将会讨论几种并发模型
+并发模型和分布式系统的相似性 并发系统中，不同线程通信协作，分布式系统中，多个进程通信协作，这些进程可能在不同的计算节点上，所以通常你会看到不同的并发模型与对应的分布式系统架构有相似之处；当然分布式系统还面临其他问题，比如网络不通，节点上的进程挂了
+共享状态 vs 分离状态  并发模型比较重要的方面就是决定线程之间是否共享数据，当共享状态时候，就要考虑竞争和死锁等问题，当然也由线程如何使用共享变量来决定
+分离状态，线程之间不共享任何数据，这种情况线程间需要通信，交换不可变对象或者交换数据的副本，因此当两个线程更新数据，由于数据是副本，每个线程都有各自的，所以可以避免大部分并发问题
+状态分离的并发模型通常来说更容易实现，因为对数据的操作没有竞争，不需要考虑并发访问问题，但是需要从整体仔细考虑应用的设计，但这也是值得的，下面开始介绍几种并发模型
+parallel worker 并发模型 新任务会被分发给不同的 worker，如下图所示
+delegator 会将新的任务分发给不同的 worker，每个 worker 会从头到尾完成完整的任务，并且是并发完成的（包括并行），java.util.concurrent 工具包中的许多并发工具都设计用于这种模型
+parallel worker 模型的优势 好理解，容易扩展，增加并行性只需要增加 worker 即可
+parallel worker 模型的劣势 简单，容易理解的背后也隐藏着一些缺点
+共享状态会让事情变得复杂 大多数情况下，parallel worker 模型要比上面介绍的复杂，worker 间在完成整个任务期间总是会访问或更新共享状态，要么是内存，或者是数据库，如下图所示：
+只要存在多线程共享状态的情况，线程就需要以确保一个线程对共享数据的更新对其他线程可见的方式访问共享数据（将其刷新到主内存中，而不仅仅是缓存在执行该线程的 CPU 的 cache 中），同时线程需要避免竞争条件，死锁和许多其他共享状态并发问题。
+另外，当线程访问共享数据，相互等待时，并行度会降低，许多共享数据结构是阻塞的，导致某一时刻最多只有有限数量的线程可以访问，而且这样会导致多线程激烈的竞争，激烈的竞争会浪费总线资源，而且某种程度上将导致失去并发，而是顺序执行
+非阻塞算法可以降低竞争，提升性能，但是非阻塞算法很难实现
+不可变数据结构是另一种选择，其实是多版本；不可变数据结构在修改后始终保留其自身的先前版本。 因此，如果多个线程持有相同的不可变数据结构的引用，并且一个线程对其进行了修改，则修改线程将获得对新结构的引用。 所有其他线程保留对旧结构的引用，该旧结构仍保持不变，因此是一致的
+这也存在一些问题，例如，一个不可变 list 会将所有新元素添加到 list 的开头，并返回对新添加元素的引用（该引用随后指向列表的其余部分）。 所有其他线程仍保留对 list 中先前第一个元素的引用，并且对这些线程而言，列表保持不变，他们看不到新添加的元素。
+这样的不可变 list 被实现为 linked list。 不幸的是，list 在现代硬件上的表现不佳。 list 中的每个元素都是一个单独的对象，这些对象可以分布在整个计算机的内存中。 现代 CPU 顺序访问数据的速度要快得多，因此在现代硬件上，使用 arraylist 实现的 list 中可以获得更高的性能，因为数组顺序存储数据。 CPU 高速缓存可以一次将更大的 array 加载到高速缓存中，并让 CPU 在加载后直接访问 CPU 高速缓存中的数据。 对于 linked list，其元素是分散在整个 RAM 上的，所以实际不可能完全将 list 的所有元素都加载到 cache 中
   </p>
 
   
   <footer>
-    <a href="https://xiaozhujesus.github.io/post/ldap%E5%9F%BA%E7%A1%80/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/concurrency-model/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
@@ -486,13 +576,13 @@ attribute 属性，用于描述条目包含的相关信息。LDAP中的属性可
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/ldap%E5%AE%89%E8%A3%85/">Ldap安装</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/java-memory-model/">Java Memory Model</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>12 Mar 2020, 11:02</time>
+    <time>11 Apr 2020, 10:55</time>
   </div>
 
   
@@ -506,64 +596,18 @@ attribute 属性，用于描述条目包含的相关信息。LDAP中的属性可
   </header>
 
   <p>
-  安装前环境准备 在安装OPENLDAP之前需要关闭防火墙
-[wz]# systemctl stop firewalld.service [wz]# systemctl disable firewalld.service OPENLDAP-servers安装及配置 安装 [wz]# yum install -y openldap-servers 配置  配置管理员密码  [wz]# slappasswd -s passwd {SSHA}2e1yDU9g9VSc8UArkfpi5KsjT9mSZxCN 修改配置文件  olcDbDirectory：指定ldap数据库的路径；
-olcSuffix：指定管理员管理的目录树根域；
-olcRootDN：指定管理员dn；
-olcRootPW：该字段需要自行添加，用于指定管理员密码，将上一步生成的加密字符串添加在这一行；
-[wz]# vim /etc/openldap/slapd.d/cn\=config/olcDatabase\=\{2\}hdb.ldif # AUTO-GENERATED FILE - DO NOT EDIT!! Use ldapmodify. # CRC32 1763c834 dn: olcDatabase={2}hdb objectClass: olcDatabaseConfig objectClass: olcHdbConfig olcDatabase: {2}hdb olcDbDirectory: /var/lib/ldap olcSuffix: dc=com olcRootDN: cn=Manager,dc=com olcRootPW: {SSHA}2e1yDU9g9VSc8UArkfpi5KsjT9mSZxCN olcDbIndex: objectClass eq,pres olcDbIndex: ou,cn,mail,surname,givenname eq,pres,sub structuralObjectClass: olcHdbConfig entryUUID: b5baf318-0bee-1039-9713-29cc6215f8f1 creatorsName: cn=config createTimestamp: 20190516062222Z entryCSN: 20190516062222.
+  Jvm 是一个完整的计算机模型，因此自然包括内存模型（类似 Linux 下的虚拟内存模型），而 JMM 说明了 Jvm 如何使用物理机的内存的
+写正确的并发代码需要理解 Java 内存模型，Java 内存模型说明了不同线程如何，何时可以观察到对共享变量的修改，以及如何同步对共享变量的访问，下面介绍的内存模型直到 Java8
+Jvm 使用的 Java 内存模型将内存划分为堆和栈，下图展示了 JMM 的逻辑视图
+每个线程有自己的调用栈，每次调用方法就会产生新的栈帧，每个栈帧中包含方法的局部变量，线程只能访问自己的栈帧，而且局部变量对其他线程不可见，因此即使两个线程执行相同的方法，但由于有各自的栈帧，因此局部变量也是各自版本的，而且无法相互访问；
+所有基本类型的局部变量都存储在栈上（boolean, byte, short, char, int, long, float, double），所有对象都存储在堆上，包括基本类型的包装类，局部变量也可能是对象引用，这种情况引用变量存储在栈上，引用的对象存储在堆上；对象的成员变量存储在堆上，不论成员变量是基本数据类型还是引用数据类型；static 类变量也存储在堆上，
+硬件内存架构 硬件内存架构与 Java 内存模型不同，理解硬件内存架构也很重要，这样可以理解 Java 内存模型是如何与硬件内存架构一起工作的，下面描述一般的硬件内存架构，SMP，如下图：
+现代计算机通常有两个或多个 CPU，每个 CPU 有可能有多个 core，每个 core 可以运行一个线程，这些线程完全是并行运行的（区分并发），距离 CPU 越近的存储，CPU 在上面完成操作的速度越快，cache 通常是多级的，这里我们不关心这个，关键是要理解是存在 cache 层的，而且 cache 和 register 是 CPU 私有的，main memory 是 CPU 共享的，当需要访问数据时候，首先从 register 中找，如果不明中，从 cache 中找，如果不明中，从 memory 中找，之后将结果缓存在 cache 中；当操作完成需要写回结果时，首先将 register 中的结果写到 cache 中，之后在某个时间点例如 cache 中的空间不足时候，将结果刷回 main memory；每次 cache 更新不需要操作全部 cache，而是以 cache line 为单位进行更新
   </p>
 
   
   <footer>
-    <a href="https://xiaozhujesus.github.io/post/ldap%E5%AE%89%E8%A3%85/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
-  </footer>
-  
-</article>
-
-  
-    <article>
-  <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/logical-vector-clock/">Logical-Clock和Vector-Clock</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>01 Mar 2020, 19:12</time>
-  </div>
-
-  
-
-  
-
-  
-  
-  
-  <div>
-    <i class="fa fa-tags fa-fw"></i>
-    
-      <a class="post-taxonomy-tag" href="https://xiaozhujesus.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
-    
-  </div>
-  
-  
-
-</div>
-
-  </header>
-
-  <p>
-  早在在 1978 年，Leslie Lamport 就提出逻辑时钟的概念。在分布式环境中，通过一系列规则来定义逻辑时钟的变化。从而能通过逻辑时钟来对分布式系统中的事件的先后顺序进行判断。
-逻辑时钟本质上定义了一种 happen before 关系，记作-&gt;，a-&gt;b 意味着所有的进程都“认可”事件 a 发生在事件 b 之前。happen before 关系满足传递性：即(a-&gt;b &amp;&amp; b-&gt;c)可以推导出(a-&gt;c)。
-Logical Clock lamport 逻辑时钟算法：
- 每个事件对应一个 Lamport 时间戳，初始值为 0 如果事件在节点内发生，时间戳加 1 如果事件属于发送事件，时间戳加 1 并在消息中带上该时间戳 如果事件属于接收事件，时间戳 = Max(本地时间戳，消息中的时间戳) + 1  三个机器上各自跑着一个进程，分别为 P1,P2,P3，由于不同的机器上的物理时钟、CPU 负载、或者 CPU 频率不一样，所以不同的机器上的时钟速率可能是不同的，例当 P1 所在的机器 tick 了 6 次，P2 所在的机器 tick 了 8 次，就是异步网络中指的漂移时钟不同。
-图中，P1 给 P2 发送了消息 m1，m1 上附带了发送 m1 时的时钟 6，随后 P2 收到了 m1，根据 P2 接收到 m1 时的时钟，认为传输消息花了 16-6=10 个 tick，随后，P3 给 P2 发送消息 m3，m3 附带的发送时钟是 60。由于 P2 的时钟走的比 P3 的慢，所以接收到 m3 时，本机的时钟 56 比发送时钟 60 小，这是不合理的，需要调整时钟，如图中，将 P2 的 56 调整为 61，即 m3 的发送时钟加 1。
-  </p>
-
-  
-  <footer>
-    <a href="https://xiaozhujesus.github.io/post/logical-vector-clock/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/java-memory-model/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
@@ -577,9 +621,9 @@ Logical Clock lamport 逻辑时钟算法：
   
   <a href="https://xiaozhujesus.github.io/"><i class="fa fa-chevron-left"></i></a>
   
-  <span>&nbsp;2 / 2&nbsp;</span>
+  <span>&nbsp;2 / 4&nbsp;</span>
   
-  <i class="fa fa-chevron-right"></i>
+  <a href="https://xiaozhujesus.github.io/page/3/"><i class="fa fa-chevron-right"></i></a>
   
 </nav>
 

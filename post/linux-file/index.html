@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="generator" content="Hugo 0.65.3" />
 
-  <title>线程模型 &middot; Stay Foolish, Stay Hungry!</title>
+  <title>Linux File &middot; Stay Foolish, Stay Hungry!</title>
 
     
 
@@ -224,7 +224,7 @@
 
 
 <div class="header">
-  <h1>线程模型</h1>
+  <h1>Linux File</h1>
   <h2></h2>
 </div>
 <div class="content">
@@ -233,7 +233,7 @@
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>14 Apr 2020, 21:48</time>
+    <time>21 May 2020, 08:00</time>
   </div>
 
   
@@ -244,12 +244,59 @@
 
 </div>
 
-  <p>进程是资源管理的最小单位，线程是程序执行的最小单位。在操作系统设计上，从进程演化出线程，最主要的目的就是更好的支持 SMP 以及减小（进程/线程）上下文切换开销</p>
-<p>而线程模型主要有两种，一种是内核线程，一种是用户线程，分类依据是线程调度是在内核还是用户态，前者更利于并发使用多处理器的资源，而后者则更多考虑的是上下文切换开销；主流商用系统中，通常都将两者结合起来使用，既提供内核线程以满足 smp 系统的需要，也支持用线程库的方式在用户态实现另一套线程机制，此时一个内核线程同时成为多个用户态线程的调度者，调度器在用户态实现</p>
-<p>在核外实现的线程又可以分为&quot;一对一&rdquo;、&ldquo;多对一&quot;两种模型，前者用一个核心进程（也许是轻量进程）对应一个线程，将线程调度等同于进程调度，交给内核完成（Java），而后者则完全在核外实现多线程（golang），调度也在用户态完成。后者就是前面提到的单纯的用户级线程模型的实现方式，显然，这种核外的线程调度器实际上只需要完成线程运行栈的切换，调度开销非常小，但同时因为核心信号（无论是同步的还是异步的）都是以进程为单位的，因而无法定位到线程，所以这种实现方式不能用于多处理器系统</p>
-<p>Linux 内核只提供了轻量进程的支持，限制了更高效的线程模型的实现，但 Linux 着重优化了进程的调度开销，一定程度上也弥补了这一缺陷。目前最流行的线程机制 LinuxThreads 所采用的就是线程-进程&quot;一对一&quot;模型，调度交给核心，而在用户级实现一个包括信号处理在内的线程管理机制</p>
-<p>当初 Linux 被开发出来的时候，其内核并不真正地支持多线程。多线程最初是由 LinuxThreads 这个工程带入到 Linux 的,由于 clone 系统调用创建了调用进程的副本，而且可以和父进程共享地址空间；通过 clone，LinuxThreads 完全在用户空间模拟了线程。然而，这种方法有很多的缺陷，并没有符合 POSIX 的要求，特别是在信号处理，调度和进程间同步原语等方面</p>
-<p>为了改进 LinuxThreads，很明显需要内核的支持，而且需要重写线程库，红帽发起了 Native POSIX Thread Library，NPTL 项目，NPTL 采用了一对一的线程模型，即用户态线程与内核线程一一对应</p>
+  <p>大多数文件 IO 用到 5 个函数，这些函数是系统调用而不是库函数，会陷入内核</p>
+<ul>
+<li>open</li>
+<li>read</li>
+<li>write</li>
+<li>lseek</li>
+<li>close</li>
+</ul>
+<h2 id="open">open</h2>
+<p>必选项如下：</p>
+<ul>
+<li>O_RDONLY</li>
+<li>O_WRONLY</li>
+<li>O_RDWR</li>
+<li>O_EXEC</li>
+<li>O_SEARCH</li>
+</ul>
+<p>可选项如下：</p>
+<ul>
+<li>O_APPEND</li>
+<li>O_CLOEXEC</li>
+<li>O_CREAT</li>
+<li>O_DIRECTORY</li>
+<li>O_EXCL</li>
+<li>O_NOFOLLOW</li>
+<li>O_NOBLOCK</li>
+<li>O_TRUNC</li>
+<li>O_SYNC</li>
+<li>O_DSYNC</li>
+<li>O_RSYNC</li>
+</ul>
+<p>这里主要说下可选项的后三个</p>
+<h3 id="o_sync">O_SYNC</h3>
+<p>每次 write 等待物理 IO 操作完成，包括由该 write 引起的文件属性更新所需要的 IO</p>
+<h3 id="o_dsync">O_DSYNC</h3>
+<p>每次 write 要等待物理 IO 操作完成，但是如果该写操作并不影响读取刚写入的数据，则不需要等待文件属性被更新</p>
+<p>O_DSYNC 与 O_SYNC 有微妙的区别，仅当文件属性需要更新以反映文件数据变化时候，例如更新文件大小以反应文件中有更多数据，就可以看出二者的区别；设置 O_SYNC 后文件数据和属性总是同步更新，而 O_DSYNC 选项，当使用 write 重写文件现有部分内容时候，文件时间属性不会同步更新，但是会更新，只是 write 返回时候只是保证数据被更新了，而文件元数据则会在稍后某个时间更新</p>
+<h3 id="o_rsync">O_RSYNC</h3>
+<p>使得每个以文件描述符为参数的 read 操作等待，直至所有对文件同一部分挂起的写操作都完成</p>
+<p>Solaris 支持所有这 3 个选项，而 Linux 处理 O_RSYNC 与处理 O_SYNC 相同</p>
+<h2 id="close">close</h2>
+<p>关闭一个打开的文件，进程终止时候，内核会自动关闭它所有打开的文件</p>
+<h2 id="lseek">lseek</h2>
+<p>每个打开的文件都有一个与其关联的当前文件偏移量，通常，读写操作都从当前文件偏移量开始，并使偏移量增加所读写的字节数；默认情况，除非指定 O_APPEND 选项，否则当 open 一个文件时候，文件偏移量被设置为 0</p>
+<p>文件偏移量可以大于文件当前长度，这种情况下，对该文件的下一次写操作会在当前偏移量基础上加上写入字节数，文件中形成空洞，文件中没有写过的字节，read 时候会得到 0 值，文件空洞在磁盘上并不占用磁盘空间，对于新写的数据需要分配新的磁盘块，空洞不需要磁盘块</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ ls -ls hole nohole
+<span style="color:#ae81ff">8</span>  -rw-r--r-- sar <span style="color:#ae81ff">16394</span> Nov <span style="color:#ae81ff">25</span> 01:01 hole
+<span style="color:#ae81ff">20</span> -rw-r--r-- sar <span style="color:#ae81ff">16394</span> Nov <span style="color:#ae81ff">25</span> 01:01 nohole
+</code></pre></div><p>-s 选项可以查看磁盘块占用，可以看到有空洞的文件只占用了 8 个块</p>
+<h2 id="read">read</h2>
+<p>读操作从文件当前偏移量开始，成功返回之前，该偏移量将增加实际读到的字节数</p>
+<h2 id="write">write</h2>
+<p>写操作从文件当前偏移量开始，如果打开文件时候指定了 O_APPEND 选项，则每次写之前将偏移量设置在文件当前结尾处</p>
 
   
   
@@ -280,13 +327,13 @@
 <div class="prev-next-post pure-g">
   <div class="pure-u-1-24" style="text-align: left;">
     
-    <a href="https://xiaozhujesus.github.io/post/java-volatile/"><i class="fa fa-chevron-left"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/"><i class="fa fa-chevron-left"></i></a>
     
   </div>
   <div class="pure-u-10-24">
     
     <nav class="prev">
-      <a href="https://xiaozhujesus.github.io/post/java-volatile/">Java Volatile</a>
+      <a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/">TCP常见异常与原因</a>
     </nav>
     
   </div>
@@ -296,13 +343,13 @@
   <div class="pure-u-10-24">
     
     <nav class="next">
-      <a href="https://xiaozhujesus.github.io/post/java-wait-notify/">Java Wait Notify</a>
+      <a href="https://xiaozhujesus.github.io/post/jni/">JNI</a>
     </nav>
     
   </div>
   <div class="pure-u-1-24" style="text-align: right;">
     
-    <a href="https://xiaozhujesus.github.io/post/java-wait-notify/"><i class="fa fa-chevron-right"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/jni/"><i class="fa fa-chevron-right"></i></a>
     
   </div>
 </div>
@@ -354,6 +401,9 @@
 
 
 
+<script src="https://xiaozhujesus.github.io/js/math-code.js"></script>
+  <script async src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  
 
 
 </body>

@@ -317,13 +317,13 @@ leader 选举 leader 周期发送心跳给 follower，当 follower 在 election 
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/">TCP常见异常与原因</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/cap/">CAP</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>01 May 2020, 09:08</time>
+    <time>08 Jul 2020, 20:03</time>
   </div>
 
   
@@ -337,17 +337,20 @@ leader 选举 leader 周期发送心跳给 follower，当 follower 在 election 
   </header>
 
   <p>
-  TCP 特点  可靠性，通过 ack 实现，如果没有收到 ack，tcp 自动重传数据并等待更长时间，数次重传失败后，才会放弃然后会向应用层返回一个错误 含有持续估算 RTT 的算法，以便知道等待一个 ack 需要多久 有序和幂等，数据流中每个字节都关联一个序号，接收端会根据序号对数据包重排序，将有序数据传递给应用层；收到来自对端的重复数据（根据序号判断），直接丢弃重复数据 流量控制，告知对端自己的接收窗口大小，即接收缓冲区当前可用容量 拥塞控制，防止网络中流量过大导致路由器丢包 全双工，因此 tcp 必须为每个方向上跟踪数据流序号和窗口大小等状态信息  3 次握手，4 次挥手
-状态转换图
-3 次握手建立连接 client 需要告知对方在即将要建立的连接上，发送数据的初始序列号，通过 syn 包完成，而可靠性需要对该包进行 ack；由于是双工，server 也一样需要这两个包，server 对 client 的 ack 和其对 client 的 syn 可以合并在一起，因此三次握手；
-另外，需要 ack 的包都是消耗序列号的，不论是 syn 还是 fin，还是有效数据，ack 本身不消耗序列号，因为 ack 本身不需要 ack
-4 次挥手断开连接 主动结束端发送 fin 包，被动结束端对其进行 ack；双工各自结束不影响，因此每个方向的结束都需要这两个包，因此通常需要 4 个包；使用通常是因为，第一个 fin 包可能随数据包一起发送；另外，被动关闭一方的 ack 可能和其 fin 一起发送
-发送 fin 包是应用进程调用 shutdown 或者 close 函数导致的，不过当一个 unix 进程不论自愿（调用 exit 或者 main 结束了）还是非自愿（被信号 kill 了），所有打开的描述符都被关闭，这也会导致任何打开的 tcp 连接上发送一个 fin
+  分布式系统有 3 个指标：
+ Consistency Availability Partition tolerance  加州大学的计算机科学家 Eric Brewer 指出，这三个指标不可能同时满足
+Consistency 一致性分为很多种：
+ 弱一致性（Weak）：写入一个数据 a 成功后，在数据副本上可能读出来，也可能读不出来，不能保证多长时间之后每个副本的数据一定是一致的。 最终一致性（Eventually）：写入一个数据 a 成功后，在其他副本有可能读不到 a 的最新值，但在某个时间窗口之后保证最终能读到，可以看做弱一致性的一个特例，这里面的重点是这个时间窗口。 强一致性（Strong）：数据 a 一旦写入成功，在任意副本任意时刻都能读到 a 的最新值。  最终一致性还可以继续细分，大家更喜欢把除了弱一致性和强一致性的其他一致性全部归为最终一致性。
+弱一致性和最终一致性的副本同步是采用异步的方式，而强一致性一般要求同步更新副本，然后才能返回成功，否则很难满足任意副本任意时刻都能读到最新值，异步的通常意味着更好的吞吐量，但也意味着更复杂的架构，更复杂的开发、调试。同步意味着简单，但也意味着响应时间更长，吞吐量的更低。
+ Backups，通常不会用在生产环境； M/S，master/slave,可以异步，也可以同步，写是瓶颈点； MM，multi-master，可以解决写的问题，复杂度在于如何解决冲突； 2PC，2 Phase Commit，强一致，性能低，不高可用； Paxos，它是完全分布的。没有单一的主协调员  从图中可以看出，如果要满足强一致性，有两种方案：
+ 2PC，吞吐量低，响应时间高，随着节点数增加，性能指数级下降 Paxos，实现成本较高，不过现在有 raft 了，容易实现，容易理解  CAP 定理中的一致性是指强一致性，也就是所有 client 节点访问同一份最新的数据副本
+Availability 每次请求都能获取到非错的响应——但是不保证获取的数据为最新数据
+Partition tolerance 以实际效果而言，分区容错相当于对通信的时限要求。系统如果不能在时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在 C 和 A 之间做出选择，很明显，如果在发生分区时，选择了 C，意味着所有节点都需要同步更新数据后才能给 client 返回结果，而由于网络分区，系统会卡在这里导致不可用，也就是失去了 A；如果发生分区时候选择了 A，意味着需要给 client 返回请求结果，那么就会在无法更新所有节点的情况下给 client 返回响应，同时访问到分区内节点的 client 得到的就是旧的数据，导致失去了 C；如果没有发生分区，那么 C 和 A 是可以同时满足的
   </p>
 
   
   <footer>
-    <a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/cap/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
@@ -355,13 +358,13 @@ leader 选举 leader 周期发送心跳给 follower，当 follower 在 election 
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/paxos/">Paxos</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/java-interrupt/">Java Interrupt</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>24 Apr 2020, 19:16</time>
+    <time>02 Jul 2020, 09:37</time>
   </div>
 
   
@@ -375,18 +378,16 @@ leader 选举 leader 周期发送心跳给 follower，当 follower 在 election 
   </header>
 
   <p>
-  共识问题的要求  safety   只能选择已经被提出的值 最终只有一个提案值被选定，但是节点可以选择临时的提案值   liveness   所有正常节点可以在有限时间内对单个提案达成共识，并且系统可以持续对外提供服务  FLP 定理 异步系统中的一组进程无法对一个布尔类型的值达成共识，即使只有单个进程出现未知的故障，核心问题是异步
-定理指出：在异步系统中，不可能保证 safety 和 liveness 两个性质同时满足，即使出现一点未知的故障；但是定理没有说明，我们可以有多接近同时满足这两个性质
-备份状态机 通常使用日志备份实现，所有 server 以相同的顺序执行相同的命令，这样如果每个 server 的初始状态相同，那么最终状态也相同；日志备份是关键，需要保证每个 server 上的日志内容一致，使用共识算法对日志的第 i 条记录应该是什么命令达成共识
-Paxos completely-safe 并且 largely-live 的共识协议
-Basic Paxos  提案：例如，日志的第 i 条记录是什么命令 提案值：例如，日志的第 i 条记录是 x=1，即将 x 的值赋值为 1  基本 paxos 是指对单提案达成共识，例如，日志第 10 条记录应该是 x=1
- 一个或者多个节点可以针对相同的提案提出自己的提案值 只有一个提案值可以被最终选定  Multi Paxos 对日志文件的不同记录，使用不同的 Basic Paxos 来确定相应记录的值
-系统角色：  Proposers：处理 client 请求，提出提案，并根据 acceptor 的响应最终决定 commit 还是开启新一轮提案 Acceptors：响应 Proposers 提出的提案，accept/reject；本地记录决策过程；主动学习被选择的提案值  每个节点可以实现超过一种角色，实际实现中，某个节点通常同时实现 2 种角色
+  Java 中停止一个线程不能用 stop，因为 stop 会瞬间强行停止一个线程，且该线程持有的锁并不能释放。大家多习惯于用 interrupt，那么使用它又有什么需要注意的呢？
+interrupt 相关的方法 public boolean isInterrupted() public void interrupt() public static boolean interrupted() boolean isInterrupted() 每个线程都一个状态位用于标识当前线程对象是否是中断状态。isInterrupted 主要用于判断当前线程对象的中断标志位是否被标记了，如果被标记了则返回 true，表示当前已经被中断，否则返回 false。我们也可以看看它的实现源码：
+public boolean isInterrupted() { return isInterrupted(false); } private native boolean isInterrupted(boolean ClearInterrupted); 底层调用的 native 方法 isInterrupted，传入一个 boolean 类型的参数，用于指定调用该方法之后是否需要清除该线程的中断标识位。从这里我们也可以看出来，调用 isInterrupted()并不会清除线程的中断标识位。
+void interrupt() interrupt()用于设置当前线程对象的中断标识位，其源码为：
+public void interrupt() { // 检查当前线程是否有权限修改目标线程，如果没有，则会抛出异常SecurityException  if (this != Thread.currentThread()) checkAccess(); synchronized (blockerLock) { Interruptible b = blocker; if (b != null) { interrupt0(); // Just to set the interrupt flag  b.
   </p>
 
   
   <footer>
-    <a href="https://xiaozhujesus.github.io/post/paxos/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/java-interrupt/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
@@ -394,13 +395,13 @@ Basic Paxos  提案：例如，日志的第 i 条记录是什么命令 提案值
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/">线程模型</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/java-futuretask/">Java FutureTask</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>14 Apr 2020, 21:48</time>
+    <time>01 Jul 2020, 09:15</time>
   </div>
 
   
@@ -414,49 +415,12 @@ Basic Paxos  提案：例如，日志的第 i 条记录是什么命令 提案值
   </header>
 
   <p>
-  进程是资源管理的最小单位，线程是程序执行的最小单位。在操作系统设计上，从进程演化出线程，最主要的目的就是更好的支持 SMP 以及减小（进程/线程）上下文切换开销
-而线程模型主要有两种，一种是内核线程，一种是用户线程，分类依据是线程调度是在内核还是用户态，前者更利于并发使用多处理器的资源，而后者则更多考虑的是上下文切换开销；主流商用系统中，通常都将两者结合起来使用，既提供内核线程以满足 smp 系统的需要，也支持用线程库的方式在用户态实现另一套线程机制，此时一个内核线程同时成为多个用户态线程的调度者，调度器在用户态实现
-在核外实现的线程又可以分为&quot;一对一&rdquo;、&ldquo;多对一&quot;两种模型，前者用一个核心进程（也许是轻量进程）对应一个线程，将线程调度等同于进程调度，交给内核完成（Java），而后者则完全在核外实现多线程（golang），调度也在用户态完成。后者就是前面提到的单纯的用户级线程模型的实现方式，显然，这种核外的线程调度器实际上只需要完成线程运行栈的切换，调度开销非常小，但同时因为核心信号（无论是同步的还是异步的）都是以进程为单位的，因而无法定位到线程，所以这种实现方式不能用于多处理器系统
-Linux 内核只提供了轻量进程的支持，限制了更高效的线程模型的实现，但 Linux 着重优化了进程的调度开销，一定程度上也弥补了这一缺陷。目前最流行的线程机制 LinuxThreads 所采用的就是线程-进程&quot;一对一&quot;模型，调度交给核心，而在用户级实现一个包括信号处理在内的线程管理机制
-当初 Linux 被开发出来的时候，其内核并不真正地支持多线程。多线程最初是由 LinuxThreads 这个工程带入到 Linux 的,由于 clone 系统调用创建了调用进程的副本，而且可以和父进程共享地址空间；通过 clone，LinuxThreads 完全在用户空间模拟了线程。然而，这种方法有很多的缺陷，并没有符合 POSIX 的要求，特别是在信号处理，调度和进程间同步原语等方面
-为了改进 LinuxThreads，很明显需要内核的支持，而且需要重写线程库，红帽发起了 Native POSIX Thread Library，NPTL 项目，NPTL 采用了一对一的线程模型，即用户态线程与内核线程一一对应
-  </p>
-
-  
-</article>
-
-  
-    <article>
-  <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/java-volatile/">Java Volatile</a></h2>
-
-    <div class="post-meta">
-
-  <div>
-    <i class="fa fa-calendar fa-fw"></i>
-    <time>12 Apr 2020, 10:25</time>
-  </div>
-
-  
-
-  
-
-  
-
-</div>
-
-  </header>
-
-  <p>
-  volatile 关键字标记 Java 变量在 main memory 而不是 cache，每次读取从 main memory 读，每次更新写回 main memory，除此之外还有一些其他的保证，下面介绍下
-变量可见性问题 volatile 保证变量更新后的跨线程的可见性，看下面的例子：
-public class SharedObject { public int counter = 0; } 假设两个线程访问该变量，thread1 会更新变量，而 thread2 只读变量，如果变量 counter 不声明为 volatile，那么 thread1 对变量的更新不保证何时写回 main memory，更新可能只是存在 cache 中，所以此时 cache 和 main memory 中 counter 的值是不一致的；另外，即使 thread1 将新的值写回 main memory 了，由于 thread2 的所在 CPU 的 cache 中可能始终是旧值，所以也不一定能看到新的值
-Java volatile 可见性保证 volatile 用于保证变量可见性问题，声明为 volatile 的变量，所有对变量的更新都会写回 main memory，而且对变量的访问也会从 main memory 读取，对于上面的情况，将变量声明为 volatile 足够了，但是如果两个线程都要更新变量，只是将变量声明为 volatile 还不够，还需要同步
+  package java.util.concurrent; import java.util.concurrent.locks.LockSupport; /** * A cancellable asynchronous computation. This class provides a base * implementation of {@link Future}, with methods to start and cancel a * computation, query to see if the computation is complete, and retrieve the * result of the computation. The result can only be retrieved when the * computation has completed; the {@code get} methods will block if the * computation has not yet completed.
   </p>
 
   
   <footer>
-    <a href="https://xiaozhujesus.github.io/post/java-volatile/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/java-futuretask/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
@@ -464,13 +428,13 @@ Java volatile 可见性保证 volatile 用于保证变量可见性问题，声�
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/concurrency-model/">Concurrency Model</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/sequentially-consistent-paper/">Sequentially Consistent Paper</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>11 Apr 2020, 18:02</time>
+    <time>27 Jun 2020, 07:31</time>
   </div>
 
   
@@ -484,27 +448,19 @@ Java volatile 可见性保证 volatile 用于保证变量可见性问题，声�
   </header>
 
   <p>
-  并发模型指定了系统中的线程如何协作完成给定的任务，不同的并发模型对给定任务的划分方式不同，通信和协作方式也不同；本文将会讨论几种并发模型
-并发模型和分布式系统的相似性 并发系统中，不同线程通信协作，分布式系统中，多个进程通信协作，这些进程可能在不同的计算节点上，所以通常你会看到不同的并发模型与对应的分布式系统架构有相似之处；当然分布式系统还面临其他问题，比如网络不通，节点上的进程挂了
-共享状态 vs 分离状态  并发模型比较重要的方面就是决定线程之间是否共享数据，当共享状态时候，就要考虑竞争和死锁等问题，当然也由线程如何使用共享变量来决定
-分离状态，线程之间不共享任何数据，这种情况线程间需要通信，交换不可变对象或者交换数据的副本，因此当两个线程更新数据，由于数据是副本，每个线程都有各自的，所以可以避免大部分并发问题
-状态分离的并发模型通常来说更容易实现，因为对数据的操作没有竞争，不需要考虑并发访问问题，但是需要从整体仔细考虑应用的设计，但这也是值得的，下面开始介绍几种并发模型
-parallel worker 并发模型 新任务会被分发给不同的 worker，如下图所示
-delegator 会将新的任务分发给不同的 worker，每个 worker 会从头到尾完成完整的任务，并且是并发完成的（包括并行），java.util.concurrent 工具包中的许多并发工具都设计用于这种模型
-parallel worker 模型的优势 好理解，容易扩展，增加并行性只需要增加 worker 即可
-parallel worker 模型的劣势 简单，容易理解的背后也隐藏着一些缺点
-共享状态会让事情变得复杂 大多数情况下，parallel worker 模型要比上面介绍的复杂，worker 间在完成整个任务期间总是会访问或更新共享状态，要么是内存，或者是数据库，如下图所示：
-只要存在多线程共享状态的情况，线程就需要以确保一个线程对共享数据的更新对其他线程可见的方式访问共享数据（将其刷新到主内存中，而不仅仅是缓存在执行该线程的 CPU 的 cache 中），同时线程需要避免竞争条件，死锁和许多其他共享状态并发问题。
-另外，当线程访问共享数据，相互等待时，并行度会降低，许多共享数据结构是阻塞的，导致某一时刻最多只有有限数量的线程可以访问，而且这样会导致多线程激烈的竞争，激烈的竞争会浪费总线资源，而且某种程度上将导致失去并发，而是顺序执行
-非阻塞算法可以降低竞争，提升性能，但是非阻塞算法很难实现
-不可变数据结构是另一种选择，其实是多版本；不可变数据结构在修改后始终保留其自身的先前版本。 因此，如果多个线程持有相同的不可变数据结构的引用，并且一个线程对其进行了修改，则修改线程将获得对新结构的引用。 所有其他线程保留对旧结构的引用，该旧结构仍保持不变，因此是一致的
-这也存在一些问题，例如，一个不可变 list 会将所有新元素添加到 list 的开头，并返回对新添加元素的引用（该引用随后指向列表的其余部分）。 所有其他线程仍保留对 list 中先前第一个元素的引用，并且对这些线程而言，列表保持不变，他们看不到新添加的元素。
-这样的不可变 list 被实现为 linked list。 不幸的是，list 在现代硬件上的表现不佳。 list 中的每个元素都是一个单独的对象，这些对象可以分布在整个计算机的内存中。 现代 CPU 顺序访问数据的速度要快得多，因此在现代硬件上，使用 arraylist 实现的 list 中可以获得更高的性能，因为数组顺序存储数据。 CPU 高速缓存可以一次将更大的 array 加载到高速缓存中，并让 CPU 在加载后直接访问 CPU 高速缓存中的数据。 对于 linked list，其元素是分散在整个 RAM 上的，所以实际不可能完全将 list 的所有元素都加载到 cache 中
+  处理器也许不会按照程序顺序执行指令，执行的正确性得以保证如果满足如下条件：
+执行结果与顺序执行程序的结果一样，感觉是废话。。。满足这个条件的处理器是 sequential 的
+现在考虑这样的计算机，由许多个这样的处理器组成，这些处理器访问共享内存，要想保证多处理器程序执行的正确性，需要满足下面的条件：
+所有处理器指令的执行总的看是按照某种 sequential order，而在这个总的执行序列中，每个单独的处理器所执行的指令是按照程序指定的顺序，满足这个条件的多处理器是 sequentially consistent 的
+注意，每个单独处理器的 sequentiality 并不能保证多处理器计算是 sequentially consistent 的，从上面的定义也可以看出，因为单独处理器的 sequentiality，表示处理器执行指令可以不按照程序指定的顺序，只要保证结果是对的，即与按照程序指定顺序执行结果是一样的；但是多处理器的 sequentially consistent 要求在总的执行序列中，每个单独处理器执行的指令，一定与程序指定的顺序一致，不可进行指令重排序；原因是这些指令有可能是用来在多个处理器直接同步数据访问的指令，如果重新排序，就无法保证数据同步了（下面的例子可以看出来）
+文中描述了在多处理器，共享内存模型下，处理器和内存需要满足什么要求，才能保证程序正确性，在这种模型下，处理器之间只能通过共享内存通信，处理器操作我们只关心两种：从内存读数据的 fetch，和向内存写数据的 store，每个处理器的执行序列由这两种操作组成
+文中说的并发程序使用的还是 two-process，即两个进程组成的程序，因为写论文时候还没有线程，所以是多进程程序；lamport 老哥举了个例子来演示问题；例子是一个互斥协议，两个进程每个都包含 critical section，协议的目的就是保证任何时刻最多只有一个进程可以执行 critical section 的代码
+process 1 a := 1; if b = 0 then critical section; a = 0; else ... fi process 2 b := 1; if a = 0 then critical section; b = 0; else ... fi 说明下上面伪代码的符号，:= 是赋值，= 是比较，变量 a 和 b 初始为 0
   </p>
 
   
   <footer>
-    <a href="https://xiaozhujesus.github.io/post/concurrency-model/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/sequentially-consistent-paper/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
@@ -512,13 +468,13 @@ parallel worker 模型的劣势 简单，容易理解的背后也隐藏着一些
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/java-memory-model/">Java Memory Model</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/disk/">Disk</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>11 Apr 2020, 10:55</time>
+    <time>24 May 2020, 08:54</time>
   </div>
 
   
@@ -532,18 +488,17 @@ parallel worker 模型的劣势 简单，容易理解的背后也隐藏着一些
   </header>
 
   <p>
-  Jvm 是一个完整的计算机模型，因此自然包括内存模型（类似 Linux 下的虚拟内存模型），而 JMM 说明了 Jvm 如何使用物理机的内存的
-写正确的并发代码需要理解 Java 内存模型，Java 内存模型说明了不同线程如何，何时可以观察到对共享变量的修改，以及如何同步对共享变量的访问，下面介绍的内存模型直到 Java8
-Jvm 使用的 Java 内存模型将内存划分为堆和栈，下图展示了 JMM 的逻辑视图
-每个线程有自己的调用栈，每次调用方法就会产生新的栈帧，每个栈帧中包含方法的局部变量，线程只能访问自己的栈帧，而且局部变量对其他线程不可见，因此即使两个线程执行相同的方法，但由于有各自的栈帧，因此局部变量也是各自版本的，而且无法相互访问；
-所有基本类型的局部变量都存储在栈上（boolean, byte, short, char, int, long, float, double），所有对象都存储在堆上，包括基本类型的包装类，局部变量也可能是对象引用，这种情况引用变量存储在栈上，引用的对象存储在堆上；对象的成员变量存储在堆上，不论成员变量是基本数据类型还是引用数据类型；static 类变量也存储在堆上，
-硬件内存架构 硬件内存架构与 Java 内存模型不同，理解硬件内存架构也很重要，这样可以理解 Java 内存模型是如何与硬件内存架构一起工作的，下面描述一般的硬件内存架构，SMP，如下图：
-现代计算机通常有两个或多个 CPU，每个 CPU 有可能有多个 core，每个 core 可以运行一个线程，这些线程完全是并行运行的（区分并发），距离 CPU 越近的存储，CPU 在上面完成操作的速度越快，cache 通常是多级的，这里我们不关心这个，关键是要理解是存在 cache 层的，而且 cache 和 register 是 CPU 私有的，main memory 是 CPU 共享的，当需要访问数据时候，首先从 register 中找，如果不明中，从 cache 中找，如果不明中，从 memory 中找，之后将结果缓存在 cache 中；当操作完成需要写回结果时，首先将 register 中的结果写到 cache 中，之后在某个时间点例如 cache 中的空间不足时候，将结果刷回 main memory；每次 cache 更新不需要操作全部 cache，而是以 cache line 为单位进行更新
+  磁盘结构 扇区 512 字节，是磁盘读写单位，block 由多个扇区组成，是软件创建的逻辑组，用来提高读写效率，通常 4 或 8K 字节 注意，OS 每次磁盘读写操作，总是访问至少一个 block
+磁盘如何连接到计算机系统
+磁盘控制器作用：
+ Control movement of disk heads Select a sector on a track Transfers data between disk surface and main memory Disk controller has an internal buffer to store read/write data to/from disk 1 disk controller can control n disks  硬盘结构
+从上面看
+ Platters are 2-sided and magnetic Platters rotates (about 10000 RPM) All disk heads move at the same time (in or out) Platter has circular tracks Tracks are divided into sectors Sector = the unit of write operation for a disk  However:Sector is too small to be efficient
   </p>
 
   
   <footer>
-    <a href="https://xiaozhujesus.github.io/post/java-memory-model/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/disk/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
@@ -551,13 +506,13 @@ Jvm 使用的 Java 内存模型将内存划分为堆和栈，下图展示了 JMM
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/java-synchronized/">Java Synchronized</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/aqs/">AQS</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>11 Apr 2020, 09:50</time>
+    <time>22 May 2020, 08:31</time>
   </div>
 
   
@@ -571,18 +526,12 @@ Jvm 使用的 Java 内存模型将内存划分为堆和栈，下图展示了 JMM
   </header>
 
   <p>
-  Synchronized and Data Visibility 如果不使用 synchronized 或者 volatile 关键字，就无法保证当一个线程更新共享变量时候，其他线程何时能看到该更新结果；主要是两个问题：
- 更新过的值在寄存器或者 CPU 私有 cache 中，何时刷新到主存 其他线程何时更新自己寄存器或者私有 cache 中过期的旧值  synchronized 关键字可以保证上述两点成立，当线程进入 synchronized 代码块，会从主存同步所有线程可访问到的值，也就是可以看到最新的值，当线程退出 synchronized 代码块时，所有对线程可访问到的变量的修改都会从寄存器或者私有 cache 中刷新到主存；所以类似 volatile 关键字的作用
-synchronized 还可以防止 Java 编译器和虚拟机乱序执行代码，为了获得更好的性能，通常 Java 编译器和虚拟机会对指令的执行顺序进行调整，如果在 synchronized 代码块内的对变量的修改操作，经过指令重排序后在 synchronized 代码块之前执行，那原来本想同步的代码就没有得到同步；因此 synchronized 代码块中的代码与其之前和之后的代码不会进行指令重排序，但是注意，synchronized 块中的代码还是有可能发生指令重排序的
-在哪些对象上进行同步？ 不要在 String 对象和基本类型包装类对象上进行同步，因为编译器会进行优化，你以为你用的是不同的对象，实际上是相同的对象
-synchronized(&#34;Hey&#34;) { //do something in here. } 如果你在不同的地方使用字符串&quot;Hey&quot;进行同步，那么其实使用的是常亮池中的相同对象，基本类型包装类也一样
-synchronized(Integer.valueOf(1)) { //do something in here. } 所以建议使用 this 或者 new Object()进行同步，java 编译器和 jvm 不会缓存和重用这些对象
-synchronized 的限制以及替代  多个线程对变量的访问有 read 也有 write，而且 read 比较多，当多个线程同时 read 时候，synchronized 过于严格，可以使用 read/write Lock 最多同时允许 N 个线程进入同步代码块，使用 Semaphore 实现 synchronized 不提供公平性，当多个线程阻塞等待进入同步代码块，其进入的顺序不一定是线程请求的顺序 如果只有一个线程写，其他线程读，可以使用 volatile 而不需要 synchronized 只将需要同步的代码放入 synchronized，减小 synchronized 块的大小，可以增加并行性  可重入性 synchronized 在同一个线程上是可重入的
+  package java.util.concurrent.locks; import java.util.concurrent.TimeUnit; import java.util.ArrayList; import java.util.Collection; import java.util.Date; import sun.misc.Unsafe; public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchronizer implements java.io.Serializable { private static final long serialVersionUID = 7373984972572414691L; protected AbstractQueuedSynchronizer() { } static final class Node { /** Marker to indicate a node is waiting in shared mode */ static final Node SHARED = new Node(); /** Marker to indicate a node is waiting in exclusive mode */ static final Node EXCLUSIVE = null; /** waitStatus value to indicate thread has cancelled */ static final int CANCELLED = 1; /** waitStatus value to indicate successor&#39;s thread needs unparking */ static final int SIGNAL = -1; /** waitStatus value to indicate thread is waiting on condition */ static final int CONDITION = -2; /** * waitStatus value to indicate the next acquireShared should * unconditionally propagate */ static final int PROPAGATE = -3; volatile int waitStatus; volatile Node prev; volatile Node next; volatile Thread thread; Node nextWaiter; final boolean isShared() { return nextWaiter == SHARED; } final Node predecessor() throws NullPointerException { Node p = prev; if (p == null) throw new NullPointerException(); else return p; } Node() { // Used to establish initial head or SHARED marker  } Node(Thread thread, Node mode) { // Used by addWaiter  this.
   </p>
 
   
   <footer>
-    <a href="https://xiaozhujesus.github.io/post/java-synchronized/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/aqs/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
@@ -590,13 +539,13 @@ synchronized 的限制以及替代  多个线程对变量的访问有 read 也�
   
     <article>
   <header>
-    <h2><a href="https://xiaozhujesus.github.io/post/virtualization-basic/">Virtualization Basic</a></h2>
+    <h2><a href="https://xiaozhujesus.github.io/post/jni/">JNI</a></h2>
 
     <div class="post-meta">
 
   <div>
     <i class="fa fa-calendar fa-fw"></i>
-    <time>29 Mar 2020, 10:40</time>
+    <time>22 May 2020, 08:26</time>
   </div>
 
   
@@ -610,16 +559,56 @@ synchronized 的限制以及替代  多个线程对变量的访问有 read 也�
   </header>
 
   <p>
-  Platform Virtualization Alice 的公司有个软件产品运行在 windows 平台上；Bob 的公司也有个一款软件产品需要运行，但是他不关心底层平台的细节，只要这个平台可以提供他的产品运行所需的资源和抽象就可以了，如下图所示
-图中的 blackbox 就是虚拟平台，要解决的问题是如何让 Bob 的软件产品感觉其运行在真实的平台上而不是给他一个真正的平台 虚拟化是要充分利用资源，比如上午时候 Alice 公司的内存需求是 8G，而 Bob 公司的需求是 1G，但是下午 Alice 公司的需求是 2G，而 Bob 需求 5G，如果 Alice 直接购买最大值 8G，Bob 购买 5G，一共 13G，但是从全局看其实一共只需要 9G 就可以满足两个公司的需求；
-其实虚拟化技术是操作系统设计中的 service 扩展部分（例如微内核中，各种 filesystem，netstack 都是运行在非内核态的服务，这样方便扩展），只不过应用的粒度有些大而已，在整个 OS 范围内进行虚拟化，而不是 service 扩展
-Hypervisor 如上图所示，如何保证多个 OS 同时运行在共享的硬件平台上？谁来决定哪个 OS 哪个时刻占有硬件资源？这里需要一个 OS 的 OS，通常叫做 virtual machine manager 或者 hypervisor，运行在共享硬件平台上的多个 OS 称为 virtual machine（VM）或者 guest OS，有两种 hypervisor，下面分别介绍
-Native Hypervisor（bare metal） Hosted Hypervisor hosted hypervisor 包括 VMware，Workstation 和 Virtual Box；后面主要介绍 native hypervisor
+  JNI Java native interface，jvm 用来调用具体平台上的 native 代码（通常是 C 和 C++）的方法
+1.原理 native executable 程序通常可以使用 static 或 shared 的 lib
+ static lib 通常在链接阶段会被链接到最终的可执行程序中 shared lib，最终的可执行文件只包含共享库的引用而不是代码  JNI 使用的就是 shared lib 技术实现的，我理解应该是 jvm（C++写的）调用 shared lib，这些文件以 .so/.dll/.dylib结尾，既不在 class 文件里，也不在 jvm 里；jvm 构造一个指针表，表中的指针指向 native method 的内存地址，这样就可以调用 native method 了
+1.1 需要的组件  Java code，class 中至少包含一个 native method native code，通常使用 C/C++编写 JNI header file，是个 C/C++头文件，包含所有 JNI 元素的定义（jni.h） C/C++ Compiler，编译出 native shared library  1.2 代码中的 JNI 元素 Java 部分  任何声明为 native 的 method 都必须在 native shared library 中实现 System.
   </p>
 
   
   <footer>
-    <a href="https://xiaozhujesus.github.io/post/virtualization-basic/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+    <a href="https://xiaozhujesus.github.io/post/jni/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/linux-file/">Linux File</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>21 May 2020, 08:00</time>
+  </div>
+
+  
+
+  
+
+  
+
+</div>
+
+  </header>
+
+  <p>
+  大多数文件 IO 用到 5 个函数，这些函数是系统调用而不是库函数，会陷入内核
+ open read write lseek close  open 必选项如下：
+ O_RDONLY O_WRONLY O_RDWR O_EXEC O_SEARCH  可选项如下：
+ O_APPEND O_CLOEXEC O_CREAT O_DIRECTORY O_EXCL O_NOFOLLOW O_NOBLOCK O_TRUNC O_SYNC O_DSYNC O_RSYNC  这里主要说下可选项的后三个
+O_SYNC 每次 write 等待物理 IO 操作完成，包括由该 write 引起的文件属性更新所需要的 IO
+O_DSYNC 每次 write 要等待物理 IO 操作完成，但是如果该写操作并不影响读取刚写入的数据，则不需要等待文件属性被更新
+O_DSYNC 与 O_SYNC 有微妙的区别，仅当文件属性需要更新以反映文件数据变化时候，例如更新文件大小以反应文件中有更多数据，就可以看出二者的区别；设置 O_SYNC 后文件数据和属性总是同步更新，而 O_DSYNC 选项，当使用 write 重写文件现有部分内容时候，文件时间属性不会同步更新，但是会更新，只是 write 返回时候只是保证数据被更新了，而文件元数据则会在稍后某个时间更新
+O_RSYNC 使得每个以文件描述符为参数的 read 操作等待，直至所有对文件同一部分挂起的写操作都完成
+Solaris 支持所有这 3 个选项，而 Linux 处理 O_RSYNC 与处理 O_SYNC 相同
+  </p>
+
+  
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/linux-file/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
   </footer>
   
 </article>
@@ -633,7 +622,7 @@ Native Hypervisor（bare metal） Hosted Hypervisor hosted hypervisor 包括 VMw
   
   <i class="fa fa-chevron-left"></i>
   
-  <span>&nbsp;1 / 2&nbsp;</span>
+  <span>&nbsp;1 / 4&nbsp;</span>
   
   <a href="https://xiaozhujesus.github.io/page/2/"><i class="fa fa-chevron-right"></i></a>
   

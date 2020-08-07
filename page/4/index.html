@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="generator" content="Hugo 0.65.3" />
 
-  <title>Posts &middot; Stay Foolish, Stay Hungry!</title>
+  <title>Stay Foolish, Stay Hungry!</title>
 
     
 
@@ -43,7 +43,7 @@
  
   
   <link rel="alternate" type="application/rss+xml" title="Stay Foolish, Stay Hungry!"
-    href='https://xiaozhujesus.github.io/post/index.xml' />
+    href='https://xiaozhujesus.github.io/index.xml' />
   
 
   
@@ -110,7 +110,7 @@
 
     
     <li class="pure-menu-item">
-      <a class="pure-menu-link" href='https://xiaozhujesus.github.io/post/index.xml'><i
+      <a class="pure-menu-link" href='https://xiaozhujesus.github.io/index.xml'><i
           class="fas fa-rss"></i>RSS</a>
     </li>
     
@@ -232,111 +232,113 @@
 
 
 <div class="header">
-  <h1>Posts</h1>
+  <h1>Stay Foolish, Stay Hungry!</h1>
+  <h2>A Hugo Theme</h2>
 </div>
+
 <div class="content">
   
-  <h2>2020</h2>
-  <ul>
-  
-    <li><time>19 Jul 2020, 20:41</time> - <a href="https://xiaozhujesus.github.io/post/zab/">Zab</a></li>
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/ldap%E5%AE%89%E8%A3%85/">Ldap安装</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>12 Mar 2020, 11:02</time>
+  </div>
 
   
-    <li><time>14 Jul 2020, 17:07</time> - <a href="https://xiaozhujesus.github.io/post/raft/">Raft</a></li>
 
   
-    <li><time>08 Jul 2020, 20:03</time> - <a href="https://xiaozhujesus.github.io/post/cap/">CAP</a></li>
 
   
-    <li><time>02 Jul 2020, 09:37</time> - <a href="https://xiaozhujesus.github.io/post/java-interrupt/">Java Interrupt</a></li>
+
+</div>
+
+  </header>
+
+  <p>
+  安装前环境准备 在安装OPENLDAP之前需要关闭防火墙
+[wz]# systemctl stop firewalld.service [wz]# systemctl disable firewalld.service OPENLDAP-servers安装及配置 安装 [wz]# yum install -y openldap-servers 配置  配置管理员密码  [wz]# slappasswd -s passwd {SSHA}2e1yDU9g9VSc8UArkfpi5KsjT9mSZxCN 修改配置文件  olcDbDirectory：指定ldap数据库的路径；
+olcSuffix：指定管理员管理的目录树根域；
+olcRootDN：指定管理员dn；
+olcRootPW：该字段需要自行添加，用于指定管理员密码，将上一步生成的加密字符串添加在这一行；
+[wz]# vim /etc/openldap/slapd.d/cn\=config/olcDatabase\=\{2\}hdb.ldif # AUTO-GENERATED FILE - DO NOT EDIT!! Use ldapmodify. # CRC32 1763c834 dn: olcDatabase={2}hdb objectClass: olcDatabaseConfig objectClass: olcHdbConfig olcDatabase: {2}hdb olcDbDirectory: /var/lib/ldap olcSuffix: dc=com olcRootDN: cn=Manager,dc=com olcRootPW: {SSHA}2e1yDU9g9VSc8UArkfpi5KsjT9mSZxCN olcDbIndex: objectClass eq,pres olcDbIndex: ou,cn,mail,surname,givenname eq,pres,sub structuralObjectClass: olcHdbConfig entryUUID: b5baf318-0bee-1039-9713-29cc6215f8f1 creatorsName: cn=config createTimestamp: 20190516062222Z entryCSN: 20190516062222.
+  </p>
 
   
-    <li><time>01 Jul 2020, 09:15</time> - <a href="https://xiaozhujesus.github.io/post/java-futuretask/">Java FutureTask</a></li>
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/ldap%E5%AE%89%E8%A3%85/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
 
   
-    <li><time>27 Jun 2020, 07:31</time> - <a href="https://xiaozhujesus.github.io/post/sequentially-consistent-paper/">Sequentially Consistent Paper</a></li>
+    <article>
+  <header>
+    <h2><a href="https://xiaozhujesus.github.io/post/logical-vector-clock/">Logical-Clock和Vector-Clock</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>01 Mar 2020, 19:12</time>
+  </div>
 
   
-    <li><time>24 May 2020, 08:54</time> - <a href="https://xiaozhujesus.github.io/post/disk/">Disk</a></li>
 
   
-    <li><time>22 May 2020, 08:31</time> - <a href="https://xiaozhujesus.github.io/post/aqs/">AQS</a></li>
 
   
-    <li><time>22 May 2020, 08:26</time> - <a href="https://xiaozhujesus.github.io/post/jni/">JNI</a></li>
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://xiaozhujesus.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F">分布式</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  </header>
+
+  <p>
+  早在在 1978 年，Leslie Lamport 就提出逻辑时钟的概念。在分布式环境中，通过一系列规则来定义逻辑时钟的变化。从而能通过逻辑时钟来对分布式系统中的事件的先后顺序进行判断。
+逻辑时钟本质上定义了一种 happen before 关系，记作-&gt;，a-&gt;b 意味着所有的进程都“认可”事件 a 发生在事件 b 之前。happen before 关系满足传递性：即(a-&gt;b &amp;&amp; b-&gt;c)可以推导出(a-&gt;c)。
+Logical Clock lamport 逻辑时钟算法：
+ 每个事件对应一个 Lamport 时间戳，初始值为 0 如果事件在节点内发生，时间戳加 1 如果事件属于发送事件，时间戳加 1 并在消息中带上该时间戳 如果事件属于接收事件，时间戳 = Max(本地时间戳，消息中的时间戳) + 1  三个机器上各自跑着一个进程，分别为 P1,P2,P3，由于不同的机器上的物理时钟、CPU 负载、或者 CPU 频率不一样，所以不同的机器上的时钟速率可能是不同的，例当 P1 所在的机器 tick 了 6 次，P2 所在的机器 tick 了 8 次，就是异步网络中指的漂移时钟不同。
+图中，P1 给 P2 发送了消息 m1，m1 上附带了发送 m1 时的时钟 6，随后 P2 收到了 m1，根据 P2 接收到 m1 时的时钟，认为传输消息花了 16-6=10 个 tick，随后，P3 给 P2 发送消息 m3，m3 附带的发送时钟是 60。由于 P2 的时钟走的比 P3 的慢，所以接收到 m3 时，本机的时钟 56 比发送时钟 60 小，这是不合理的，需要调整时钟，如图中，将 P2 的 56 调整为 61，即 m3 的发送时钟加 1。
+  </p>
 
   
-    <li><time>21 May 2020, 08:00</time> - <a href="https://xiaozhujesus.github.io/post/linux-file/">Linux File</a></li>
+  <footer>
+    <a href="https://xiaozhujesus.github.io/post/logical-vector-clock/">Read more<i class="fa fa-angle-double-right fa-fw"></i></a>
+  </footer>
+  
+</article>
 
   
-    <li><time>01 May 2020, 09:08</time> - <a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/">TCP常见异常与原因</a></li>
 
   
-    <li><time>24 Apr 2020, 19:24</time> - <a href="https://xiaozhujesus.github.io/post/%E5%85%B1%E8%AF%86%E4%B8%8E%E4%B8%80%E8%87%B4%E6%80%A7/">共识与一致性</a></li>
 
-  
-    <li><time>24 Apr 2020, 19:16</time> - <a href="https://xiaozhujesus.github.io/post/paxos/">Paxos</a></li>
 
+<nav class="pagination" role="pagination">
   
-    <li><time>24 Apr 2020, 18:43</time> - <a href="https://xiaozhujesus.github.io/post/3-pc/">3-PC</a></li>
+  <a href="https://xiaozhujesus.github.io/page/3/"><i class="fa fa-chevron-left"></i></a>
+  
+  <span>&nbsp;4 / 4&nbsp;</span>
+  
+  <i class="fa fa-chevron-right"></i>
+  
+</nav>
 
-  
-    <li><time>24 Apr 2020, 16:09</time> - <a href="https://xiaozhujesus.github.io/post/2-pc/">2-PC</a></li>
 
-  
-    <li><time>14 Apr 2020, 22:19</time> - <a href="https://xiaozhujesus.github.io/post/java-wait-notify/">Java Wait Notify</a></li>
 
-  
-    <li><time>14 Apr 2020, 21:48</time> - <a href="https://xiaozhujesus.github.io/post/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/">线程模型</a></li>
-
-  
-    <li><time>12 Apr 2020, 10:25</time> - <a href="https://xiaozhujesus.github.io/post/java-volatile/">Java Volatile</a></li>
-
-  
-    <li><time>11 Apr 2020, 18:02</time> - <a href="https://xiaozhujesus.github.io/post/concurrency-model/">Concurrency Model</a></li>
-
-  
-    <li><time>11 Apr 2020, 10:55</time> - <a href="https://xiaozhujesus.github.io/post/java-memory-model/">Java Memory Model</a></li>
-
-  
-    <li><time>11 Apr 2020, 09:50</time> - <a href="https://xiaozhujesus.github.io/post/java-synchronized/">Java Synchronized</a></li>
-
-  
-    <li><time>29 Mar 2020, 10:40</time> - <a href="https://xiaozhujesus.github.io/post/virtualization-basic/">Virtualization Basic</a></li>
-
-  
-    <li><time>29 Mar 2020, 10:34</time> - <a href="https://xiaozhujesus.github.io/post/virtualization/">Virtualization</a></li>
-
-  
-    <li><time>28 Mar 2020, 11:34</time> - <a href="https://xiaozhujesus.github.io/post/lock/">Lock</a></li>
-
-  
-    <li><time>26 Mar 2020, 11:51</time> - <a href="https://xiaozhujesus.github.io/post/shared-memory-machine-model/">Shared Memory Machine Model</a></li>
-
-  
-    <li><time>24 Mar 2020, 07:59</time> - <a href="https://xiaozhujesus.github.io/post/synchronization/">OS Synchronization</a></li>
-
-  
-    <li><time>20 Mar 2020, 09:24</time> - <a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Sequential Consistency</a></li>
-
-  
-    <li><time>14 Mar 2020, 07:56</time> - <a href="https://xiaozhujesus.github.io/post/linearizability/">Linearizability</a></li>
-
-  
-    <li><time>12 Mar 2020, 18:20</time> - <a href="https://xiaozhujesus.github.io/post/ssl/">SSL</a></li>
-
-  
-    <li><time>12 Mar 2020, 11:34</time> - <a href="https://xiaozhujesus.github.io/post/ldap%E5%9F%BA%E7%A1%80/">Ldap基础</a></li>
-
-  
-    <li><time>12 Mar 2020, 11:02</time> - <a href="https://xiaozhujesus.github.io/post/ldap%E5%AE%89%E8%A3%85/">Ldap安装</a></li>
-
-  
-    <li><time>01 Mar 2020, 19:12</time> - <a href="https://xiaozhujesus.github.io/post/logical-vector-clock/">Logical-Clock和Vector-Clock</a></li>
-
-  
-  </ul>
-  
 </div>
 
 </div>

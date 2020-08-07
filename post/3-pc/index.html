@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="generator" content="Hugo 0.65.3" />
 
-  <title>Posts &middot; Stay Foolish, Stay Hungry!</title>
+  <title>3-PC &middot; Stay Foolish, Stay Hungry!</title>
 
     
 
@@ -41,9 +41,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
  
-  
-  <link rel="alternate" type="application/rss+xml" title="Stay Foolish, Stay Hungry!"
-    href='https://xiaozhujesus.github.io/post/index.xml' />
   
 
   
@@ -108,11 +105,6 @@
   <div class="pure-menu social">
   <ul class="pure-menu-list">
 
-    
-    <li class="pure-menu-item">
-      <a class="pure-menu-link" href='https://xiaozhujesus.github.io/post/index.xml'><i
-          class="fas fa-rss"></i>RSS</a>
-    </li>
     
 
     
@@ -232,111 +224,146 @@
 
 
 <div class="header">
-  <h1>Posts</h1>
+  <h1>3-PC</h1>
+  <h2></h2>
 </div>
 <div class="content">
-  
-  <h2>2020</h2>
-  <ul>
-  
-    <li><time>19 Jul 2020, 20:41</time> - <a href="https://xiaozhujesus.github.io/post/zab/">Zab</a></li>
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>24 Apr 2020, 18:43</time>
+  </div>
 
   
-    <li><time>14 Jul 2020, 17:07</time> - <a href="https://xiaozhujesus.github.io/post/raft/">Raft</a></li>
 
   
-    <li><time>08 Jul 2020, 20:03</time> - <a href="https://xiaozhujesus.github.io/post/cap/">CAP</a></li>
 
   
-    <li><time>02 Jul 2020, 09:37</time> - <a href="https://xiaozhujesus.github.io/post/java-interrupt/">Java Interrupt</a></li>
+
+</div>
+
+  <p>3-PC 是对 2-PC 的改进，将 2-PC 中的第一阶段拆分为两个阶段，CanCommit 和 PreCommit 如下：</p>
+<h2 id="cancommit-阶段">CanCommit 阶段</h2>
+<ul>
+<li>协调者向所有参与者发送一个包含事务的 CanCommit 请求，并等待 ack；</li>
+<li>参与者收到该请求后，会尝试锁定执行事务所需相关资源，如果锁定成功，则返回 yes；否则返回 no</li>
+</ul>
+<h2 id="precommit-阶段">PreCommit 阶段</h2>
+<p>协调者根据响应决定是否进行 preCommit 操作，分为两种情况：</p>
+<ol>
+<li>收到的都是 yes</li>
+</ol>
+<ul>
+<li>协调者向所有参与者发送 preCommit 请求</li>
+<li>参与者接收到 preCommit 请求后，执行事务，记录 undo 和 redo 日志</li>
+<li>执行成功，返回 yes 给协调者</li>
+</ul>
+<ol start="2">
+<li>收到有 no 的响应或者等待超时</li>
+</ol>
+<ul>
+<li>协调者向所有参与者发送 abort 请求</li>
+<li>参与者无论是收到协调者的 abort 请求，还是等待协调者的请求超时，都会 abort 事务</li>
+<li>向协调者发送 no 响应</li>
+</ul>
+<h2 id="docommit-阶段">DoCommit 阶段</h2>
+<p>协调者根据上一阶段的响应决定是否 doCommit</p>
+<ol>
+<li>收到了所有参与者的 yes</li>
+</ol>
+<ul>
+<li>向所有参与者发送 doCommit 请求</li>
+<li>所有参与者收到 doCommit 后，commit 事务，返回 ack 给协调者</li>
+</ul>
+<ol start="2">
+<li>收到了 no 或者等待某些参与者的上一阶段响应超时了</li>
+</ol>
+<ul>
+<li>向所有参与者发送 abort 请求</li>
+<li>所有参与者收到 abort 后，abort 事务，返回 ack 给协调者</li>
+</ul>
+<p>注意，协议规定当进入第 3 阶段时候，参与者只要没有收到 abort，就会对事务进行 commit，不论是等待协调者超时，还是收到 commit 指令</p>
 
   
-    <li><time>01 Jul 2020, 09:15</time> - <a href="https://xiaozhujesus.github.io/post/java-futuretask/">Java FutureTask</a></li>
+  
+<style>
+  ul.share-buttons {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul.share-buttons li {
+    display: inline;
+  }
+
+  ul.share-buttons .sr-only {
+    position: absolute;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0;
+    border: 0;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+  }
+</style>
+
 
   
-    <li><time>27 Jun 2020, 07:31</time> - <a href="https://xiaozhujesus.github.io/post/sequentially-consistent-paper/">Sequentially Consistent Paper</a></li>
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1-24" style="text-align: left;">
+    
+    <a href="https://xiaozhujesus.github.io/post/2-pc/"><i class="fa fa-chevron-left"></i></a>
+    
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="prev">
+      <a href="https://xiaozhujesus.github.io/post/2-pc/">2-PC</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-2-24">
+    &nbsp;
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="next">
+      <a href="https://xiaozhujesus.github.io/post/paxos/">Paxos</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-1-24" style="text-align: right;">
+    
+    <a href="https://xiaozhujesus.github.io/post/paxos/"><i class="fa fa-chevron-right"></i></a>
+    
+  </div>
+</div>
+
+
 
   
-    <li><time>24 May 2020, 08:54</time> - <a href="https://xiaozhujesus.github.io/post/disk/">Disk</a></li>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
 
-  
-    <li><time>22 May 2020, 08:31</time> - <a href="https://xiaozhujesus.github.io/post/aqs/">AQS</a></li>
+(function() {
+    
+    
+    if (window.location.hostname == "localhost")
+        return;
 
-  
-    <li><time>22 May 2020, 08:26</time> - <a href="https://xiaozhujesus.github.io/post/jni/">JNI</a></li>
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    var disqus_shortname = 'Your Disqus shortname';
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
-  
-    <li><time>21 May 2020, 08:00</time> - <a href="https://xiaozhujesus.github.io/post/linux-file/">Linux File</a></li>
 
-  
-    <li><time>01 May 2020, 09:08</time> - <a href="https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/">TCP常见异常与原因</a></li>
-
-  
-    <li><time>24 Apr 2020, 19:24</time> - <a href="https://xiaozhujesus.github.io/post/%E5%85%B1%E8%AF%86%E4%B8%8E%E4%B8%80%E8%87%B4%E6%80%A7/">共识与一致性</a></li>
-
-  
-    <li><time>24 Apr 2020, 19:16</time> - <a href="https://xiaozhujesus.github.io/post/paxos/">Paxos</a></li>
-
-  
-    <li><time>24 Apr 2020, 18:43</time> - <a href="https://xiaozhujesus.github.io/post/3-pc/">3-PC</a></li>
-
-  
-    <li><time>24 Apr 2020, 16:09</time> - <a href="https://xiaozhujesus.github.io/post/2-pc/">2-PC</a></li>
-
-  
-    <li><time>14 Apr 2020, 22:19</time> - <a href="https://xiaozhujesus.github.io/post/java-wait-notify/">Java Wait Notify</a></li>
-
-  
-    <li><time>14 Apr 2020, 21:48</time> - <a href="https://xiaozhujesus.github.io/post/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/">线程模型</a></li>
-
-  
-    <li><time>12 Apr 2020, 10:25</time> - <a href="https://xiaozhujesus.github.io/post/java-volatile/">Java Volatile</a></li>
-
-  
-    <li><time>11 Apr 2020, 18:02</time> - <a href="https://xiaozhujesus.github.io/post/concurrency-model/">Concurrency Model</a></li>
-
-  
-    <li><time>11 Apr 2020, 10:55</time> - <a href="https://xiaozhujesus.github.io/post/java-memory-model/">Java Memory Model</a></li>
-
-  
-    <li><time>11 Apr 2020, 09:50</time> - <a href="https://xiaozhujesus.github.io/post/java-synchronized/">Java Synchronized</a></li>
-
-  
-    <li><time>29 Mar 2020, 10:40</time> - <a href="https://xiaozhujesus.github.io/post/virtualization-basic/">Virtualization Basic</a></li>
-
-  
-    <li><time>29 Mar 2020, 10:34</time> - <a href="https://xiaozhujesus.github.io/post/virtualization/">Virtualization</a></li>
-
-  
-    <li><time>28 Mar 2020, 11:34</time> - <a href="https://xiaozhujesus.github.io/post/lock/">Lock</a></li>
-
-  
-    <li><time>26 Mar 2020, 11:51</time> - <a href="https://xiaozhujesus.github.io/post/shared-memory-machine-model/">Shared Memory Machine Model</a></li>
-
-  
-    <li><time>24 Mar 2020, 07:59</time> - <a href="https://xiaozhujesus.github.io/post/synchronization/">OS Synchronization</a></li>
-
-  
-    <li><time>20 Mar 2020, 09:24</time> - <a href="https://xiaozhujesus.github.io/post/sequential-consistency/">Sequential Consistency</a></li>
-
-  
-    <li><time>14 Mar 2020, 07:56</time> - <a href="https://xiaozhujesus.github.io/post/linearizability/">Linearizability</a></li>
-
-  
-    <li><time>12 Mar 2020, 18:20</time> - <a href="https://xiaozhujesus.github.io/post/ssl/">SSL</a></li>
-
-  
-    <li><time>12 Mar 2020, 11:34</time> - <a href="https://xiaozhujesus.github.io/post/ldap%E5%9F%BA%E7%A1%80/">Ldap基础</a></li>
-
-  
-    <li><time>12 Mar 2020, 11:02</time> - <a href="https://xiaozhujesus.github.io/post/ldap%E5%AE%89%E8%A3%85/">Ldap安装</a></li>
-
-  
-    <li><time>01 Mar 2020, 19:12</time> - <a href="https://xiaozhujesus.github.io/post/logical-vector-clock/">Logical-Clock和Vector-Clock</a></li>
-
-  
-  </ul>
-  
 </div>
 
 </div>
