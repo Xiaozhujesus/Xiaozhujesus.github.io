@@ -28,6 +28,20 @@ Each process implements a leader oracle, and the leader oracle provides the iden
     </item>
     
     <item>
+      <title>Raft</title>
+      <link>https://xiaozhujesus.github.io/post/raft/</link>
+      <pubDate>Tue, 14 Jul 2020 17:07:25 +0800</pubDate>
+      
+      <guid>https://xiaozhujesus.github.io/post/raft/</guid>
+      <description>raft 分为两个部分，leader 选举和日志备份
+每个 server 在 3 种 state 中的一个：leader, follower, or candidate follower 不主动发送 request，只是响应 leader 和 candidate 的请求
+使用 RPC 通信，有两种 RPC：RequestVote RPC 和 AppendEntries RPC，前者用于 leader 选举，后者用于心跳（没有日志内容的 AppendEntries RPC）和日志备份，节点会以定时的方式不断发送 RPC，直到该 RPC 收到响应
+leader 选举 leader 周期发送心跳给 follower，当 follower 在 election timeout 周期内没有收到 leader 的心跳时候，状态改为 candidate，然后开始发起新一轮选举
+ 增加 current term，state 转换为 candidate， 给自己投票，并发送 RequestVote RPC 给集群其他节点  节点会一直重复上面的步骤直到下面一种情况发生：
+ 赢得选举 其他节点赢得选举 超时还没有选举出 leader  赢得选举 在每个 term 投票中，每个节点只能投一票，当某个节点收到相同 term 超过半数节点的支持时候，就赢得选举；超过半数规则保证了每个 term 只能有一个 leader；赢得选举后，节点向其他节点发送心跳，阻止进一步选举</description>
+    </item>
+    
+    <item>
       <title>TCP常见异常与原因</title>
       <link>https://xiaozhujesus.github.io/post/tcp%E5%B8%B8%E8%A7%81%E5%BC%82%E5%B8%B8%E4%B8%8E%E5%8E%9F%E5%9B%A0/</link>
       <pubDate>Fri, 01 May 2020 09:08:19 +0800</pubDate>
