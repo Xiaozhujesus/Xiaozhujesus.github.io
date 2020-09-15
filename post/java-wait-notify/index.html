@@ -315,6 +315,8 @@
 <span style="color:#f92672">}</span>
 </code></pre></div><h2 id="伪唤醒">伪唤醒</h2>
 <p>假如上面的例子中，线程被唤醒继续从 doWait()中继续执行，应该判断条件是否满足，有时候唤醒了条件却不一定满足，否则会出现问题；所以应该将 if 判断改为 while 判断</p>
+<p>根据上面wait和notify的原理，当调用notify时候，只是将wait队列中的一个阻塞线程移动到entry队列中，当前线程退出synchronized代码块释放锁时候，所有entry队列中的线程都会竞争锁，因此不一定是notify唤醒的线程可以得到锁，因此当notify唤醒的线程得到锁开始执行时候，条件不一定满足，这也是为什么每次得到锁需要循环判断条件是否满足的原因；这里也可以看出被notify唤醒而转移到entry队列中的线程，即使在notify调用那次没有竞争得到锁，其依然在entry队列中，不会放回wait队列；其实如果放回wait队列中，在下次notify时候，也需要从wait队列转移到entry队列一起竞争锁，这是不必要的开销；还有一个原因不放回可以在下面的例子中看到。</p>
+<p>举个例子，有a,b,c三个线程，a现在持有锁，b在entry队列，c在wait队列；此时a调用notify，然后退出synchornized释放锁，这回导致将wait队列中的c放入entry队列中，与b一起竞争锁，假设这时候b竞争到了锁开始执行，那么可能a notify c为true的条件在b执行后为false了，当b执行结束退出synchronized释放锁，会唤醒entry队列中的c，此时c获取锁后需要重新判断条件是否为true；另外这个例子还可以看到，只要调用notify时候wait队列中有线程，那么信号就不会丢失，即使notify那次成功获取锁的不是notify唤醒的线程而是其他线程，因为notify唤醒的线程会一直在entry队列里，最终一定会得到锁开始执行；这也是上面notify唤醒的线程没有竞争到锁时候不会放回wait队列的原因，如果放回了，在上面的例子里就会发生信号丢失，在用户看来是不能理解的，现象就是调用notify时候，wait队列里有线程，只调用一次notify，竟然没办法唤醒这个等待的线程</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">
 <span style="color:#960050;background-color:#1e0010">```</span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyWaitNotify3</span><span style="color:#f92672">{</span>
 
